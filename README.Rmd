@@ -39,11 +39,17 @@ As of `r Sys.Date()`, the data included here are:
 ```{r}
 library(dcws)
 
-cws_full_data %>%
+xt_tbl <- cws_full_data %>%
   dplyr::distinct(year, name) %>%
   dplyr::arrange(name) %>%
-  dplyr::mutate(has_xtab = "x") %>%
-  tidyr::pivot_wider(id_cols = name, names_from = year, values_from = has_xtab, values_fill = list(has_xtab = "")) %>%
+  dplyr::mutate(value = "x") 
+
+xt_total <- xt_tbl %>%
+  dplyr::group_by(year, name = "**TOTAL**") %>%
+  dplyr::summarise(value = sprintf("**%d**", dplyr::n()))
+
+rbind(xt_tbl, xt_total) %>%
+  tidyr::pivot_wider(id_cols = name, names_from = year, values_fill = list(value = ""), names_sort = TRUE) %>%
   knitr::kable(align = "lcccc")
 ```
 

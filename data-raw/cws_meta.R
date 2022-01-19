@@ -43,6 +43,8 @@ response_meta <- full_meta %>%
   dplyr::summarise(response = paste(response, collapse = " / ")) %>%
   dplyr::ungroup()
 
+
+################## CHECK ABOVE BEFORE SAVING ###################################
 usethis::use_data(group_meta, overwrite = TRUE, version = 3)
 # is response_meta really that useful?
 # usethis::use_data(response_meta, overwrite = TRUE, version = 3)
@@ -55,7 +57,7 @@ cws_full_data <- full_meta %>%
   dplyr::select(year, name, data) %>%
   dplyr::filter(name %in% unique(cwi::xwalk$town) |
                   stringr::str_detect(name, "(Greater|Ring|County)") |
-                  name %in% c("Connecticut", "5CT", "Valley")) %>%
+                  name %in% c("Connecticut", "5CT", "Lower Naugatuck Valley")) %>%
   tidyr::unnest(data) %>%
   tidyr::nest(data = category:value) %>%
   tidyr::nest(survey = c(-year, -name))

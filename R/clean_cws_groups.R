@@ -39,7 +39,8 @@ to_recode <- list(
   "High school" = "High school or GED",
   "$75K-$100K" = "$75K-100K",
   Connecticut = "CT",
-  "Other race" = "Other"
+  "Other race" = "Other",
+  "Lower Naugatuck Valley" = "Valley"
 )
 
 # full strings
