@@ -1,12 +1,36 @@
 Package: dcws
-Title: What the Package Does (One Line, Title Case)
+Title: Data from the DataHaven Community Wellbeing Survey
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+    person("Camille", "Seaberry", , "camille@ctdatahaven.org", role = c("aut", "cre"))
+Description: This is a collection of data from all past years of the DCWS, plus a bit of metadata and a few functions for extracting subsets of data.
+License: CC BY 4.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
+Imports: 
+    assertthat,
+    cwi (>= 0.4.2),
+    dplyr,
+    forcats,
+    magrittr,
+    purrr,
+    rlang (>= 0.4.11),
+    stringr,
+    tibble,
+    tidyr
+Suggests: 
+    testthat (>= 3.0.0),
+    fuzzyjoin,
+    officer,
+    roxygen2,
+    xfun,
+    knitr,
+    rmarkdown
+Remotes: 
+    ct-data-haven/cwi
+Depends: 
+    R (>= 4.0.0)
+LazyData: true
+Config/testthat/edition: 3
+VignetteBuilder: knitr
