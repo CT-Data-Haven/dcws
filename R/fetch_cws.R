@@ -5,9 +5,16 @@
 #' @param .name A vector of one or more strings giving the name(s) to subset by. If `NULL`, no filtering is done by name.
 #' @param .category A vector of one or more strings giving the category(ies) to subset by. If `NULL`, no filtering is done by category.
 #' @param .unnest Logical: should the `data` column be unnested? This just saves a step of calling `tidyr::unnest` but defaults to false.
-#' @return A data frame, with either 5 columns (if `.unnest = FALSE`) or 8 columns (if `.unnest = TRUE`).
-#' * For `.unnest = FALSE`: columns are `year`, `name`, `code`, `question`, and a list of nested data frames `data`
-#' * For `.unnest = TRUE`: `year`, `name`, `code`, `question`, `category`, `group`, `response`, and `value`
+#' @param .add_wts Logical: should groups' survey weights be attached, via a left-join with `dcws::cws_full_wts`? This is useful if you need to collapse groups later; otherwise you might get stuck in annoying `tidyr::unnest` messes.
+#' @return A data frame, with between 5 and 9 columns, depending on arguments. Columns `year`, `name`, `code`, and `question` are always included. Additional columns:
+#'
+#' |arguments                 |columns                                                          |
+#' |:-------------------------|:----------------------------------------------------------------|
+#' |.unnest = F, .add_wts = F |data (nested df of category, group, response, and value)         |
+#' |.unnest = F, .add_wts = T |data (nested df of category, group, response, value, and weight) |
+#' |.unnest = T, .add_wts = F |category, group, response, value                                 |
+#' |.unnest = T, .add_wts = T |category, group, response, value, weight                         |
+#'
 #' @examples
 #' # no filtering
 #' fetch_cws()
@@ -29,34 +36,44 @@
 #'   cwi::sub_nonanswers() %>%
 #'   dplyr::filter(response == "Yes") %>%
 #'   tidyr::pivot_wider(id_cols = name, names_from = group, values_from = value)
+#'
+#' # adding weights to collapse groups (e.g. combining income brackets)
+#' fetch_cws(code == "Q1", .year = 2021, .add_wts = TRUE)
+#' fetch_cws(.year = 2021, .name = "New Haven", .category = c("Total", "Age", "Income"),
+#'           .add_wts = TRUE, .unnest = TRUE)
 #' @export
-#' @seealso cws_full_data
-fetch_cws <- function(..., .year = NULL, .name = NULL, .category = NULL, .unnest = FALSE) {
+#' @seealso cws_full_data, cws_full_wts
+fetch_cws <- function(..., .year = NULL, .name = NULL, .category = NULL, .unnest = FALSE, .add_wts = FALSE) {
   # warn if code is used anywhere--not stable year to year
   q <- purrr::map_chr(rlang::enquos(...), rlang::as_label)
   if (any(grepl("\\bcode\\b", q)) & (is.null(.year) | length(.year) > 1)) {
     warning("Keep in mind that codes might change between years--double check before using code as a filter.")
   }
 
-  out <- dcws::cws_full_data %>%
-    tidyr::unnest(survey) %>%
-    dplyr::filter(!!!rlang::quos(...))
-  if (!is.null(.year)) {
-    if (is.character(.year)) .year <- as.numeric(.year)
-    out <- dplyr::filter(out, year %in% .year)
-  }
-  if (!is.null(.name)) {
-    out <- dplyr::filter(out, name %in% .name)
-  }
-  if (!is.null(.category)) {
-    out <- dplyr::mutate(out, data = purrr::map(data, dplyr::filter, category %in% .category))
-  }
+  out <- tidyr::unnest(dcws::cws_full_data, survey)
+  out <- dplyr::filter(out, !!!rlang::quos(...))
+  out <- filter_cws_(out, .year = .year, .name = .name, .category = .category)
+
   if (nrow(dplyr::bind_rows(out$data)) == 0) {
-    message("No results were found for this combination of years, locations, and/or categories.")
+    message("No data were found for this combination of years, locations, and/or categories.")
     return(out)
   }
 
-  if (.unnest) {
+  # if getting wts, unnest to join
+  # --> if unnest, leave like that
+  # --> else re-nest
+  # else if unnest, unnest
+  # else return as is
+  if (.add_wts) {
+    out <- tidyr::unnest(out, data)
+    out <- dplyr::left_join(out,
+                            tidyr::unnest(dcws::cws_full_wts, weights),
+                            by = c("year", "name", "group"))
+
+    if (!.unnest) {
+      out <- tidyr::nest(out, data = -year:-question)
+    }
+  } else if (.unnest) {
     out <- tidyr::unnest(out, data)
   }
 
@@ -64,3 +81,50 @@ fetch_cws <- function(..., .year = NULL, .name = NULL, .category = NULL, .unnest
 }
 
 
+#' @title Fetch and subset weights for DCWS data
+#' @description This function returns the nested `cws_full_wts` data, meant as a counterpart to `fetch_cws`.
+#' @return A data frame, with either 3 columns (if `.unnest = FALSE`) or 4 columns (if `.unnest = TRUE`).
+#' * For `.unnest = FALSE`: columns are `year`, `name`, and a list of nested data frames `weights`
+#' * For `.unnest = TRUE`: `year`, `name`, `group`, and `weight`
+#' @inheritParams fetch_cws
+#' @examples
+#' # no filtering
+#' fetch_wts()
+#'
+#' # weights are generally useful in combination with actual data
+#' # but unless you unnest in advance, this is messy
+#' fetch_cws(code == "Q4E", .year = 2021,
+#'           .name = c("Greater New Haven", "New Haven"), .unnest = TRUE) %>%
+#'   dplyr::left_join(fetch_wts(.unnest = TRUE), by = c("year", "name", "group"))
+#' @export
+#' @seealso fetch_cws
+fetch_wts <- function(..., .year = NULL, .name = NULL, .unnest = FALSE) {
+  out <- dplyr::filter(dcws::cws_full_wts, !!!rlang::quos(...))
+  out <- filter_cws_(out, .year = .year, .name = .name, .category = NULL)
+
+  if (nrow(out) == 0) {
+    message("No weights were found for this combination of years and locations.")
+    return(out)
+  }
+
+  if (.unnest) {
+    out <- tidyr::unnest(out, weights)
+  }
+
+  out
+}
+
+
+filter_cws_ <- function(df, .year, .name, .category) {
+  if (!is.null(.year)) {
+    if (is.character(.year)) .year <- as.numeric(.year)
+    df <- dplyr::filter(df, year %in% .year)
+  }
+  if (!is.null(.name)) {
+    df <- dplyr::filter(df, name %in% .name)
+  }
+  if (!is.null(.category)) {
+    df <- dplyr::mutate(df, data = purrr::map(data, dplyr::filter, category %in% .category))
+  }
+  df
+}

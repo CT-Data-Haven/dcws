@@ -4,7 +4,14 @@
 \alias{fetch_cws}
 \title{Fetch and subset DCWS data}
 \usage{
-fetch_cws(..., .year = NULL, .name = NULL, .category = NULL, .unnest = FALSE)
+fetch_cws(
+  ...,
+  .year = NULL,
+  .name = NULL,
+  .category = NULL,
+  .unnest = FALSE,
+  .add_wts = FALSE
+)
 }
 \arguments{
 \item{...}{Any number of conditions to filter by, which will be passed to \code{dplyr::filter}. These don't override the named options, so if you filter by \code{year > 2020} but then set \code{.year = 2015} you're not going to get any data.}
@@ -16,12 +23,16 @@ fetch_cws(..., .year = NULL, .name = NULL, .category = NULL, .unnest = FALSE)
 \item{.category}{A vector of one or more strings giving the category(ies) to subset by. If \code{NULL}, no filtering is done by category.}
 
 \item{.unnest}{Logical: should the \code{data} column be unnested? This just saves a step of calling \code{tidyr::unnest} but defaults to false.}
+
+\item{.add_wts}{Logical: should groups' survey weights be attached, via a left-join with \code{dcws::cws_full_wts}? This is useful if you need to collapse groups later; otherwise you might get stuck in annoying \code{tidyr::unnest} messes.}
 }
 \value{
-A data frame, with either 5 columns (if \code{.unnest = FALSE}) or 8 columns (if \code{.unnest = TRUE}).
-\itemize{
-\item For \code{.unnest = FALSE}: columns are \code{year}, \code{name}, \code{code}, \code{question}, and a list of nested data frames \code{data}
-\item For \code{.unnest = TRUE}: \code{year}, \code{name}, \code{code}, \code{question}, \code{category}, \code{group}, \code{response}, and \code{value}
+A data frame, with between 5 and 9 columns, depending on arguments. Columns \code{year}, \code{name}, \code{code}, and \code{question} are always included. Additional columns:\tabular{ll}{
+   arguments \tab columns \cr
+   .unnest = F, .add_wts = F \tab data (nested df of category, group, response, and value) \cr
+   .unnest = F, .add_wts = T \tab data (nested df of category, group, response, value, and weight) \cr
+   .unnest = T, .add_wts = F \tab category, group, response, value \cr
+   .unnest = T, .add_wts = T \tab category, group, response, value, weight \cr
 }
 }
 \description{
@@ -48,7 +59,12 @@ fetch_cws(code == "Q1", .year = 2021, .category = c("Income", "Gender"), .unnest
   cwi::sub_nonanswers() \%>\%
   dplyr::filter(response == "Yes") \%>\%
   tidyr::pivot_wider(id_cols = name, names_from = group, values_from = value)
+
+# adding weights to collapse groups (e.g. combining income brackets)
+fetch_cws(code == "Q1", .year = 2021, .add_wts = TRUE)
+fetch_cws(.year = 2021, .name = "New Haven", .category = c("Total", "Age", "Income"),
+          .add_wts = TRUE, .unnest = TRUE)
 }
 \seealso{
-cws_full_data
+cws_full_data, cws_full_wts
 }

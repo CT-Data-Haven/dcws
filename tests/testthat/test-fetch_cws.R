@@ -59,3 +59,14 @@ test_that("fetch_cws filters nested data", {
 
   expect_identical(tidyr::unnest(cws_cat_nest, data), cws_cat_unnest)
 })
+
+test_that("fetch_cws adds weights properly", {
+  tbls <- purrr::map_dbl(list(
+    nest_unwt   = fetch_cws(.year = 2021, .unnest = FALSE, .add_wts = FALSE),
+    nest_wt     = fetch_cws(.year = 2021, .unnest = FALSE, .add_wts = TRUE),
+    unnest_unwt = fetch_cws(.year = 2021, .unnest = TRUE,  .add_wts = FALSE),
+    unnest_wt   = fetch_cws(.year = 2021, .unnest = TRUE,  .add_wts = TRUE)
+  ), ncol)
+  cols <- c(nest_unwt = 5, nest_wt = 5, unnest_unwt = 8, unnest_wt = 9)
+  expect_mapequal(tbls, cols)
+})

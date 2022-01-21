@@ -4,7 +4,8 @@ codes20 <- dcws:::clean_cws_2020()
 paths <- list.files("data-raw/crosstabs", pattern = "\\.xlsx?", full.names = TRUE) %>%
   clean_paths() %>%
   tibble::enframe(value = "path") %>%
-  dplyr::mutate(year = as.numeric(stringr::str_extract(path, "\\d{4}")))
+  dplyr::mutate(year = as.numeric(stringr::str_extract(path, "\\d{4}")),
+                name = dplyr::recode(name, Valley = "Lower Naugatuck Valley"))
 
 # use empty code for 2020
 full_meta <- paths %>%
@@ -63,3 +64,30 @@ cws_full_data <- full_meta %>%
   tidyr::nest(survey = c(-year, -name))
 
 usethis::use_data(cws_full_data, overwrite = TRUE, version = 3)
+
+
+# WEIGHTS -----
+# 5cts doesn't get weights, although they're in the 2018 file
+# monroe 2021 doesn't have breakdowns so no weights
+safe_wts <- purrr::possibly(
+  cwi::read_weights,
+  tibble::tibble(group = character(), weight = numeric())
+)
+
+add_wt1 <- function(data, name) {
+  data %>%
+    tibble::add_row(group = c("Connecticut", name), weight = 1, .before = 1) %>%
+    dplyr::mutate(group = forcats::as_factor(group))
+}
+
+# filter to keep just locations & years that have data
+# tack on 1.0 weights to top
+cws_full_wts <- paths %>%
+  dplyr::mutate(weights = path %>%
+                  purrr::map(safe_wts) %>%
+                  purrr::map(dplyr::mutate, group = clean_lvls(group)) %>%
+                  purrr::map2(name, add_wt1)) %>%
+  dplyr::select(year, name, weights) %>%
+  dplyr::semi_join(cws_full_data, by = c("year", "name"))
+
+usethis::use_data(cws_full_wts, overwrite = TRUE, version = 3)

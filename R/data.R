@@ -56,6 +56,19 @@
 #'           .name = c("Connecticut", "Greater New Haven", "New Haven"))
 "cws_full_data"
 
+#' DCWS weights
+#'
+#' This is a nested data frame containing each survey's weights, used for combining groups to calculate average values. These can be joined to DCWS data with `fetch_cws`, or manually. Note that in some larger areas for 2018 (maybe also 2015), groups might not all line up between data and weights--check for NAs in your weights column if need be.
+#'
+#' @format A data frame with 87 rows and 3 variables:
+#' \describe{
+#'   \item{\code{year}}{Numeric, year of survey}
+#'   \item{\code{name}}{Text of location}
+#'   \item{\code{weights}}{A list of nested data frames, each of which has 2 columns for group and weight.}
+#'}
+#' @source Compiled DCWS crosstabs
+#' @seealso fetch_cws, fetch_wts
+"cws_full_wts"
 
 #' DCWS group metadata
 #'
