@@ -51,26 +51,6 @@ to_collapse <- list(
 )
 
 
-clean_paths <- function(x) {
-  nms <- x %>%
-    basename() %>%
-    xfun::sans_ext() %>%
-    stringr::str_remove("^DataHaven\\d{4}[\\s_]") %>%
-    stringr::str_remove_all("[\\s_](Crosstabs|Pub)") %>%
-    stringr::str_replace_all(c("^CCF$" = "Greater Waterbury",
-                               "^CRCOG$" = "Greater Hartford",
-                               "Cty" = "County")) %>%
-    stringr::str_replace_all("(?<=[a-z])\\B(?=[A-Z])", " ") %>%
-    stringr::str_remove_all("\\s{2,}") %>%
-    stringr::str_replace("(Inner Ring|Outer Ring)([\\w\\s]+$)", "\\2 \\1") %>%
-    stringr::str_remove("Greater (?=[\\w\\s]+Ring)") %>%
-    stringr::str_remove_all("((?<!Border )Towns|Statewide|Region|Central CT Health District|CCF|CRCOG)") %>%
-    stringr::str_replace("(?<=NY)([A-Z])", " \\1") %>%
-    stringr::str_trim() %>%
-    dplyr::recode(Valley = "Lower Naugatuck Valley")
-  stats::setNames(x, nms)
-}
-
 #' @title Clean up categories and groups from crosstabs
 #' @description This is a bunch of string cleaning to standardize the categories (Gender, Age, etc) and groups (Male, Ages 65+, etc) across all available crosstabs. This does the same operation on both categories and groups because there is some overlap; therefore, all warnings are suppressed because it would otherwise be very noisy.
 #' @param x A vector. If not a factor already, will be coerced to one.
@@ -80,8 +60,9 @@ clean_paths <- function(x) {
 #'                 "Race/Ethnicity", "Education", "Income", "Children in HH")
 #' levels(clean_lvls(categories))
 #'
-#' groups <- c("M", "F", "18-34", "Black/Afr Amer", "High School", "<$30K",
-#'             "$75K-100K", "No")
+#' groups <- c("M", "F", "18-34", "35 to 49", "65 and older",
+#'             "Black/Afr Amer", "African American/Black", "High School",
+#'             "Less than $15,000", "$15,000 to $30,000", "No")
 #' levels(clean_lvls(groups))
 #' @return A factor
 #' @export

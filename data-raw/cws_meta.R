@@ -76,7 +76,7 @@ safe_wts <- purrr::possibly(
 
 add_wt1 <- function(data, name) {
   data %>%
-    tibble::add_row(group = c("Connecticut", name), weight = 1, .before = 1) %>%
+    tibble::add_row(group = unique(c("Connecticut", name)), weight = 1, .before = 1) %>%
     dplyr::mutate(group = forcats::as_factor(group))
 }
 
