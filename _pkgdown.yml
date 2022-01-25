@@ -1,0 +1,7 @@
+url: https://ct-data-haven.github.io/dcws
+template:
+  bootstrap: 5
+  bootswatch: "flatly"
+  bslib:
+    pkgdown-nav-height: 60px
+
