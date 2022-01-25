@@ -28,8 +28,8 @@ jobs:
 
       - uses: r-lib/actions/check-r-package@v2
         with:
-          error-on: "error"
-          args: "--no-manual"
+          error-on: '"error"'
+          args: '"--no-manual"'
 
       - name: Build site
         run: Rscript -e 'pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)'
