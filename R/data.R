@@ -5,19 +5,22 @@
 #' On its own, the structure is probably annoying. Easier extraction is available using `fetch_cws`.
 #'
 #' @format A data frame of 73 rows and 3 columns.
-#' **Outer structure:**
+#'
+#' ### Outer structure:
 #' \describe{
 #'   \item{year}{Numeric, year of survey}
 #'   \item{name}{Text of location}
 #'   \item{survey}{List-column of data frames of survey response data. The number of rows varies based on the questions and participant groups available, but the 3 columns are the same.}
 #' }
-#' **For the `survey` list-column:**
+#'
+#' ### For the `survey` list-column:
 #' \describe{
 #'   \item{code}{Question code, e.g. "Q2", "Q4E", "RENTEVICT"}
 #'   \item{question}{Full text of survey question}
 #'   \item{data}{List-column of more data frames, providing the actual response values per question. Again, number of rows varies, but the 4 columns are the same.}
 #' }
-#' **For the `data` list-column:**
+#'
+#' ### For the `data` list-column:
 #' \describe{
 #'   \item{category}{Factor: participant group categories, e.g. "Gender", "Age"}
 #'   \item{group}{Factor: participant group, e.g. "Male", "Ages 65+"}
@@ -25,7 +28,7 @@
 #'   \item{value}{Share of participants giving each response}
 #' }
 #' @source Compiled DCWS crosstabs
-#' @seealso fetch_cws
+#' @seealso [fetch_cws()]
 #' @examples
 #' # bunch of different ways to work with this
 #' # specific question for one location and one year
@@ -67,7 +70,7 @@
 #'   \item{\code{weights}}{A list of nested data frames, each of which has 2 columns for group and weight.}
 #'}
 #' @source Compiled DCWS crosstabs
-#' @seealso fetch_cws, fetch_wts
+#' @seealso [fetch_cws()], [fetch_wts()]
 "cws_full_wts"
 
 #' DCWS group metadata

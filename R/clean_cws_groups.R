@@ -66,23 +66,35 @@ clean_paths <- function(x) {
     stringr::str_remove("Greater (?=[\\w\\s]+Ring)") %>%
     stringr::str_remove_all("((?<!Border )Towns|Statewide|Region|Central CT Health District|CCF|CRCOG)") %>%
     stringr::str_replace("(?<=NY)([A-Z])", " \\1") %>%
-    stringr::str_trim()
+    stringr::str_trim() %>%
+    dplyr::recode(Valley = "Lower Naugatuck Valley")
   stats::setNames(x, nms)
 }
 
 #' @title Clean up categories and groups from crosstabs
-#' @description This is a bunch of string cleaning to unify the categories (Gender, Age, etc) and groups (Male, Ages 65+, etc) across all available crosstabs. This does the same operation on both categories and groups because there is some overlap; therefore, all warnings are suppressed because it would otherwise be very noisy.
+#' @description This is a bunch of string cleaning to standardize the categories (Gender, Age, etc) and groups (Male, Ages 65+, etc) across all available crosstabs. This does the same operation on both categories and groups because there is some overlap; therefore, all warnings are suppressed because it would otherwise be very noisy.
 #' @param x A vector. If not a factor already, will be coerced to one.
+#' @examples
+#' # vector of strings as read in from crosstabs
+#' categories <- c("Connecticut", "NH Inner Ring", "Gender", "Age",
+#'                 "Race/Ethnicity", "Education", "Income", "Children in HH")
+#' levels(clean_lvls(categories))
+#'
+#' groups <- c("M", "F", "18-34", "Black/Afr Amer", "High School", "<$30K",
+#'             "$75K-100K", "No")
+#' levels(clean_lvls(groups))
 #' @return A factor
 #' @export
 clean_lvls <- function(x) {
   if (!is.factor(x)) x <- forcats::as_factor(x)
-  suppressWarnings(x %>%
-    forcats::fct_relabel(stringr::str_replace_all, to_replace) %>%
-    forcats::fct_relabel(stringr::str_remove_all, to_remove) %>%
-    forcats::fct_recode(!!!to_recode) %>%
-    forcats::fct_collapse(!!!to_collapse) %>%
-    forcats::fct_relabel(stringr::str_squish))
+  suppressWarnings({
+    x <- forcats::fct_relabel(x, stringr::str_replace_all, to_replace)
+    x <- forcats::fct_relabel(x, stringr::str_remove_all, to_remove)
+    x <- forcats::fct_recode(x, !!!to_recode)
+    x <- forcats::fct_collapse(x, !!!to_collapse)
+    x <- forcats::fct_relabel(x, stringr::str_squish)
+    x
+  })
 }
 
 

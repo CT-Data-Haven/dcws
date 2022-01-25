@@ -6,24 +6,32 @@
 \title{Contents of DataHaven Community Wellbeing Crosstabs}
 \format{
 A data frame of 73 rows and 3 columns.
-\strong{Outer structure:}
+\subsection{Outer structure:}{
+
 \describe{
 \item{year}{Numeric, year of survey}
 \item{name}{Text of location}
 \item{survey}{List-column of data frames of survey response data. The number of rows varies based on the questions and participant groups available, but the 3 columns are the same.}
 }
-\strong{For the \code{survey} list-column:}
+}
+
+\subsection{For the \code{survey} list-column:}{
+
 \describe{
 \item{code}{Question code, e.g. "Q2", "Q4E", "RENTEVICT"}
 \item{question}{Full text of survey question}
 \item{data}{List-column of more data frames, providing the actual response values per question. Again, number of rows varies, but the 4 columns are the same.}
 }
-\strong{For the \code{data} list-column:}
+}
+
+\subsection{For the \code{data} list-column:}{
+
 \describe{
 \item{category}{Factor: participant group categories, e.g. "Gender", "Age"}
 \item{group}{Factor: participant group, e.g. "Male", "Ages 65+"}
 \item{response}{Text of responses, depending on question}
 \item{value}{Share of participants giving each response}
+}
 }
 }
 \source{
@@ -68,6 +76,6 @@ fetch_cws(grepl("Have there been times .+ food", question), .year = 2018,
           .name = c("Connecticut", "Greater New Haven", "New Haven"))
 }
 \seealso{
-fetch_cws
+\code{\link[=fetch_cws]{fetch_cws()}}
 }
 \keyword{datasets}

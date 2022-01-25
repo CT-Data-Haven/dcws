@@ -2,7 +2,7 @@
 title: "Fetching DCWS data"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{fetching_dcws_data}
+  %\VignetteIndexEntry{Fetching DCWS data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -14,6 +14,14 @@ knitr::opts_chunk$set(
 )
 ```
 
+This is a quick couple examples of using this package to more easily extract DCWS data and put it to use.
+
 ```{r setup}
+library(dplyr)
 library(dcws)
 ```
+
+```{r}
+
+```
+

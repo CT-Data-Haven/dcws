@@ -1,6 +1,3 @@
-library(dcws)
-library(testthat)
-
 test_that("fetch_cws returns correct dimensions", {
   cws_full <- fetch_cws()
   cws_unnest <- fetch_cws(.unnest = TRUE)
@@ -42,7 +39,7 @@ test_that("fetch_cws has no/few blank codes", {
 test_that("fetch_cws messages when no matches", {
   expect_message(fetch_cws(year > 2020, .year = 2015))
   expect_message(fetch_cws(.year = 2021, .name = "Bethany"))
-  expect_equal(nrow(suppressWarnings(fetch_cws(.year = 2021, .name = "Bethany"))), 0)
+  expect_equal(nrow(suppressMessages(fetch_cws(.year = 2021, .name = "Bethany"))), 0)
 })
 
 test_that("fetch_cws warns on multi-year code filters", {

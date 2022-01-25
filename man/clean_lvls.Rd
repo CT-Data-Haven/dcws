@@ -13,5 +13,15 @@ clean_lvls(x)
 A factor
 }
 \description{
-This is a bunch of string cleaning to unify the categories (Gender, Age, etc) and groups (Male, Ages 65+, etc) across all available crosstabs. This does the same operation on both categories and groups because there is some overlap; therefore, all warnings are suppressed because it would otherwise be very noisy.
+This is a bunch of string cleaning to standardize the categories (Gender, Age, etc) and groups (Male, Ages 65+, etc) across all available crosstabs. This does the same operation on both categories and groups because there is some overlap; therefore, all warnings are suppressed because it would otherwise be very noisy.
+}
+\examples{
+# vector of strings as read in from crosstabs
+categories <- c("Connecticut", "NH Inner Ring", "Gender", "Age",
+                "Race/Ethnicity", "Education", "Income", "Children in HH")
+levels(clean_lvls(categories))
+
+groups <- c("M", "F", "18-34", "Black/Afr Amer", "High School", "<$30K",
+            "$75K-100K", "No")
+levels(clean_lvls(groups))
 }

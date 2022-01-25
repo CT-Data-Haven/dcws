@@ -22,6 +22,6 @@ cws_full_wts
 This is a nested data frame containing each survey's weights, used for combining groups to calculate average values. These can be joined to DCWS data with \code{fetch_cws}, or manually. Note that in some larger areas for 2018 (maybe also 2015), groups might not all line up between data and weights--check for NAs in your weights column if need be.
 }
 \seealso{
-fetch_cws, fetch_wts
+\code{\link[=fetch_cws]{fetch_cws()}}, \code{\link[=fetch_wts]{fetch_wts()}}
 }
 \keyword{datasets}
