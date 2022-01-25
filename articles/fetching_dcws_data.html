@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">dcws</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,19 +70,748 @@
 
     
     
-<p>This is a quick couple examples of using this package to more easily extract DCWS data and put it to use.</p>
+<p>This package has a dataset of all the data extracted from all the crosstabs for every survey wave that I had access to as of January 2021, a total of 97 files. It’s all been cleaned up so that names, categories, and groups should be standardized to match across every location and year, and should be the same in the weights as in the data tables themselves. Every data point has its corresponding question text and code.</p>
+<p>When it’s all combined and unnested, there are more than 757,000 rows of data, and no one needs all of that. Instead, use the function <code>fetch_cws</code> to pull out just the data you need, whether that’s just one location across multiple years, multiple locations, a single question, or whatever.</p>
+<p>Here are some pretty common examples of how we might work with DCWS data using this package, <code>cwi</code>, and some tidyverse. I’ll mostly use some of the more straightforward questions that we ask every year, with Greater New Haven as an example because I know most of our demographic groups are available.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Attaching package: 'dplyr'</span>
-<span class="co">#&gt; The following objects are masked from 'package:stats':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     filter, lag</span>
-<span class="co">#&gt; The following objects are masked from 'package:base':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     intersect, setdiff, setequal, union</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">dcws</span><span class="op">)</span></code></pre></div>
-  </main>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">dcws</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/CT-Data-Haven/cwi" class="external-link">cwi</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://forcats.tidyverse.org" class="external-link">forcats</a></span><span class="op">)</span></code></pre></div>
+<p>A common thing we’ll present is a question represented as a single number (percent responding “yes”, percent responding “strongly agree” or “somewhat agree”, etc.) for the state, the region, a couple groups within that region, and large towns in the region. For this, I’ll use named arguments for the year and categories of respondents, plus some of the open-ended filtering. I’ll start out looking at food insecurity, since it’s a simple yes or no. Since I’m doing this a couple times, I’ll write a (pretty crappy) function.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">calc_food</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="co"># get order that makes sense for this subset</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>group <span class="op">=</span> <span class="fu"><a href="https://forcats.tidyverse.org/reference/fct_inorder.html" class="external-link">fct_inorder</a></span><span class="op">(</span><span class="fu"><a href="https://forcats.tidyverse.org/reference/fct_drop.html" class="external-link">fct_drop</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://CT-Data-Haven.github.io/cwi/reference/sub_nonanswers.html" class="external-link">sub_nonanswers</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co"># remove don't know/refused &amp; rescale values</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">group</span> <span class="op">!=</span> <span class="st">"Other race"</span>,
+         <span class="va">response</span> <span class="op">==</span> <span class="st">"Yes"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co"># other race is only available in 2015</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">name</span>, <span class="va">category</span>, <span class="va">group</span>, <span class="va">value</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
+<div class="section level2">
+<h2 id="analysis">Analysis<a class="anchor" aria-label="anchor" href="#analysis"></a>
+</h2>
+<div class="section level3">
+<h3 id="one-question-one-year-few-categories">One question, one year, few categories<a class="anchor" aria-label="anchor" href="#one-question-one-year-few-categories"></a>
+</h3>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">food_21</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_cws.html">fetch_cws</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Have there been times .+ food"</span>, <span class="va">question</span><span class="op">)</span>, 
+          .name <span class="op">=</span> <span class="st">"Greater New Haven"</span>, .category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Total"</span>, <span class="st">"Race/Ethnicity"</span>, <span class="st">"Gender"</span><span class="op">)</span>,
+          .year <span class="op">=</span> <span class="fl">2021</span>, .unnest <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu">calc_food</span><span class="op">(</span><span class="op">)</span>
+
+<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">food_21</span><span class="op">)</span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="right">year</th>
+<th align="left">name</th>
+<th align="left">category</th>
+<th align="left">group</th>
+<th align="right">value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="right">2021</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Total</td>
+<td align="left">Connecticut</td>
+<td align="right">0.1111111</td>
+</tr>
+<tr class="even">
+<td align="right">2021</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Total</td>
+<td align="left">Greater New Haven</td>
+<td align="right">0.1300000</td>
+</tr>
+<tr class="odd">
+<td align="right">2021</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Gender</td>
+<td align="left">Male</td>
+<td align="right">0.1100000</td>
+</tr>
+<tr class="even">
+<td align="right">2021</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Gender</td>
+<td align="left">Female</td>
+<td align="right">0.1515152</td>
+</tr>
+<tr class="odd">
+<td align="right">2021</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Race/Ethnicity</td>
+<td align="left">White</td>
+<td align="right">0.0800000</td>
+</tr>
+<tr class="even">
+<td align="right">2021</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Race/Ethnicity</td>
+<td align="left">Black</td>
+<td align="right">0.2000000</td>
+</tr>
+<tr class="odd">
+<td align="right">2021</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Race/Ethnicity</td>
+<td align="left">Hispanic</td>
+<td align="right">0.2828283</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="one-question-several-years-one-location">One question, several years, one location<a class="anchor" aria-label="anchor" href="#one-question-several-years-one-location"></a>
+</h3>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">food_trend</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_cws.html">fetch_cws</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Have there been times .+ food"</span>, <span class="va">question</span><span class="op">)</span>, 
+          .name <span class="op">=</span> <span class="st">"Greater New Haven"</span>, .category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Total"</span>, <span class="st">"Race/Ethnicity"</span>, <span class="st">"Gender"</span><span class="op">)</span>,
+          .unnest <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu">calc_food</span><span class="op">(</span><span class="op">)</span>
+
+<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">food_trend</span><span class="op">)</span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="right">year</th>
+<th align="left">name</th>
+<th align="left">category</th>
+<th align="left">group</th>
+<th align="right">value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="right">2015</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Total</td>
+<td align="left">Connecticut</td>
+<td align="right">0.1212121</td>
+</tr>
+<tr class="even">
+<td align="right">2015</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Total</td>
+<td align="left">Greater New Haven</td>
+<td align="right">0.1414141</td>
+</tr>
+<tr class="odd">
+<td align="right">2015</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Gender</td>
+<td align="left">Male</td>
+<td align="right">0.1111111</td>
+</tr>
+<tr class="even">
+<td align="right">2015</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Gender</td>
+<td align="left">Female</td>
+<td align="right">0.1616162</td>
+</tr>
+<tr class="odd">
+<td align="right">2015</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Race/Ethnicity</td>
+<td align="left">White</td>
+<td align="right">0.1111111</td>
+</tr>
+<tr class="even">
+<td align="right">2015</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Race/Ethnicity</td>
+<td align="left">Black</td>
+<td align="right">0.2525253</td>
+</tr>
+<tr class="odd">
+<td align="right">2015</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Race/Ethnicity</td>
+<td align="left">Hispanic</td>
+<td align="right">0.2400000</td>
+</tr>
+<tr class="even">
+<td align="right">2018</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Total</td>
+<td align="left">Connecticut</td>
+<td align="right">0.1300000</td>
+</tr>
+<tr class="odd">
+<td align="right">2018</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Total</td>
+<td align="left">Greater New Haven</td>
+<td align="right">0.1300000</td>
+</tr>
+<tr class="even">
+<td align="right">2018</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Gender</td>
+<td align="left">Male</td>
+<td align="right">0.1200000</td>
+</tr>
+<tr class="odd">
+<td align="right">2018</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Gender</td>
+<td align="left">Female</td>
+<td align="right">0.1400000</td>
+</tr>
+<tr class="even">
+<td align="right">2018</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Race/Ethnicity</td>
+<td align="left">White</td>
+<td align="right">0.0900000</td>
+</tr>
+<tr class="odd">
+<td align="right">2018</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Race/Ethnicity</td>
+<td align="left">Black</td>
+<td align="right">0.2000000</td>
+</tr>
+<tr class="even">
+<td align="right">2018</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Race/Ethnicity</td>
+<td align="left">Hispanic</td>
+<td align="right">0.3800000</td>
+</tr>
+<tr class="odd">
+<td align="right">2021</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Total</td>
+<td align="left">Connecticut</td>
+<td align="right">0.1111111</td>
+</tr>
+<tr class="even">
+<td align="right">2021</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Total</td>
+<td align="left">Greater New Haven</td>
+<td align="right">0.1300000</td>
+</tr>
+<tr class="odd">
+<td align="right">2021</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Gender</td>
+<td align="left">Male</td>
+<td align="right">0.1100000</td>
+</tr>
+<tr class="even">
+<td align="right">2021</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Gender</td>
+<td align="left">Female</td>
+<td align="right">0.1515152</td>
+</tr>
+<tr class="odd">
+<td align="right">2021</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Race/Ethnicity</td>
+<td align="left">White</td>
+<td align="right">0.0800000</td>
+</tr>
+<tr class="even">
+<td align="right">2021</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Race/Ethnicity</td>
+<td align="left">Black</td>
+<td align="right">0.2000000</td>
+</tr>
+<tr class="odd">
+<td align="right">2021</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Race/Ethnicity</td>
+<td align="left">Hispanic</td>
+<td align="right">0.2828283</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="one-question-one-year-compare-groups-and-locations">One question, one year, compare groups and locations<a class="anchor" aria-label="anchor" href="#one-question-one-year-compare-groups-and-locations"></a>
+</h3>
+<p>I want just the location-wide values for towns in Greater New Haven, or by race for Greater New Haven. I could do this filtering inside <code>fetch_cws</code> if I wanted to dig into the nested data with <code>purrr</code>, but I don’t, so I’ll just be a little redundant.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">food_towns</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_cws.html">fetch_cws</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Have there been times .+ food"</span>, <span class="va">question</span><span class="op">)</span>, 
+          .name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Greater New Haven"</span>, <span class="fu">cwi</span><span class="fu">::</span><span class="va"><a href="https://CT-Data-Haven.github.io/cwi/reference/regions.html" class="external-link">regions</a></span><span class="op">$</span><span class="va">`Greater New Haven`</span><span class="op">)</span>,
+          .year <span class="op">=</span> <span class="fl">2021</span>, .unnest <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">(</span><span class="va">name</span> <span class="op">==</span> <span class="st">"Greater New Haven"</span> <span class="op">&amp;</span> <span class="va">category</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Total"</span>, <span class="st">"Race/Ethnicity"</span><span class="op">)</span><span class="op">)</span> <span class="op">|</span>
+           <span class="op">(</span><span class="va">group</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu">cwi</span><span class="fu">::</span><span class="va"><a href="https://CT-Data-Haven.github.io/cwi/reference/regions.html" class="external-link">regions</a></span><span class="op">$</span><span class="va">`Greater New Haven`</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu">calc_food</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>category <span class="op">=</span> <span class="fu"><a href="https://forcats.tidyverse.org/reference/as_factor.html" class="external-link">as_factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">name</span> <span class="op">==</span> <span class="st">"Greater New Haven"</span>, 
+                                     <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">category</span><span class="op">)</span>,
+                                     <span class="st">"By town"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+
+<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">food_towns</span><span class="op">)</span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="right">year</th>
+<th align="left">name</th>
+<th align="left">category</th>
+<th align="left">group</th>
+<th align="right">value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="right">2021</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Total</td>
+<td align="left">Connecticut</td>
+<td align="right">0.1111111</td>
+</tr>
+<tr class="even">
+<td align="right">2021</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Total</td>
+<td align="left">Greater New Haven</td>
+<td align="right">0.1300000</td>
+</tr>
+<tr class="odd">
+<td align="right">2021</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Race/Ethnicity</td>
+<td align="left">White</td>
+<td align="right">0.0800000</td>
+</tr>
+<tr class="even">
+<td align="right">2021</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Race/Ethnicity</td>
+<td align="left">Black</td>
+<td align="right">0.2000000</td>
+</tr>
+<tr class="odd">
+<td align="right">2021</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Race/Ethnicity</td>
+<td align="left">Hispanic</td>
+<td align="right">0.2828283</td>
+</tr>
+<tr class="even">
+<td align="right">2021</td>
+<td align="left">Milford</td>
+<td align="left">By town</td>
+<td align="left">Milford</td>
+<td align="right">0.1111111</td>
+</tr>
+<tr class="odd">
+<td align="right">2021</td>
+<td align="left">New Haven</td>
+<td align="left">By town</td>
+<td align="left">New Haven</td>
+<td align="right">0.1530612</td>
+</tr>
+<tr class="even">
+<td align="right">2021</td>
+<td align="left">West Haven</td>
+<td align="left">By town</td>
+<td align="left">West Haven</td>
+<td align="right">0.1800000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="several-questions-with-same-responses">Several questions with same responses<a class="anchor" aria-label="anchor" href="#several-questions-with-same-responses"></a>
+</h3>
+<p>Usually I like to analyze questions separately because they might not have the same set of responses, but for a bank of related questions you can do them all at once. In 2020 and 2021 we added a question about trust in several types of institutions. I can’t remember the codes for them but they all have “trust” in the question text.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/fetch_cws.html">fetch_cws</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"[Tt]rust"</span>, <span class="va">question</span><span class="op">)</span>, .year <span class="op">=</span> <span class="fl">2021</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">code</span>, <span class="va">question</span><span class="op">)</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 7 × 2</span></span>
+<span class="co">#&gt;   code   question                                                               </span>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                                  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> TRUSTA How much trust do you have in each of the following to look out for th…</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> TRUSTB How much trust do you have in each of the following to look out for th…</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> TRUSTC How much trust do you have in each of the following to look out for th…</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">4</span> TRUSTD How much trust do you have in each of the following to look out for th…</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">5</span> TRUSTE How much trust do you have in each of the following to look out for th…</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Q17G   People in this neighborhood can be trusted.                            </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">7</span> CVAX10 (If not vaccinated) How concerned are you, if at all, that you won't b…</span></code></pre></div>
+<p>Oh duh, the codes are all “TRUST” and then a letter! If this type of lookup table / function would be useful, I can add one, but it’s pretty simple to do on the fly.</p>
+<p>The responses for these questions are a great deal, a fair amount, not very much, or none at all. I’m going to collapse great deal and fair amount into one, then present just that. Each question has the same beginning text, then at the end names the institution being asked about.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">trust_insts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_cws.html">fetch_cws</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^TRUST[A-Z]$"</span>, <span class="va">code</span><span class="op">)</span>, .name <span class="op">=</span> <span class="st">"Greater New Haven"</span>, .year <span class="op">=</span> <span class="fl">2021</span>,
+          .category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Total"</span>, <span class="st">"Age"</span><span class="op">)</span>, .unnest <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>response <span class="op">=</span> <span class="fu"><a href="https://forcats.tidyverse.org/reference/fct_collapse.html" class="external-link">fct_collapse</a></span><span class="op">(</span><span class="va">response</span>, trust <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A great deal"</span>, <span class="st">"A fair amount"</span><span class="op">)</span><span class="op">)</span>,
+         question <span class="op">=</span> <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_extract.html" class="external-link">str_extract</a></span><span class="op">(</span><span class="va">question</span>, <span class="st">"([\\w\\s]+)$"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+           <span class="fu"><a href="https://rdrr.io/r/base/trimws.html" class="external-link">trimws</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+           <span class="fu"><a href="https://forcats.tidyverse.org/reference/as_factor.html" class="external-link">as_factor</a></span><span class="op">(</span><span class="op">)</span>,
+         group <span class="op">=</span> <span class="fu"><a href="https://forcats.tidyverse.org/reference/fct_inorder.html" class="external-link">fct_inorder</a></span><span class="op">(</span><span class="fu"><a href="https://forcats.tidyverse.org/reference/fct_drop.html" class="external-link">fct_drop</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">category</span>, <span class="va">group</span>, <span class="va">question</span>, <span class="va">response</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://CT-Data-Haven.github.io/cwi/reference/sub_nonanswers.html" class="external-link">sub_nonanswers</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">response</span> <span class="op">==</span> <span class="st">"trust"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span>
+
+<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">trust_insts</span><span class="op">)</span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="9%">
+<col width="19%">
+<col width="50%">
+<col width="9%">
+<col width="10%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">category</th>
+<th align="left">group</th>
+<th align="left">question</th>
+<th align="left">response</th>
+<th align="right">value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Total</td>
+<td align="left">Connecticut</td>
+<td align="left">The Federal government</td>
+<td align="left">trust</td>
+<td align="right">0.5257732</td>
+</tr>
+<tr class="even">
+<td align="left">Total</td>
+<td align="left">Connecticut</td>
+<td align="left">State government</td>
+<td align="left">trust</td>
+<td align="right">0.6632653</td>
+</tr>
+<tr class="odd">
+<td align="left">Total</td>
+<td align="left">Connecticut</td>
+<td align="left">Local government</td>
+<td align="left">trust</td>
+<td align="right">0.7422680</td>
+</tr>
+<tr class="even">
+<td align="left">Total</td>
+<td align="left">Connecticut</td>
+<td align="left">Local health officials and healthcare workers</td>
+<td align="left">trust</td>
+<td align="right">0.8958333</td>
+</tr>
+<tr class="odd">
+<td align="left">Total</td>
+<td align="left">Connecticut</td>
+<td align="left">Local police and law enforcement</td>
+<td align="left">trust</td>
+<td align="right">0.8367347</td>
+</tr>
+<tr class="even">
+<td align="left">Total</td>
+<td align="left">Greater New Haven</td>
+<td align="left">The Federal government</td>
+<td align="left">trust</td>
+<td align="right">0.5360825</td>
+</tr>
+<tr class="odd">
+<td align="left">Total</td>
+<td align="left">Greater New Haven</td>
+<td align="left">State government</td>
+<td align="left">trust</td>
+<td align="right">0.6868687</td>
+</tr>
+<tr class="even">
+<td align="left">Total</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Local government</td>
+<td align="left">trust</td>
+<td align="right">0.7755102</td>
+</tr>
+<tr class="odd">
+<td align="left">Total</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Local health officials and healthcare workers</td>
+<td align="left">trust</td>
+<td align="right">0.8750000</td>
+</tr>
+<tr class="even">
+<td align="left">Total</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Local police and law enforcement</td>
+<td align="left">trust</td>
+<td align="right">0.8181818</td>
+</tr>
+<tr class="odd">
+<td align="left">Age</td>
+<td align="left">Ages 18-34</td>
+<td align="left">The Federal government</td>
+<td align="left">trust</td>
+<td align="right">0.4285714</td>
+</tr>
+<tr class="even">
+<td align="left">Age</td>
+<td align="left">Ages 18-34</td>
+<td align="left">State government</td>
+<td align="left">trust</td>
+<td align="right">0.6868687</td>
+</tr>
+<tr class="odd">
+<td align="left">Age</td>
+<td align="left">Ages 18-34</td>
+<td align="left">Local government</td>
+<td align="left">trust</td>
+<td align="right">0.8061224</td>
+</tr>
+<tr class="even">
+<td align="left">Age</td>
+<td align="left">Ages 18-34</td>
+<td align="left">Local health officials and healthcare workers</td>
+<td align="left">trust</td>
+<td align="right">0.8469388</td>
+</tr>
+<tr class="odd">
+<td align="left">Age</td>
+<td align="left">Ages 18-34</td>
+<td align="left">Local police and law enforcement</td>
+<td align="left">trust</td>
+<td align="right">0.7171717</td>
+</tr>
+<tr class="even">
+<td align="left">Age</td>
+<td align="left">Ages 35-49</td>
+<td align="left">The Federal government</td>
+<td align="left">trust</td>
+<td align="right">0.6000000</td>
+</tr>
+<tr class="odd">
+<td align="left">Age</td>
+<td align="left">Ages 35-49</td>
+<td align="left">State government</td>
+<td align="left">trust</td>
+<td align="right">0.6600000</td>
+</tr>
+<tr class="even">
+<td align="left">Age</td>
+<td align="left">Ages 35-49</td>
+<td align="left">Local government</td>
+<td align="left">trust</td>
+<td align="right">0.6938776</td>
+</tr>
+<tr class="odd">
+<td align="left">Age</td>
+<td align="left">Ages 35-49</td>
+<td align="left">Local health officials and healthcare workers</td>
+<td align="left">trust</td>
+<td align="right">0.8526316</td>
+</tr>
+<tr class="even">
+<td align="left">Age</td>
+<td align="left">Ages 35-49</td>
+<td align="left">Local police and law enforcement</td>
+<td align="left">trust</td>
+<td align="right">0.8484848</td>
+</tr>
+<tr class="odd">
+<td align="left">Age</td>
+<td align="left">Ages 50-64</td>
+<td align="left">The Federal government</td>
+<td align="left">trust</td>
+<td align="right">0.4747475</td>
+</tr>
+<tr class="even">
+<td align="left">Age</td>
+<td align="left">Ages 50-64</td>
+<td align="left">State government</td>
+<td align="left">trust</td>
+<td align="right">0.6565657</td>
+</tr>
+<tr class="odd">
+<td align="left">Age</td>
+<td align="left">Ages 50-64</td>
+<td align="left">Local government</td>
+<td align="left">trust</td>
+<td align="right">0.7525773</td>
+</tr>
+<tr class="even">
+<td align="left">Age</td>
+<td align="left">Ages 50-64</td>
+<td align="left">Local health officials and healthcare workers</td>
+<td align="left">trust</td>
+<td align="right">0.8686869</td>
+</tr>
+<tr class="odd">
+<td align="left">Age</td>
+<td align="left">Ages 50-64</td>
+<td align="left">Local police and law enforcement</td>
+<td align="left">trust</td>
+<td align="right">0.8888889</td>
+</tr>
+<tr class="even">
+<td align="left">Age</td>
+<td align="left">Ages 65+</td>
+<td align="left">The Federal government</td>
+<td align="left">trust</td>
+<td align="right">0.6354167</td>
+</tr>
+<tr class="odd">
+<td align="left">Age</td>
+<td align="left">Ages 65+</td>
+<td align="left">State government</td>
+<td align="left">trust</td>
+<td align="right">0.7040816</td>
+</tr>
+<tr class="even">
+<td align="left">Age</td>
+<td align="left">Ages 65+</td>
+<td align="left">Local government</td>
+<td align="left">trust</td>
+<td align="right">0.7900000</td>
+</tr>
+<tr class="odd">
+<td align="left">Age</td>
+<td align="left">Ages 65+</td>
+<td align="left">Local health officials and healthcare workers</td>
+<td align="left">trust</td>
+<td align="right">0.9148936</td>
+</tr>
+<tr class="even">
+<td align="left">Age</td>
+<td align="left">Ages 65+</td>
+<td align="left">Local police and law enforcement</td>
+<td align="left">trust</td>
+<td align="right">0.9081633</td>
+</tr>
+</tbody>
+</table>
+<p>Lots of ways you could chop this data up now that you’ve got several groups and several questions together.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="weights">Weights<a class="anchor" aria-label="anchor" href="#weights"></a>
+</h2>
+<p>The crosstabs each have a table of survey weights for each group, either as a standalone section at the bottom of the Excel spreadsheet or as a couple rows at the top of each question. <code><a href="https://CT-Data-Haven.github.io/cwi/reference/read_xtabs.html" class="external-link">cwi::read_weights</a></code> now works with either of these formats; for the latter, the weights are taken from the first question (always the satisfied with your area question, which every participant receives). Just like preparing this package meant extracting all the data, there’s also a stash of all the weights from all the files. These are useful for operations like collapsing multiple small groups into larger ones, usually income brackets or other groupings that may not be consistent between years or locations otherwise.</p>
+<p>There’s a function for getting weights on their own, with most of the same arguments as for getting data…</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/fetch_wts.html">fetch_wts</a></span><span class="op">(</span>.year <span class="op">=</span> <span class="fl">2021</span>, .name <span class="op">=</span> <span class="st">"Greater New Haven"</span>, .unnest <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 4</span></span>
+<span class="co">#&gt;    year name              group             weight</span>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">2</span>021 Greater New Haven Connecticut        1    </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">2</span>021 Greater New Haven Greater New Haven  1    </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">3</span>  <span style="text-decoration: underline;">2</span>021 Greater New Haven Male               0.471</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">4</span>  <span style="text-decoration: underline;">2</span>021 Greater New Haven Female             0.529</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">5</span>  <span style="text-decoration: underline;">2</span>021 Greater New Haven Ages 18-34         0.313</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">6</span>  <span style="text-decoration: underline;">2</span>021 Greater New Haven Ages 35-49         0.238</span></code></pre></div>
+<p>…or you can just use the <code>.add_wts</code> argument in <code>fetch_cws</code> to do this for you. You can also use <code><a href="https://CT-Data-Haven.github.io/cwi/reference/collapse_n_wt.html" class="external-link">cwi::collapse_n_wt</a></code> to help with the calculation, but basically you’re collapsing several levels, then getting weighted means.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">asthma18</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_cws.html">fetch_cws</a></span><span class="op">(</span><span class="va">question</span> <span class="op">==</span> <span class="st">"Asthma"</span>, .year <span class="op">=</span> <span class="fl">2018</span>, .name <span class="op">=</span> <span class="st">"Greater New Haven"</span>, 
+          .category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Total"</span>, <span class="st">"Income"</span>, <span class="st">"Race/Ethnicity"</span><span class="op">)</span>, .add_wts <span class="op">=</span> <span class="cn">TRUE</span>, .unnest <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://CT-Data-Haven.github.io/cwi/reference/collapse_n_wt.html" class="external-link">collapse_n_wt</a></span><span class="op">(</span><span class="va">year</span><span class="op">:</span><span class="va">response</span>,
+                .lvls <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"&lt;$30K"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"&lt;$15K"</span>, <span class="st">"$15K-$30K"</span><span class="op">)</span>,
+                             <span class="st">"$30K-$100K"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"$30K-$50K"</span>, <span class="st">"$50K-$75K"</span>, <span class="st">"$75K-$100K"</span><span class="op">)</span>,
+                             <span class="st">"$100K+"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"$100K-$200K"</span>, <span class="st">"$200K+"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://CT-Data-Haven.github.io/cwi/reference/sub_nonanswers.html" class="external-link">sub_nonanswers</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">response</span> <span class="op">==</span> <span class="st">"Yes"</span><span class="op">)</span>
+
+<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">asthma18</span><span class="op">)</span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="right">year</th>
+<th align="left">name</th>
+<th align="left">code</th>
+<th align="left">question</th>
+<th align="left">category</th>
+<th align="left">group</th>
+<th align="left">response</th>
+<th align="right">value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="right">2018</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Q23E</td>
+<td align="left">Asthma</td>
+<td align="left">Total</td>
+<td align="left">Connecticut</td>
+<td align="left">Yes</td>
+<td align="right">0.1515152</td>
+</tr>
+<tr class="even">
+<td align="right">2018</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Q23E</td>
+<td align="left">Asthma</td>
+<td align="left">Total</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Yes</td>
+<td align="right">0.1515152</td>
+</tr>
+<tr class="odd">
+<td align="right">2018</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Q23E</td>
+<td align="left">Asthma</td>
+<td align="left">Race/Ethnicity</td>
+<td align="left">White</td>
+<td align="left">Yes</td>
+<td align="right">0.1313131</td>
+</tr>
+<tr class="even">
+<td align="right">2018</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Q23E</td>
+<td align="left">Asthma</td>
+<td align="left">Race/Ethnicity</td>
+<td align="left">Black</td>
+<td align="left">Yes</td>
+<td align="right">0.1900000</td>
+</tr>
+<tr class="odd">
+<td align="right">2018</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Q23E</td>
+<td align="left">Asthma</td>
+<td align="left">Race/Ethnicity</td>
+<td align="left">Hispanic</td>
+<td align="left">Yes</td>
+<td align="right">0.2500000</td>
+</tr>
+<tr class="even">
+<td align="right">2018</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Q23E</td>
+<td align="left">Asthma</td>
+<td align="left">Income</td>
+<td align="left">&lt;$30K</td>
+<td align="left">Yes</td>
+<td align="right">0.2200000</td>
+</tr>
+<tr class="odd">
+<td align="right">2018</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Q23E</td>
+<td align="left">Asthma</td>
+<td align="left">Income</td>
+<td align="left">$30K-$100K</td>
+<td align="left">Yes</td>
+<td align="right">0.1292857</td>
+</tr>
+<tr class="even">
+<td align="right">2018</td>
+<td align="left">Greater New Haven</td>
+<td align="left">Q23E</td>
+<td align="left">Asthma</td>
+<td align="left">Income</td>
+<td align="left">$100K+</td>
+<td align="left">Yes</td>
+<td align="right">0.1424837</td>
+</tr>
+</tbody>
+</table>
+<p>One reason for doing this is that we’ve moved toward larger income brackets to retain decent sample sizes, so I recalculated these to match the brackets used for 2021.</p>
+</div>
+<div class="section level2">
+<h2 id="output">Output<a class="anchor" aria-label="anchor" href="#output"></a>
+</h2>
+<p>That’s it! Usually I’ll save a bunch of related analyses into lists of data frames, and then write those out to rds files for easy loading.</p>
+</div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
