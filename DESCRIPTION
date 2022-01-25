@@ -8,6 +8,7 @@ License: CC BY 4.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
+URL: https://ct-data-haven.github.io/dcws
 Imports: 
     assertthat,
     cwi (>= 0.4.2),
@@ -33,4 +34,6 @@ Depends:
     R (>= 4.0.0)
 LazyData: true
 Config/testthat/edition: 3
+Config/Needs/website: pkgdown, 
+    knitr
 VignetteBuilder: knitr
