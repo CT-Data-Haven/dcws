@@ -30,7 +30,7 @@ library(cwi)
 library(ggplot2)
 library(forcats)
 
-sysfonts::font_add_google("Barlow Semi Condensed")
+if (require("showtext")) sysfonts::font_add_google("Barlow Semi Condensed")
 theme_set(camiller::theme_din(base_family = "Barlow Semi Condensed", ygrid = FALSE))
 ```
 

@@ -26,7 +26,12 @@ Suggests:
     roxygen2,
     xfun,
     knitr,
-    rmarkdown
+    rmarkdown,
+    showtext,
+    sysfonts,
+    camiller,
+    scales,
+    ggplot2
 Remotes: 
     ct-data-haven/cwi
 Depends: 
