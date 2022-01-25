@@ -7,21 +7,215 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
+	fig.showtext = TRUE,
+	message = FALSE,
+	warning = TRUE,
+	collapse = TRUE,
+	comment = "#>"
 )
 ```
 
-This is a quick couple examples of using this package to more easily extract DCWS data and put it to use.
+This package has a dataset of all the data extracted from all the crosstabs for every survey wave that I had access to as of January 2021, a total of 97 files. It's all been cleaned up so that names, categories, and groups should be standardized to match across every location and year, and should be the same in the weights as in the data tables themselves. Every data point has its corresponding question text and code. 
 
-```{r setup}
+When it's all combined and unnested, there are more than 757,000 rows of data, and no one needs all of that. Instead, use the function `fetch_cws` to pull out just the data you need, whether that's just one location across multiple years, multiple locations, a single question, or whatever.
+
+Here are some pretty common examples of how we might work with DCWS data using this package, `cwi`, and some tidyverse. I'll mostly use some of the more straightforward questions that we ask every year, with Greater New Haven as an example because I know most of our demographic groups are available. There are some functions in the new [`stylehaven`](https://github.com/CT-Data-Haven/stylehaven) package to improve on plots like this further, but I'll leave them basic.
+
+```{r libs, message=FALSE, warning=FALSE}
 library(dplyr)
 library(dcws)
+library(cwi)
+library(ggplot2)
+library(forcats)
+
+sysfonts::font_add_google("Barlow Semi Condensed")
+theme_set(camiller::theme_din(base_family = "Barlow Semi Condensed", ygrid = FALSE))
 ```
+
+A common thing we'll present is a question represented as a single number (percent responding "yes", percent responding "strongly agree" or "somewhat agree", etc.) for the state, the region, a couple groups within that region, and large towns in the region. For this, I'll use named arguments for the year and categories of respondents, plus some of the open-ended filtering. I'll start out looking at food insecurity, since it's a simple yes or no. Since I'm doing this a couple times, I'll write a (pretty crappy) function. 
+
 
 ```{r}
-
+calc_food <- function(data) {
+  data %>%
+  # get order that makes sense for this subset
+  mutate(group = fct_drop(group) %>%
+           fct_inorder() %>%
+           fct_recode(CT = "Connecticut", GNH = "Greater New Haven")) %>% 
+  sub_nonanswers() %>% # remove don't know/refused & rescale values
+  filter(group != "Other race",
+         response == "Yes") %>% # other race is only available in 2015
+  select(year, name, category, group, value)
+}
 ```
 
+## Analysis
+
+### One question, one year, few categories
+
+```{r food1}
+food_21 <- fetch_cws(grepl("Have there been times .+ food", question), 
+          .name = "Greater New Haven", .category = c("Total", "Race/Ethnicity", "Gender"),
+          .year = 2021, .unnest = TRUE) %>%
+  calc_food()
+
+food_21
+
+ggplot(food_21, aes(x = fct_rev(group), y = value)) +
+  geom_col(width = 0.8) +
+  coord_flip() +
+  scale_y_continuous(labels = scales::label_percent(),
+                     expand = expansion(mult = c(0, 0.05))) +
+  facet_grid(rows = vars(category), scales = "free_y", space = "free", switch = "y") +
+  theme(strip.placement = "outside",
+        strip.text.y.left = element_text(angle = 0, hjust = 0, vjust = 1,
+                                         margin = margin(8, 8, 8, 8, "pt")),
+        axis.title.x = element_text(hjust = 1)) +
+  labs(title = "Food insecurity by gender & race/ethnicity",
+       subtitle = "Greater New Haven, 2021",
+       y = "Share of adults", x = NULL)
+```
+
+
+### One question, several years, one location
+
+
+```{r food2}
+food_trend <- fetch_cws(grepl("Have there been times .+ food", question), 
+          .name = "Greater New Haven", .category = c("Total", "Race/Ethnicity", "Gender"),
+          .unnest = TRUE) %>%
+  calc_food()
+
+food_trend
+
+ggplot(food_trend, aes(x = year, y = value, color = group)) +
+  geom_line(size = 2) +
+  geom_point(size = 4) +
+  scale_x_continuous(breaks = seq(2015, 2021, by = 3),
+                     expand = expansion(add = 1.5)) +
+  scale_y_continuous(labels = scales::label_percent()) +
+  scale_color_brewer(palette = "Dark2") +
+  facet_wrap(vars(category), nrow = 1) +
+  theme(panel.grid.major.y = element_line(),
+        axis.title.y = element_text(hjust = 1)) +
+  labs(title = "Food insecurity by gender & race/ethnicity",
+       subtitle = "Greater New Haven, 2015–2021",
+       x = NULL, y = "Share of adults", color = NULL)
+```
+
+
+
+### One question, one year, compare groups and locations
+
+I want just the location-wide values for towns in Greater New Haven, or by race for Greater New Haven. I could do this filtering inside `fetch_cws` if I wanted to dig into the nested data with `purrr`, but I don't, so I'll just be a little redundant.
+
+```{r food3}
+food_towns <- fetch_cws(grepl("Have there been times .+ food", question), 
+          .name = c("Greater New Haven", cwi::regions$`Greater New Haven`),
+          .year = 2021, .unnest = TRUE) %>%
+  filter((name == "Greater New Haven" & category %in% c("Total", "Race/Ethnicity")) |
+           (group %in% cwi::regions$`Greater New Haven`)) %>%
+  calc_food() %>%
+  mutate(category = as_factor(ifelse(name == "Greater New Haven", 
+                                     as.character(category),
+                                     "By town")))
+food_towns
+
+ggplot(food_towns, aes(x = fct_rev(group), y = value)) +
+  geom_col(width = 0.8) +
+  coord_flip() +
+  scale_y_continuous(labels = scales::label_percent(),
+                     expand = expansion(mult = c(0, 0.05))) +
+  facet_grid(rows = vars(category), scales = "free_y", space = "free", switch = "y") +
+  theme(strip.placement = "outside",
+        strip.text.y.left = element_text(angle = 0, hjust = 0, vjust = 1,
+                                         margin = margin(8, 8, 8, 8, "pt")),
+        axis.title.x = element_text(hjust = 1)) +
+  labs(title = "Food insecurity by race/ethnicity",
+       subtitle = "Greater New Haven, 2021",
+       y = "Share of adults", x = NULL)
+```
+
+### Several questions with same responses
+
+Usually I like to analyze questions separately because they might not have the same set of responses, but for a bank of related questions you can do them all at once. In 2020 and 2021 we added a question about trust in several types of institutions. I can't remember the codes for them but they all have "trust" in the question text.
+
+```{r lookup}
+fetch_cws(grepl("[Tt]rust", question), .year = 2021) %>%
+  distinct(code, question)
+```
+
+Oh duh, the codes are all "TRUST" and then a letter! If this type of lookup table / function would be useful, I can add one, but it's pretty simple to do on the fly.
+
+The responses for these questions are a great deal, a fair amount, not very much, or none at all. I'm going to collapse great deal and fair amount into one, then present just that. Each question has the same beginning text, then at the end names the institution being asked about.
+
+```{r trust1}
+trust_insts <- fetch_cws(grepl("^TRUST[A-Z]$", code), .name = "Greater New Haven", .year = 2021,
+          .category = c("Total", "Age", "Race/Ethnicity"), .unnest = TRUE) %>%
+  mutate(response = fct_collapse(response, trust = c("A great deal", "A fair amount")),
+         question = stringr::str_extract(question, "([\\w\\s]+)$") %>%
+           trimws() %>%
+           as_factor(),
+         group = fct_drop(group) %>%
+           fct_inorder() %>%
+           fct_recode(CT = "Connecticut", GNH = "Greater New Haven")) %>%
+  group_by(category, group, question, response) %>%
+  summarise(value = sum(value)) %>%
+  sub_nonanswers() %>%
+  filter(response == "trust") %>%
+  ungroup()
+
+trust_insts
+```
+
+Lots of ways you could chop this data up. Here's one.
+
+```{r trust2}
+trust_insts %>%
+  mutate(question = fct_reorder(question, value, .fun = median, .desc = FALSE)) %>%
+  ggplot(aes(x = group, y = question, fill = value)) +
+  geom_tile(color = "white", size = 0.8) +
+  geom_label(aes(label = scales::label_percent(accuracy = 1)(value)), 
+             family = "Barlow Semi Condensed", fontface = "bold", 
+             fill = "white", alpha = 0.2, label.size = 0) +
+  scale_y_discrete(labels = scales::label_wrap(25)) +
+  scale_x_discrete(labels = scales::label_wrap(9)) +
+  scale_fill_fermenter(palette = "YlGnBu", direction = 1) +
+  theme(legend.position = "none") +
+  labs(title = "Trust in public institutions",
+       subtitle = "Share of adults with great / fair amount of trust, Greater New Haven, 2021",
+       x = NULL, y = NULL)
+```
+
+## Weights
+
+The crosstabs each have a table of survey weights for each group, either as a standalone section at the bottom of the Excel spreadsheet or as a couple rows at the top of each question. `cwi::read_weights` now works with either of these formats; for the latter, the weights are taken from the first question (always the satisfied with your area question, which every participant receives). Just like preparing this package meant extracting all the data, there's also a stash of all the weights from all the files. These are useful for operations like collapsing multiple small groups into larger ones, usually income brackets or other groupings that may not be consistent between years or locations otherwise.
+
+There's a function for getting weights on their own, with most of the same arguments as for getting data...
+
+```{r wts1}
+head(fetch_wts(.year = 2021, .name = "Greater New Haven", .unnest = TRUE))
+```
+
+...or you can just use the `.add_wts` argument in `fetch_cws` to do this for you. You can also use `cwi::collapse_n_wt` to help with the calculation, but basically you're collapsing several levels, then getting weighted means.
+
+```{r wts2}
+asthma18 <- fetch_cws(question == "Asthma", .year = 2018, .name = "Greater New Haven", 
+          .category = c("Total", "Income", "Race/Ethnicity"), .add_wts = TRUE, .unnest = TRUE) %>%
+  collapse_n_wt(year:response,
+                .lvls = list("<$30K" = c("<$15K", "$15K-$30K"),
+                             "$30K-$100K" = c("$30K-$50K", "$50K-$75K", "$75K-$100K"),
+                             "$100K+" = c("$100K-$200K", "$200K+"))) %>%
+  sub_nonanswers() %>%
+  filter(response == "Yes")
+
+asthma18
+```
+
+One reason for doing this is that we've moved toward larger income brackets to retain decent sample sizes, so I recalculated these to match the brackets used for 2021.
+
+## Output
+
+That's it! Usually I'll save a bunch of related analyses into lists of data frames, and then write those out to rds files for easy loading.
