@@ -59,6 +59,9 @@
   </div>
 </nav><div class="container template-article">
 
+
+
+
 <div class="row">
   <main id="main"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Fetching DCWS data</h1>
@@ -75,7 +78,7 @@
 <p>Here are some pretty common examples of how we might work with DCWS data using this package, <code>cwi</code>, and some tidyverse. I’ll mostly use some of the more straightforward questions that we ask every year, with Greater New Haven as an example because I know most of our demographic groups are available.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">dcws</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ct-data-haven.github.io/dcws">dcws</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/CT-Data-Haven/cwi" class="external-link">cwi</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://forcats.tidyverse.org" class="external-link">forcats</a></span><span class="op">)</span></code></pre></div>
 <p>A common thing we’ll present is a question represented as a single number (percent responding “yes”, percent responding “strongly agree” or “somewhat agree”, etc.) for the state, the region, a couple groups within that region, and large towns in the region. For this, I’ll use named arguments for the year and categories of respondents, plus some of the open-ended filtering. I’ll start out looking at food insecurity, since it’s a simple yes or no. Since I’m doing this a couple times, I’ll write a (pretty crappy) function.</p>
