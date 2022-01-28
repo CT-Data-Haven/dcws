@@ -3,6 +3,7 @@ to_replace <- c(
   "\\bNH\\b" = "New Haven",
   "(Inner Ring|Outer Ring)([\\w\\s]+$)" = "\\2 \\1",
   Etnicity = "Ethnicity",
+  "Hispanic" = "Latino",
   "(?<=\\-)(\\d+)(?=K)" = "$\\1",
   "\\s(and|or) older" = "+",
   "(?<=.)High" = "high",
@@ -12,7 +13,8 @@ to_replace <- c(
   "(?<=,000) or more" = "+",
   "^\\b(\\d+)" = "Ages \\1",
   "hich school" = "high school",
-  ",000" = "K"
+  ",000" = "K",
+  "Age\\b(?=.)" = "Ages"
 )
 
 # regex
@@ -20,8 +22,8 @@ to_remove <- paste(c(
   "\\s((?<!Border )Towns|Statewide|Region)",
   "(\\sTotal|Total\\s)",
   "(?<=(/|\\<))\\s",
-  "(?<=Associate's) degree",
-  "(?<=Bachelor's )(degree )(?=.)"
+  "(?<=Associate's)( degree)",
+  "(?<=Bachelor's)( degree)"
 ), collapse = "|")
 
 # full strings
@@ -52,7 +54,7 @@ to_collapse <- list(
 
 
 #' @title Clean up categories and groups from crosstabs
-#' @description This is a bunch of string cleaning to standardize the categories (Gender, Age, etc) and groups (Male, Ages 65+, etc) across all available crosstabs. This does the same operation on both categories and groups because there is some overlap; therefore, all warnings are suppressed because it would otherwise be very noisy.
+#' @description This is a bunch of string cleaning to standardize the categories (Gender, Age, etc) and groups (Male, Ages 65+, etc) across all available crosstabs. This does the same operation on both categories and groups because there is some overlap. The lists of regex and other replacements aren't exported, but they aren't hidden either: access them at `dcws:::to_replace`, `dcws:::to_remove`, `dcws:::to_recode`, or `dcws:::to_collapse` if you need them.
 #' @param x A vector. If not a factor already, will be coerced to one.
 #' @examples
 #' # vector of strings as read in from crosstabs
@@ -79,3 +81,14 @@ clean_lvls <- function(x) {
 }
 
 
+order_lvls <- function(x) {
+  if (!is.factor(x)) x <- forcats::as_factor(x)
+  df <- data.frame(x = x)
+  df$nums <- purrr::map(stringr::str_extract_all(df$x, "\\d+"), as.numeric)
+  df$under <- +!stringr::str_detect(df$x, "^(Under |Less |\\<)") # 0 if detected
+  df$over <- +stringr::str_detect(df$x, "(\\+| more| higher)") # 1 if detected
+  df <- tidyr::unnest_wider(df, nums, names_sep = "")
+  df <- dplyr::arrange(df, nums1, under, over, nums2)
+  df$x <- forcats::fct_inorder(df$x)
+  df$x
+}

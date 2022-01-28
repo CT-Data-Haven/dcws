@@ -30,6 +30,26 @@ full_meta <- paths %>%
   }) %>%
   dplyr::bind_rows()
 
+# order group levels within categories
+lvls <- full_meta %>%
+  tidyr::unnest(data) %>%
+  dplyr::filter(category != "Total") %>%
+  dplyr::distinct(category, group) %>%
+  split(.$category, drop = TRUE) %>%
+  purrr::map(~forcats::fct_drop(.$group))
+
+lvls[["Age"]] <- order_lvls(lvls[["Age"]])
+lvls[["Race/Ethnicity"]] <- forcats::fct_relevel(lvls[["Race/Ethnicity"]], "Not white", "Other race", after = Inf)
+lvls[["Income"]] <- order_lvls(lvls[["Income"]])
+lvls[["Education"]] <- forcats::fct_relevel(lvls[["Education"]], "Less than high school", "High school or less", "High school", "Some college or less", "Some college or Associate's", "Some college or higher", "Less than Bachelor's", "Bachelor's or higher")
+
+# assign levels back into full_meta to carry over to other datasets
+full_meta <- full_meta %>%
+  tidyr::unnest(data) %>%
+  dplyr::mutate(group = forcats::fct_relevel(group, levels(purrr::reduce(lvls, c)))) %>%
+  tidyr::nest(data = code:value)
+
+
 group_meta <- full_meta %>%
   dplyr::mutate(groups = purrr::map(data, dplyr::distinct, category, group)) %>%
   dplyr::select(year, name, groups)
