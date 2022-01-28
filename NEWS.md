@@ -1,3 +1,8 @@
+# dcws 0.1.1
+* Better ordering of group levels
+* Add `.drop_ct` argument to `fetch_cws`
+* Update vignette
+
 # dcws 0.1.0
 
 * First full build with a vignette :tada:
