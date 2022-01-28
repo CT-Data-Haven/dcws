@@ -175,7 +175,7 @@ satisfied_area %>%
   knitr::kable()
 ```
 
-:grimace: :grimace: :grimace:
+Yikes
 
 So you'll probably want to collapse some of those, like so:
 
