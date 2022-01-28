@@ -10,7 +10,6 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 URL: https://ct-data-haven.github.io/dcws
 Imports: 
-    assertthat,
     cwi (>= 0.4.2),
     dplyr,
     forcats,
@@ -19,7 +18,9 @@ Imports:
     rlang (>= 0.4.11),
     stringr,
     tibble,
-    tidyr
+    tidyr,
+    tidyselect,
+    utils
 Suggests: 
     testthat (>= 3.0.0),
     fuzzyjoin,

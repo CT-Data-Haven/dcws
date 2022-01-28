@@ -13,7 +13,7 @@ clean_lvls(x)
 A factor
 }
 \description{
-This is a bunch of string cleaning to standardize the categories (Gender, Age, etc) and groups (Male, Ages 65+, etc) across all available crosstabs. This does the same operation on both categories and groups because there is some overlap; therefore, all warnings are suppressed because it would otherwise be very noisy.
+This is a bunch of string cleaning to standardize the categories (Gender, Age, etc) and groups (Male, Ages 65+, etc) across all available crosstabs. This does the same operation on both categories and groups because there is some overlap. The lists of regex and other replacements aren't exported, but they aren't hidden either: access them at \code{dcws:::to_replace}, \code{dcws:::to_remove}, \code{dcws:::to_recode}, or \code{dcws:::to_collapse} if you need them.
 }
 \examples{
 # vector of strings as read in from crosstabs

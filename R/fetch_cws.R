@@ -6,6 +6,7 @@
 #' @param .category A vector of one or more strings giving the category(ies) to subset by. If `NULL`, no filtering is done by category.
 #' @param .unnest Logical: should the `data` column be unnested? This just saves a step of calling `tidyr::unnest` but defaults to false.
 #' @param .add_wts Logical: should groups' survey weights be attached, via a left-join with `dcws::cws_full_wts`? This is useful if you need to collapse groups later; otherwise you might get stuck in annoying `tidyr::unnest` messes.
+#' @param .drop_ct Logical: should statewide totals be included for each crosstab extract? This can be useful for a single location in order to have Connecticut values to compare against, but becomes redundant with multiple locations. The default `TRUE` means statewide averages will not be included.
 #' @return A data frame, with between 5 and 9 columns, depending on arguments. Columns `year`, `name`, `code`, and `question` are always included. Additional columns:
 #'
 #' |arguments                 |columns                                                          |
@@ -41,9 +42,10 @@
 #' fetch_cws(code == "Q1", .year = 2021, .add_wts = TRUE)
 #' fetch_cws(.year = 2021, .name = "New Haven", .category = c("Total", "Age", "Income"),
 #'           .add_wts = TRUE, .unnest = TRUE)
-#' @export
 #' @seealso cws_full_data, cws_full_wts
-fetch_cws <- function(..., .year = NULL, .name = NULL, .category = NULL, .unnest = FALSE, .add_wts = FALSE) {
+#' @import tidyselect
+#' @export
+fetch_cws <- function(..., .year = NULL, .name = NULL, .category = NULL, .unnest = FALSE, .add_wts = FALSE, .drop_ct = TRUE) {
   # warn if code is used anywhere--not stable year to year
   q <- purrr::map_chr(rlang::enquos(...), rlang::as_label)
   if (any(grepl("\\bcode\\b", q)) & (is.null(.year) | length(.year) > 1)) {
@@ -52,29 +54,34 @@ fetch_cws <- function(..., .year = NULL, .name = NULL, .category = NULL, .unnest
 
   out <- tidyr::unnest(dcws::cws_full_data, survey)
   out <- dplyr::filter(out, !!!rlang::quos(...))
+
+  # unnest first--filtering is 15x faster if unnested than by mapping
+  # if filtering categories
+  # if dropping ct
+  # if adding wts
+  # if not unnesting, re-nest
+  out <- tidyr::unnest(out, data)
   out <- filter_cws_(out, .year = .year, .name = .name, .category = .category)
 
-  if (nrow(dplyr::bind_rows(out$data)) == 0) {
+  if (nrow(out) == 0) {
     message("No data were found for this combination of years, locations, and/or categories.")
-    return(out)
+    # return(out)
   }
 
-  # if getting wts, unnest to join
-  # --> if unnest, leave like that
-  # --> else re-nest
-  # else if unnest, unnest
-  # else return as is
+  if (.drop_ct) {
+    out <- dplyr::filter(out, !(name != "Connecticut" & group == "Connecticut"))
+  }
+
   if (.add_wts) {
-    out <- tidyr::unnest(out, data)
     out <- dplyr::left_join(out,
                             tidyr::unnest(dcws::cws_full_wts, weights),
                             by = c("year", "name", "group"))
+  }
 
-    if (!.unnest) {
-      out <- tidyr::nest(out, data = -year:-question)
-    }
-  } else if (.unnest) {
-    out <- tidyr::unnest(out, data)
+  out <- dplyr::mutate(out, dplyr::across(where(is.factor), forcats::fct_drop))
+
+  if (!.unnest) {
+    out <- tidyr::nest(out, data = -year:-question)
   }
 
   out
@@ -124,7 +131,9 @@ filter_cws_ <- function(df, .year, .name, .category) {
     df <- dplyr::filter(df, name %in% .name)
   }
   if (!is.null(.category)) {
-    df <- dplyr::mutate(df, data = purrr::map(data, dplyr::filter, category %in% .category))
+    df <- dplyr::filter(df, category %in% .category)
   }
   df
 }
+
+utils::globalVariables("where")

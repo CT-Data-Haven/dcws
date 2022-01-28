@@ -10,7 +10,8 @@ fetch_cws(
   .name = NULL,
   .category = NULL,
   .unnest = FALSE,
-  .add_wts = FALSE
+  .add_wts = FALSE,
+  .drop_ct = TRUE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ fetch_cws(
 \item{.unnest}{Logical: should the \code{data} column be unnested? This just saves a step of calling \code{tidyr::unnest} but defaults to false.}
 
 \item{.add_wts}{Logical: should groups' survey weights be attached, via a left-join with \code{dcws::cws_full_wts}? This is useful if you need to collapse groups later; otherwise you might get stuck in annoying \code{tidyr::unnest} messes.}
+
+\item{.drop_ct}{Logical: should statewide totals be included for each crosstab extract? This can be useful for a single location in order to have Connecticut values to compare against, but becomes redundant with multiple locations. The default \code{TRUE} means statewide averages will not be included.}
 }
 \value{
 A data frame, with between 5 and 9 columns, depending on arguments. Columns \code{year}, \code{name}, \code{code}, and \code{question} are always included. Additional columns:\tabular{ll}{

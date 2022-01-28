@@ -18,14 +18,39 @@ test_that("fetch_cws returns correct dimensions", {
   expect_length(cws_unnest, 8)
 })
 
-test_that("fetch_cws handles ellipses", {
-  cws_1q <- fetch_cws(code == "Q1", .year = 2021, .name = "Connecticut")
-  cws_grep <- fetch_cws(grepl("access to a car", question), .year = 2020, .name = "Connecticut")
-  cws_lt <- fetch_cws(year < 2021, grepl("access to a car", question), .name = "Connecticut")
+test_that("fetch_cws drops CT totals", {
+  cws_no_ct <- fetch_cws(.name = "Fairfield County", .drop_ct = TRUE, .unnest = TRUE)
+  cws_w_ct <-  fetch_cws(.name = "Fairfield County", .drop_ct = FALSE, .unnest = TRUE)
+  expect_equal(dplyr::n_distinct(cws_w_ct$group) - 1, dplyr::n_distinct(cws_no_ct$group))
 
-  expect_equal(nrow(cws_1q), 1)
-  expect_equal(nrow(cws_grep), 1)
-  expect_equal(nrow(cws_lt), 3)
+  cws_ct1 <- fetch_cws(.name = "Connecticut", .year = 2021, .drop_ct = TRUE)
+  cws_ct2 <- fetch_cws(.name = "Connecticut", .year = 2021, .drop_ct = FALSE)
+  expect_equal(cws_ct1, cws_ct2)
+})
+
+test_that("fetch_cws drops excess factor levels", {
+  # use gnh to compare--2018 had more income groups
+  cws_gnh18 <- fetch_cws(.name = "Greater New Haven", .year = 2018, .unnest = TRUE)
+  cws_gnh21 <- fetch_cws(.name = "Greater New Haven", .year = 2021, .unnest = TRUE)
+  cws_mfd <- fetch_cws(.name = "Milford", .year = 2021, .unnest = TRUE)
+
+  expect_true("<$15K" %in% levels(cws_gnh18$group))
+  expect_false("<$15K" %in% levels(cws_gnh21$group))
+
+  expect_true("Black" %in% levels(cws_gnh21$group))
+  expect_false("Black" %in% levels(cws_mfd$group))
+})
+
+test_that("fetch_cws handles ellipses", {
+  tbls <- purrr::map_dbl(list(
+    by_code = fetch_cws(code == "Q1", .year = 2020, .name = "Connecticut"),
+    by_grep = fetch_cws(grepl("access to a car", question), .year = 2020, .name = "Connecticut"),
+    by_ineq = fetch_cws(grepl("access to a car", question), year < 2021, .name = "Connecticut")
+  ), nrow)
+
+  rows <- c(by_code = 1, by_grep = 1, by_ineq = 3) # last should be 2015, 2018, 2020
+
+  expect_mapequal(tbls, rows)
 })
 
 test_that("fetch_cws has no/few blank codes", {
