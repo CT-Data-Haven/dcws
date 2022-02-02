@@ -1,8 +1,9 @@
+library(dcws)
 # METADATA ----
 codes20 <- dcws:::clean_cws_2020()
 
 paths <- list.files("data-raw/crosstabs", pattern = "\\.xlsx?", full.names = TRUE) %>%
-  clean_paths() %>%
+  dcws:::clean_paths() %>%
   tibble::enframe(value = "path") %>%
   dplyr::mutate(year = as.numeric(stringr::str_extract(path, "\\d{4}")),
                 name = dplyr::recode(name, Valley = "Lower Naugatuck Valley"))
@@ -38,9 +39,9 @@ lvls <- full_meta %>%
   split(.$category, drop = TRUE) %>%
   purrr::map(~forcats::fct_drop(.$group))
 
-lvls[["Age"]] <- order_lvls(lvls[["Age"]])
+lvls[["Age"]] <- dcws:::order_lvls(lvls[["Age"]])
 lvls[["Race/Ethnicity"]] <- forcats::fct_relevel(lvls[["Race/Ethnicity"]], "Not white", "Other race", after = Inf)
-lvls[["Income"]] <- order_lvls(lvls[["Income"]])
+lvls[["Income"]] <- dcws:::order_lvls(lvls[["Income"]])
 lvls[["Education"]] <- forcats::fct_relevel(lvls[["Education"]], "Less than high school", "High school or less", "High school", "Some college or less", "Some college or Associate's", "Some college or higher", "Less than Bachelor's", "Bachelor's or higher")
 
 # assign levels back into full_meta to carry over to other datasets
@@ -59,7 +60,7 @@ response_meta <- full_meta %>%
   tidyr::unnest(data) %>%
   dplyr::distinct(year, code, question, response) %>%
   dplyr::group_by(year) %>%
-  dplyr::mutate(row = rleid(question)) %>%
+  dplyr::mutate(row = dcws:::rleid(question)) %>%
   dplyr::group_by(year, row, code, question) %>%
   dplyr::summarise(response = paste(response, collapse = " / ")) %>%
   dplyr::ungroup()

@@ -23,51 +23,52 @@ devtools::install_github("CT-Data-Haven/dcws")
 
 ## Included data
 
-As of 2022-01-19, the data included here are:
+As of 2022-02-02, the data included here are:
 
-| name                 |  2015  |  2018  | 2020  |  2021  |
-|:---------------------|:------:|:------:|:-----:|:------:|
-| 5CT                  |   x    |   x    |       |        |
-| Bridgeport           |   x    |   x    |       |   x    |
-| Bristol              |   x    |   x    |       |        |
-| Connecticut          |   x    |   x    |   x   |   x    |
-| Danbury              |   x    |   x    |       |        |
-| Darien               |        |   x    |       |        |
-| East Hartford        |        |   x    |       |        |
-| East Haven           |        |   x    |       |        |
-| Fairfield            |        |   x    |       |   x    |
-| Fairfield County     |   x    |   x    |       |   x    |
-| Greater Bridgeport   |   x    |   x    |       |        |
-| Greater Greenwich    |        |   x    |       |        |
-| Greater Hartford     |   x    |   x    |       |   x    |
-| Greater New Haven    |   x    |   x    |       |   x    |
-| Greater New London   |   x    |   x    |       |        |
-| Greater Waterbury    |   x    |   x    |       |        |
-| Greenwich            |   x    |   x    |       |   x    |
-| Groton               |        |        |       |   x    |
-| Hamden               |        |   x    |       |        |
-| Hartford             |   x    |   x    |       |   x    |
-| Hartford Inner Ring  |        |   x    |       |        |
-| Hartford Outer Ring  |        |   x    |       |        |
-| Manchester           |        |   x    |       |        |
-| Meriden              |   x    |   x    |       |        |
-| Middlesex County     |   x    |   x    |       |   x    |
-| Middletown           |        |   x    |       |        |
-| Milford              |        |   x    |       |   x    |
-| Monroe               |        |   x    |       |   x    |
-| New Britain          |   x    |   x    |       |        |
-| New Haven            |   x    |   x    |       |   x    |
-| New Haven Inner Ring |        |   x    |       |        |
-| New Haven Outer Ring |        |   x    |       |        |
-| New London           |   x    |   x    |       |   x    |
-| New Milford          |        |   x    |       |        |
-| Newtown              |        |   x    |       |        |
-| Norwalk              |   x    |   x    |       |        |
-| Stamford             |   x    |   x    |       |   x    |
-| Stratford            |        |   x    |       |   x    |
-| Trumbull             |        |   x    |       |   x    |
-| Wallingford          |        |   x    |       |        |
-| Waterbury            |   x    |   x    |       |   x    |
-| West Hartford        |   x    |   x    |       |        |
-| West Haven           |        |   x    |       |   x    |
-| **TOTAL**            | **22** | **42** | **1** | **19** |
+| name                   |  2015  |  2018  | 2020  |  2021  |
+|:-----------------------|:------:|:------:|:-----:|:------:|
+| 5CT                    |   x    |   x    |       |        |
+| Bridgeport             |   x    |   x    |       |   x    |
+| Bristol                |   x    |   x    |       |        |
+| Connecticut            |   x    |   x    |   x   |   x    |
+| Danbury                |   x    |   x    |       |        |
+| Darien                 |        |   x    |       |        |
+| East Hartford          |        |   x    |       |        |
+| East Haven             |        |   x    |       |        |
+| Fairfield              |        |   x    |       |   x    |
+| Fairfield County       |   x    |   x    |       |   x    |
+| Greater Bridgeport     |   x    |   x    |       |        |
+| Greater Greenwich      |        |   x    |       |        |
+| Greater Hartford       |   x    |   x    |       |   x    |
+| Greater New Haven      |   x    |   x    |       |   x    |
+| Greater New London     |   x    |   x    |       |        |
+| Greater Waterbury      |   x    |   x    |       |        |
+| Greenwich              |   x    |   x    |       |   x    |
+| Groton                 |        |        |       |   x    |
+| Hamden                 |        |   x    |       |        |
+| Hartford               |   x    |   x    |       |   x    |
+| Hartford Inner Ring    |        |   x    |       |        |
+| Hartford Outer Ring    |        |   x    |       |        |
+| Lower Naugatuck Valley |   x    |   x    |       |   x    |
+| Manchester             |        |   x    |       |        |
+| Meriden                |   x    |   x    |       |        |
+| Middlesex County       |   x    |   x    |       |   x    |
+| Middletown             |        |   x    |       |        |
+| Milford                |        |   x    |       |   x    |
+| Monroe                 |        |   x    |       |   x    |
+| New Britain            |   x    |   x    |       |        |
+| New Haven              |   x    |   x    |       |   x    |
+| New Haven Inner Ring   |        |   x    |       |        |
+| New Haven Outer Ring   |        |   x    |       |        |
+| New London             |   x    |   x    |       |   x    |
+| New Milford            |        |   x    |       |        |
+| Newtown                |        |   x    |       |        |
+| Norwalk                |   x    |   x    |       |        |
+| Stamford               |   x    |   x    |       |   x    |
+| Stratford              |        |   x    |       |   x    |
+| Trumbull               |        |   x    |       |   x    |
+| Wallingford            |        |   x    |       |        |
+| Waterbury              |   x    |   x    |       |   x    |
+| West Hartford          |   x    |   x    |       |        |
+| West Haven             |        |   x    |       |   x    |
+| **TOTAL**              | **23** | **43** | **1** | **20** |
