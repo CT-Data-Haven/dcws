@@ -1,4 +1,4 @@
-library(dcws)
+devtools::load_all()
 # METADATA ----
 codes20 <- dcws:::clean_cws_2020()
 
@@ -20,6 +20,7 @@ full_meta <- paths %>%
                                                     "Five Connecticuts",
                                                     as.character(category))),
                category = forcats::as_factor(ifelse(category %in% c("Connecticut", name), "Total", as.character(category))),
+               group = forcats::fct_recode(group, Connecticut = "Total"),
                question = stringr::str_replace_all(question, "\\´", "'"))) %>%
   dplyr::arrange(year, name) %>%
   dplyr::select(-code_patt) %>%
