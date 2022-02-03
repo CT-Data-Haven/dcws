@@ -3,7 +3,7 @@ pkgdown: 2.0.2
 pkgdown_sha: ~
 articles:
   fetching_dcws_data: fetching_dcws_data.html
-last_built: 2022-02-02T18:18Z
+last_built: 2022-02-03T21:31Z
 urls:
   reference: https://ct-data-haven.github.io/dcws/reference
   article: https://ct-data-haven.github.io/dcws/articles
