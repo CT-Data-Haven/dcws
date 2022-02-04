@@ -49,6 +49,7 @@ lvls[["Education"]] <- forcats::fct_relevel(lvls[["Education"]], "Less than high
 full_meta <- full_meta %>%
   tidyr::unnest(data) %>%
   dplyr::mutate(group = forcats::fct_relevel(group, levels(purrr::reduce(lvls, c)))) %>%
+  dplyr::mutate(group = forcats::fct_relevel(group, "Connecticut")) %>%
   tidyr::nest(data = code:value)
 
 
