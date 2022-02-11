@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">dcws</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,7 +24,8 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/fetching_dcws_data.html">Fetching DCWS data</a>
+    <a class="dropdown-item" href="../articles/extra-regions.html">Extra regions</a>
+    <a class="dropdown-item" href="../articles/fetching-dcws-data.html">Fetching DCWS data</a>
     <a class="dropdown-item" href="../articles/groups.html">Group reference</a>
   </div>
 </li>
@@ -92,7 +93,7 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># no filtering</span></span>
 <span class="r-in"><span class="fu">fetch_cws</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 9,410 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10,194 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     year name  code  question                                           data    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                              <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">2</span>015 5CT   Q1    Are you satisfied with the city or area where you… &lt;tibble&gt;</span>
@@ -105,7 +106,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">2</span>015 5CT   Q3F   The condition of public parks and other public re… &lt;tibble&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">2</span>015 5CT   Q4    Over the past 12 months, have you volunteered for… &lt;tibble&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">2</span>015 5CT   Q5    How would you describe your ability to influence … &lt;tibble&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 9,400 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 10,184 more rows</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># filter by year, name, and/or category</span></span>
 <span class="r-in"><span class="fu">fetch_cws</span><span class="op">(</span>.name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Greater New Haven"</span>, <span class="st">"New Haven"</span><span class="op">)</span><span class="op">)</span> <span class="co"># all years</span></span>
@@ -212,55 +213,38 @@
 <span class="r-in">  <span class="fu">cwi</span><span class="fu">::</span><span class="fu"><a href="https://CT-Data-Haven.github.io/cwi/reference/sub_nonanswers.html" class="external-link">sub_nonanswers</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">response</span> <span class="op">==</span> <span class="st">"Yes"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>id_cols <span class="op">=</span> <span class="va">name</span>, names_from <span class="op">=</span> <span class="va">group</span>, values_from <span class="op">=</span> <span class="va">value</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 19 × 6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Groups:   name [19]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    name                    Male Female `&lt;$30K` `$30K-$100K` `$100K+`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> Bridgeport             0.788  0.778   0.758        0.778    0.814</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> Connecticut            0.888  0.889   0.798        0.879    0.919</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> Fairfield              0.88   0.88    0.69         0.79     0.96 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> Fairfield County       0.87   0.899   0.798        0.889    0.929</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> Greater Hartford       0.898  0.89    0.828        0.908    0.960</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> Greater New Haven      0.869  0.879   0.828        0.899    0.87 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Greenwich              0.89   0.980   0.94         0.929    0.939</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Groton                 0.78   0.884   0.835        0.74     0.89 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Hartford               0.716  0.75    0.673        0.760    0.818</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Lower Naugatuck Valley 0.86   0.929   0.85         0.888    0.95 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> Middlesex County       0.92   0.94    0.77         0.93     0.96 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> Milford                0.88   0.929   0.89         0.929    0.86 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> New Haven              0.818  0.838   0.765        0.828    0.929</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span> New London             0.908  0.859   0.88         0.939    0.72 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">15</span> Stamford               0.9    0.908   0.869        0.929    0.9  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">16</span> Stratford              0.84   0.928   0.74         0.918    0.89 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">17</span> Trumbull               0.87   0.949   0.85         0.94     0.85 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">18</span> Waterbury              0.74   0.670   0.55         0.737    0.81 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">19</span> West Haven             0.711  0.939   0.918        0.773    0.806</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 26 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Groups:   name [26]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    name               Male Female `&lt;$30K` `$30K-$100K` `$100K+`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> Bridgeport        0.788  0.778   0.758        0.778    0.814</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> Connecticut       0.888  0.889   0.798        0.879    0.919</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> Danbury           0.94   0.929   0.99         0.94     0.929</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> Darien            0.95   0.93   <span style="color: #BB0000;">NA</span>           <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> Fairfield         0.88   0.88    0.69         0.79     0.96 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> Fairfield County  0.87   0.899   0.798        0.889    0.929</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Greater Hartford  0.898  0.89    0.828        0.908    0.960</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Greater New Haven 0.869  0.879   0.828        0.899    0.87 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Greater Waterbury 0.85   0.837   0.7          0.828    0.92 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Greenwich         0.89   0.980   0.94         0.929    0.939</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 16 more rows</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># adding weights to collapse groups (e.g. combining income brackets)</span></span>
 <span class="r-in"><span class="fu">fetch_cws</span><span class="op">(</span><span class="va">code</span> <span class="op">==</span> <span class="st">"Q1"</span>, .year <span class="op">=</span> <span class="fl">2021</span>, .add_wts <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 20 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     year name                   code  question                          data    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                             <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">2</span>021 Bridgeport             Q1    Are you satisfied with the city … &lt;tibble&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">2</span>021 Connecticut            Q1    Are you satisfied with the city … &lt;tibble&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">2</span>021 Fairfield              Q1    Are you satisfied with the city … &lt;tibble&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">2</span>021 Fairfield County       Q1    Are you satisfied with the city … &lt;tibble&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">2</span>021 Greater Hartford       Q1    Are you satisfied with the city … &lt;tibble&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">2</span>021 Greater New Haven      Q1    Are you satisfied with the city … &lt;tibble&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">2</span>021 Greenwich              Q1    Are you satisfied with the city … &lt;tibble&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">2</span>021 Groton                 Q1    Are you satisfied with the city … &lt;tibble&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">2</span>021 Hartford               Q1    Are you satisfied with the city … &lt;tibble&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">2</span>021 Lower Naugatuck Valley Q1    Are you satisfied with the city … &lt;tibble&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span>  <span style="text-decoration: underline;">2</span>021 Middlesex County       Q1    Are you satisfied with the city … &lt;tibble&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span>  <span style="text-decoration: underline;">2</span>021 Milford                Q1    Are you satisfied with the city … &lt;tibble&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span>  <span style="text-decoration: underline;">2</span>021 Monroe                 Q1    Are you satisfied with the city … &lt;tibble&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span>  <span style="text-decoration: underline;">2</span>021 New Haven              Q1    Are you satisfied with the city … &lt;tibble&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">15</span>  <span style="text-decoration: underline;">2</span>021 New London             Q1    Are you satisfied with the city … &lt;tibble&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">16</span>  <span style="text-decoration: underline;">2</span>021 Stamford               Q1    Are you satisfied with the city … &lt;tibble&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">17</span>  <span style="text-decoration: underline;">2</span>021 Stratford              Q1    Are you satisfied with the city … &lt;tibble&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">18</span>  <span style="text-decoration: underline;">2</span>021 Trumbull               Q1    Are you satisfied with the city … &lt;tibble&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">19</span>  <span style="text-decoration: underline;">2</span>021 Waterbury              Q1    Are you satisfied with the city … &lt;tibble&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">20</span>  <span style="text-decoration: underline;">2</span>021 West Haven             Q1    Are you satisfied with the city … &lt;tibble&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 27 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     year name              code  question                               data    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                  <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">2</span>021 Bridgeport        Q1    Are you satisfied with the city or ar… &lt;tibble&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">2</span>021 Connecticut       Q1    Are you satisfied with the city or ar… &lt;tibble&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">2</span>021 Danbury           Q1    Are you satisfied with the city or ar… &lt;tibble&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">2</span>021 Darien            Q1    Are you satisfied with the city or ar… &lt;tibble&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">2</span>021 Fairfield         Q1    Are you satisfied with the city or ar… &lt;tibble&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">2</span>021 Fairfield County  Q1    Are you satisfied with the city or ar… &lt;tibble&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">2</span>021 Greater Hartford  Q1    Are you satisfied with the city or ar… &lt;tibble&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">2</span>021 Greater New Haven Q1    Are you satisfied with the city or ar… &lt;tibble&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">2</span>021 Greater Waterbury Q1    Are you satisfied with the city or ar… &lt;tibble&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">2</span>021 Greenwich         Q1    Are you satisfied with the city or ar… &lt;tibble&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 17 more rows</span></span>
 <span class="r-in"><span class="fu">fetch_cws</span><span class="op">(</span>.year <span class="op">=</span> <span class="fl">2021</span>, .name <span class="op">=</span> <span class="st">"New Haven"</span>, .category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Total"</span>, <span class="st">"Age"</span>, <span class="st">"Income"</span><span class="op">)</span>,</span>
 <span class="r-in">          .add_wts <span class="op">=</span> <span class="cn">TRUE</span>, .unnest <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3,294 × 9</span></span>

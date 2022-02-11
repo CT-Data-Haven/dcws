@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">dcws</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,7 +24,8 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/fetching_dcws_data.html">Fetching DCWS data</a>
+    <a class="dropdown-item" href="../articles/extra-regions.html">Extra regions</a>
+    <a class="dropdown-item" href="../articles/fetching-dcws-data.html">Fetching DCWS data</a>
     <a class="dropdown-item" href="../articles/groups.html">Group reference</a>
   </div>
 </li>
@@ -80,7 +81,7 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># no filtering</span></span>
 <span class="r-in"><span class="fu">fetch_wts</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 87 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 94 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     year name               weights          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>           </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">2</span>015 5CT                <span style="color: #949494;">&lt;tibble [2 × 2]&gt;</span> </span>
@@ -93,7 +94,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">2</span>015 Fairfield County   <span style="color: #949494;">&lt;tibble [27 × 2]&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">2</span>015 Greater Bridgeport <span style="color: #949494;">&lt;tibble [25 × 2]&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">2</span>015 Greater New Haven  <span style="color: #949494;">&lt;tibble [25 × 2]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 77 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 84 more rows</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># weights are generally useful in combination with actual data</span></span>
 <span class="r-in"><span class="co"># but unless you unnest in advance, this is messy</span></span>

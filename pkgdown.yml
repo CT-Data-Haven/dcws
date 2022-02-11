@@ -2,9 +2,10 @@ pandoc: 2.14.2
 pkgdown: 2.0.2
 pkgdown_sha: ~
 articles:
-  fetching_dcws_data: fetching_dcws_data.html
+  extra-regions: extra-regions.html
+  fetching-dcws-data: fetching-dcws-data.html
   groups: groups.html
-last_built: 2022-02-04T19:14Z
+last_built: 2022-02-11T23:45Z
 urls:
   reference: https://ct-data-haven.github.io/dcws/reference
   article: https://ct-data-haven.github.io/dcws/articles
