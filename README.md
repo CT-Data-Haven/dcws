@@ -23,7 +23,7 @@ devtools::install_github("CT-Data-Haven/dcws")
 
 ## Included data
 
-As of 2022-02-02, the data included here are:
+As of 2022-02-11, the data included here are:
 
 | name                   |  2015  |  2018  | 2020  |  2021  |
 |:-----------------------|:------:|:------:|:-----:|:------:|
@@ -31,8 +31,8 @@ As of 2022-02-02, the data included here are:
 | Bridgeport             |   x    |   x    |       |   x    |
 | Bristol                |   x    |   x    |       |        |
 | Connecticut            |   x    |   x    |   x   |   x    |
-| Danbury                |   x    |   x    |       |        |
-| Darien                 |        |   x    |       |        |
+| Danbury                |   x    |   x    |       |   x    |
+| Darien                 |        |   x    |       |   x    |
 | East Hartford          |        |   x    |       |        |
 | East Haven             |        |   x    |       |        |
 | Fairfield              |        |   x    |       |   x    |
@@ -42,7 +42,7 @@ As of 2022-02-02, the data included here are:
 | Greater Hartford       |   x    |   x    |       |   x    |
 | Greater New Haven      |   x    |   x    |       |   x    |
 | Greater New London     |   x    |   x    |       |        |
-| Greater Waterbury      |   x    |   x    |       |        |
+| Greater Waterbury      |   x    |   x    |       |   x    |
 | Greenwich              |   x    |   x    |       |   x    |
 | Groton                 |        |        |       |   x    |
 | Hamden                 |        |   x    |       |        |
@@ -61,14 +61,16 @@ As of 2022-02-02, the data included here are:
 | New Haven Inner Ring   |        |   x    |       |        |
 | New Haven Outer Ring   |        |   x    |       |        |
 | New London             |   x    |   x    |       |   x    |
-| New Milford            |        |   x    |       |        |
+| New Milford            |        |   x    |       |   x    |
 | Newtown                |        |   x    |       |        |
-| Norwalk                |   x    |   x    |       |        |
+| Norwalk                |   x    |   x    |       |   x    |
 | Stamford               |   x    |   x    |       |   x    |
 | Stratford              |        |   x    |       |   x    |
+| Torrington             |        |        |       |   x    |
 | Trumbull               |        |   x    |       |   x    |
 | Wallingford            |        |   x    |       |        |
 | Waterbury              |   x    |   x    |       |   x    |
 | West Hartford          |   x    |   x    |       |        |
 | West Haven             |        |   x    |       |   x    |
-| **TOTAL**              | **23** | **43** | **1** | **20** |
+| Windsor                |        |        |       |   x    |
+| **TOTAL**              | **23** | **43** | **1** | **27** |

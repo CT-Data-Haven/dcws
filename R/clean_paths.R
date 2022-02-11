@@ -1,19 +1,19 @@
 clean_paths <- function(x) {
-  nms <- x %>%
-    basename() %>%
-    xfun::sans_ext() %>%
-    stringr::str_remove("^DataHaven\\d{4}[\\s_]") %>%
-    stringr::str_remove_all("[\\s_](Crosstabs|Pub)") %>%
-    stringr::str_replace_all(c("^CCF$" = "Greater Waterbury",
-                               "^CRCOG$" = "Greater Hartford",
-                               "Cty" = "County")) %>%
-    stringr::str_replace_all("(?<=[a-z])\\B(?=[A-Z])", " ") %>%
-    stringr::str_remove_all("\\s{2,}") %>%
-    stringr::str_replace("(Inner Ring|Outer Ring)([\\w\\s]+$)", "\\2 \\1") %>%
-    stringr::str_remove("Greater (?=[\\w\\s]+Ring)") %>%
-    stringr::str_remove_all("((?<!Border )Towns|Statewide|Region|Central CT Health District|CCF|CRCOG)") %>%
-    stringr::str_replace("(?<=NY)([A-Z])", " \\1") %>%
-    stringr::str_trim() %>%
-    dplyr::recode(Valley = "Lower Naugatuck Valley")
-  stats::setNames(x, nms)
+  paths <- x
+  x <- xfun::sans_ext(basename(x))
+  x <- stringr::str_remove(x, "^DataHaven\\d{4}[\\s_]")
+  x <- stringr::str_remove_all(x, "[\\s_](Crosstabs|Pub)")
+  x <- stringr::str_replace_all(x, c("^CCF$" = "Greater Waterbury",
+                                  "^CRCOG$" = "Greater Hartford",
+                                  "Cty" = "County"))
+  x <- stringr::str_replace_all(x, "(?<=[a-z])\\B(?=[A-Z])", " ")
+  x <- stringr::str_remove_all(x, "\\s{2,}")
+  x <- stringr::str_replace(x, "(Inner Ring|Outer Ring)([\\w\\s]+$)", "\\2 \\1")
+  x <- stringr::str_remove(x, "Greater (?=[\\w\\s]+Ring)")
+  x <- stringr::str_remove_all(x, "((?<!Border )Towns|Statewide|Region|Central CT Health District|CCF|CRCOG)")
+  x <- stringr::str_replace(x, "(?<=NY)([A-Z])", " \\1")
+  x <- stringr::str_replace_all(x, "([A-Z]{2,})([A-Z])(?=[a-z])", "\\1 \\2")
+  x <- stringr::str_trim(x)
+  x <- dplyr::recode(x, Valley = "Lower Naugatuck Valley", "Port Chester" = "Port Chester NY")
+  stats::setNames(paths, x)
 }

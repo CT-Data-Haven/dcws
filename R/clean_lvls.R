@@ -2,7 +2,7 @@
 to_replace <- c(
   "\\bNH\\b" = "New Haven",
   "(Inner Ring|Outer Ring)([\\w\\s]+$)" = "\\2 \\1",
-  Etnicity = "Ethnicity",
+  "Etnicity" = "Ethnicity",
   "Hispanic" = "Latino",
   "(?<=\\-)(\\d+)(?=K)" = "$\\1",
   "\\s(and|or) older" = "+",
@@ -33,14 +33,14 @@ to_recode <- list(
   "Port Chester NY" = "Port Chester",
   # "5CT" = "Five Connecticuts",
   "Connecticut" = "Connecticut Cities/Towns",
+  "Connecticut" = "CT",
   "With children" = "Children in HH",
-  Male = "M",
-  Female = "F",
+  "Male" = "M",
+  "Female" = "F",
   "Kids in home" = "Yes",
   "No kids" = "No",
   "High school" = "High school or GED",
   "$75K-$100K" = "$75K-100K",
-  Connecticut = "CT",
   "Other race" = "Other",
   "Lower Naugatuck Valley" = "Valley"
 )
@@ -48,10 +48,9 @@ to_recode <- list(
 # full strings
 to_collapse <- list(
   "Not white" = c("Not White", "Non-White", "Not-White"),
-  Black = c("Black/Afr Amer", "Black/ Afr Amer", "African American/Black"),
+  "Black" = c("Black/Afr Amer", "Black/ Afr Amer", "African American/Black"),
   "Native American" = c("Native Amer", "American Indian")
 )
-
 
 #' @title Clean up categories and groups from crosstabs
 #' @description This is a bunch of string cleaning to standardize the categories (Gender, Age, etc) and groups (Male, Ages 65+, etc) across all available crosstabs. This does the same operation on both categories and groups because there is some overlap. The lists of regex and other replacements aren't exported, but they aren't hidden either: access them at `dcws:::to_replace`, `dcws:::to_remove`, `dcws:::to_recode`, or `dcws:::to_collapse` if you need them.
