@@ -1,6 +1,6 @@
 Package: dcws
 Title: Data from the DataHaven Community Wellbeing Survey
-Version: 0.1.2
+Version: 0.1.3
 Authors@R: 
     person("Camille", "Seaberry", , "camille@ctdatahaven.org", role = c("aut", "cre"))
 Description: This is a collection of data from all past years of the DCWS, plus a bit of metadata and a few functions for extracting subsets of data.
