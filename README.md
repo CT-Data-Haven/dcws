@@ -23,13 +23,13 @@ devtools::install_github("CT-Data-Haven/dcws")
 
 ## Included data
 
-As of 2022-02-11, the data included here are:
+As of 2022-04-05, the data included here are:
 
 | name                   |  2015  |  2018  | 2020  |  2021  |
 |:-----------------------|:------:|:------:|:-----:|:------:|
 | 5CT                    |   x    |   x    |       |        |
 | Bridgeport             |   x    |   x    |       |   x    |
-| Bristol                |   x    |   x    |       |        |
+| Bristol                |   x    |   x    |       |   x    |
 | Connecticut            |   x    |   x    |   x   |   x    |
 | Danbury                |   x    |   x    |       |   x    |
 | Darien                 |        |   x    |       |   x    |
@@ -45,7 +45,7 @@ As of 2022-02-11, the data included here are:
 | Greater Waterbury      |   x    |   x    |       |   x    |
 | Greenwich              |   x    |   x    |       |   x    |
 | Groton                 |        |        |       |   x    |
-| Hamden                 |        |   x    |       |        |
+| Hamden                 |        |   x    |       |   x    |
 | Hartford               |   x    |   x    |       |   x    |
 | Hartford Inner Ring    |        |   x    |       |        |
 | Hartford Outer Ring    |        |   x    |       |        |
@@ -73,4 +73,4 @@ As of 2022-02-11, the data included here are:
 | West Hartford          |   x    |   x    |       |        |
 | West Haven             |        |   x    |       |   x    |
 | Windsor                |        |        |       |   x    |
-| **TOTAL**              | **23** | **43** | **1** | **27** |
+| **TOTAL**              | **23** | **43** | **1** | **29** |

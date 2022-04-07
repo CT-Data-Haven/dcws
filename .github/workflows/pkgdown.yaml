@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      CRAN: "https://packagemanager.rstudio.com/all/__linux__/focal/latest"
     steps:
       - uses: actions/checkout@v2
 
