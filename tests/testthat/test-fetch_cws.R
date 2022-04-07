@@ -68,8 +68,8 @@ test_that("fetch_cws messages when no matches", {
 })
 
 test_that("fetch_cws warns on multi-year code filters", {
-  expect_warning(fetch_cws(code == "Q5"))
-  expect_warning(fetch_cws(year > 2015, code == "Q5"))
+  expect_message(fetch_cws(code == "Q5"))
+  expect_message(fetch_cws(year > 2015, code == "Q5"))
 })
 
 test_that("fetch_cws filters nested data", {

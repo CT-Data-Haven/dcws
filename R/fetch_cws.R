@@ -49,7 +49,7 @@ fetch_cws <- function(..., .year = NULL, .name = NULL, .category = NULL, .unnest
   # warn if code is used anywhere--not stable year to year
   q <- purrr::map_chr(rlang::enquos(...), rlang::as_label)
   if (any(grepl("\\bcode\\b", q)) & (is.null(.year) | length(.year) > 1)) {
-    warning("Keep in mind that codes might change between years--double check before using code as a filter.")
+    cli::cli_alert_warning("Keep in mind that codes might change between years--double check before using {.var code} as a filter.")
   }
 
   out <- tidyr::unnest(dcws::cws_full_data, survey)
@@ -64,7 +64,8 @@ fetch_cws <- function(..., .year = NULL, .name = NULL, .category = NULL, .unnest
   out <- filter_cws_(out, .year = .year, .name = .name, .category = .category)
 
   if (nrow(out) == 0) {
-    message("No data were found for this combination of years, locations, and/or categories.")
+    cli::cli_alert_danger("No data were found for this combination of years, locations, and/or categories.")
+    # still go through the motions of joining, unnesting, etc. to return the columns the data frame *would* have had
     # return(out)
   }
 
@@ -110,7 +111,7 @@ fetch_wts <- function(..., .year = NULL, .name = NULL, .unnest = FALSE) {
   out <- filter_cws_(out, .year = .year, .name = .name, .category = NULL)
 
   if (nrow(out) == 0) {
-    message("No weights were found for this combination of years and locations.")
+    cli::cli_alert_danger("No weights were found for this combination of years and locations.")
     return(out)
   }
 
