@@ -20,8 +20,7 @@ Imports:
     stringr,
     tibble,
     tidyr,
-    tidyselect,
-    utils
+    tidyselect
 Suggests: 
     testthat (>= 3.0.0),
     fuzzyjoin,

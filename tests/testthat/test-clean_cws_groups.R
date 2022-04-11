@@ -24,7 +24,7 @@ test_that("clean_paths returns expected locations", {
   locs <- names(paths)
   expect_true(all(c("Connecticut", "Greater Hartford", "Greater Waterbury", "New Haven Inner Ring") %in% locs))
   expect_false(any(c("CRCOG", "Outer Ring Hartford", "Valley") %in% locs))
-  expect_false(any(grepl("([a-z][A-Z]|\\d{2,}|Statewide|Cty)", locs)))
+  expect_false(any(grepl("([a-z][A-Z]|\\d{2,}|Statewide|Cty|CCF)", locs)))
 })
 
 test_that("clean_lvls suppresses forcats warnings", {

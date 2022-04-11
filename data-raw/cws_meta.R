@@ -12,7 +12,7 @@ paths <- list.files("data-raw/crosstabs", pattern = "\\.xlsx?", full.names = TRU
 full_meta <- paths %>%
   dplyr::mutate(code_patt = ifelse(year == 2020, "^$", formals(cwi::xtab2df)$code_pattern)) %>%
   dplyr::mutate(data = purrr::pmap(list(path, year, code_patt), function(path, year, code_patt) {
-    suppressMessages(cwi::read_xtabs(path, year = year, process = TRUE, code_pattern = code_patt))
+    cwi::read_xtabs(path, year = year, process = TRUE, code_pattern = code_patt, verbose = FALSE)
   }) %>%
     purrr::map(dplyr::mutate,
                dplyr::across(c(category, group), clean_lvls),

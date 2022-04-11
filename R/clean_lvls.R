@@ -23,12 +23,14 @@ to_remove <- paste(c(
   "(\\sTotal|Total\\s)",
   "(?<=(/|\\<))\\s",
   "(?<=Associate's)( degree)",
-  "(?<=Bachelor's)( degree)"
+  "(?<=Bachelor's)( degree)",
+  "\\*$"
 ), collapse = "|")
 
 # full strings
 to_recode <- list(
   "Greater Waterbury" = "CCF",
+  "Greater Waterbury" = "CCF Area",
   "Greater Hartford" = "CRCOG",
   "Port Chester NY" = "Port Chester",
   # "5CT" = "Five Connecticuts",
