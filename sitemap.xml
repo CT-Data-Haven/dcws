@@ -37,6 +37,12 @@
     <loc>https://ct-data-haven.github.io/dcws/reference/cws_full_wts.html</loc>
   </url>
   <url>
+    <loc>https://ct-data-haven.github.io/dcws/reference/cws_group_meta.html</loc>
+  </url>
+  <url>
+    <loc>https://ct-data-haven.github.io/dcws/reference/cws_max_moe.html</loc>
+  </url>
+  <url>
     <loc>https://ct-data-haven.github.io/dcws/reference/dcws-package.html</loc>
   </url>
   <url>
@@ -44,9 +50,6 @@
   </url>
   <url>
     <loc>https://ct-data-haven.github.io/dcws/reference/fetch_wts.html</loc>
-  </url>
-  <url>
-    <loc>https://ct-data-haven.github.io/dcws/reference/group_meta.html</loc>
   </url>
   <url>
     <loc>https://ct-data-haven.github.io/dcws/reference/index.html</loc>
