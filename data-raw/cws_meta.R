@@ -53,7 +53,7 @@ full_meta <- full_meta %>%
   tidyr::nest(data = code:value)
 
 
-group_meta <- full_meta %>%
+cws_group_meta <- full_meta %>%
   dplyr::mutate(groups = purrr::map(data, dplyr::distinct, category, group)) %>%
   dplyr::select(year, name, groups)
 
@@ -69,7 +69,7 @@ response_meta <- full_meta %>%
 
 
 ################## CHECK ABOVE BEFORE SAVING ###################################
-usethis::use_data(group_meta, overwrite = TRUE, version = 3)
+usethis::use_data(cws_group_meta, overwrite = TRUE, version = 3)
 # is response_meta really that useful?
 # usethis::use_data(response_meta, overwrite = TRUE, version = 3)
 usethis::use_data(full_meta, internal = TRUE, overwrite = TRUE, version = 3)
@@ -114,3 +114,21 @@ cws_full_wts <- paths %>%
   dplyr::semi_join(cws_full_data, by = c("year", "name"))
 
 usethis::use_data(cws_full_wts, overwrite = TRUE, version = 3)
+
+
+# MAXIMUM MARGIN OF ERROR ----
+# maximum moe--probably won't need much except community profiles
+# these are only in the headers of excel files (no idea why)
+cws_max_moe <- paths %>%
+  dplyr::mutate(header = path %>%
+                  purrr::map(openxlsx::loadWorkbook) %>%
+                  purrr::map(~.[["worksheets"]][[1]][["headerFooter"]][["oddHeader"]]) %>%
+                  purrr::map(purrr::compact) %>%
+                  purrr::map_chr(~ifelse(is.null(.), NA_character_, unlist(.)))) %>%
+  dplyr::mutate(moe = header %>%
+                  stringr::str_extract("MOE.+\\%") %>%
+                  stringr::str_extract("[\\d\\.]+") %>%
+                  readr::parse_number()) %>%
+  dplyr::select(year, name, moe)
+
+usethis::use_data(cws_max_moe, overwrite = TRUE, version = 3)

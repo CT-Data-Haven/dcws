@@ -28,7 +28,8 @@ Suggests:
     roxygen2,
     xfun,
     knitr,
-    rmarkdown
+    rmarkdown,
+    openxlsx
 Remotes: 
     ct-data-haven/cwi
 Depends: 
