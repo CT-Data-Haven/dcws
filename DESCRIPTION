@@ -29,7 +29,8 @@ Suggests:
     xfun,
     knitr,
     rmarkdown,
-    openxlsx
+    openxlsx,
+    covr
 Remotes: 
     ct-data-haven/cwi
 Depends: 

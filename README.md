@@ -4,6 +4,9 @@
 # dcws
 
 <!-- badges: start -->
+
+[![Codecov test
+coverage](https://codecov.io/gh/CT-Data-Haven/dcws/branch/main/graph/badge.svg)](https://app.codecov.io/gh/CT-Data-Haven/dcws?branch=main)
 <!-- badges: end -->
 
 This is a small data-focused package to make easier use of the DataHaven
@@ -23,7 +26,7 @@ devtools::install_github("CT-Data-Haven/dcws")
 
 ## Included data
 
-As of 2022-04-05, the data included here are:
+As of 2022-04-13, the data included here are:
 
 | name                   |  2015  |  2018  | 2020  |  2021  |
 |:-----------------------|:------:|:------:|:-----:|:------:|

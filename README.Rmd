@@ -19,6 +19,7 @@ knitr::opts_chunk$set(
 # dcws
 
 <!-- badges: start -->
+[![Codecov test coverage](https://codecov.io/gh/CT-Data-Haven/dcws/branch/main/graph/badge.svg)](https://app.codecov.io/gh/CT-Data-Haven/dcws?branch=main)
 <!-- badges: end -->
 
 This is a small data-focused package to make easier use of the DataHaven Community Wellbeing Survey. It contains the data extracted from crosstabs from the 2015, 2018, 2020 (statewide only), and 2021 survey waves.
