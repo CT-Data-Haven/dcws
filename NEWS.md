@@ -1,3 +1,6 @@
+# dcws 0.1.4
+* Add 2022 statewide crosstabs
+
 # dcws 0.1.3
 * Add a few 2021 crosstabs
 * Switch to `cli` package for messaging
