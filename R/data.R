@@ -4,7 +4,7 @@
 #'
 #' On its own, the structure is probably annoying. Easier extraction is available using `fetch_cws`.
 #'
-#' @format A data frame of 73 rows and 3 columns.
+#' @format A data frame of `r nrow(cws_full_data)` rows and 3 columns.
 #'
 #' ### Outer structure:
 #' \describe{
@@ -63,7 +63,7 @@
 #'
 #' This is a nested data frame containing each survey's weights, used for combining groups to calculate average values. These can be joined to DCWS data with `fetch_cws`, or manually. Note that in some larger areas for 2018 (maybe also 2015), groups might not all line up between data and weights--check for NAs in your weights column if need be.
 #'
-#' @format A data frame with 87 rows and 3 variables:
+#' @format A data frame with `r nrow(cws_full_wts)` rows and 3 variables:
 #' \describe{
 #'   \item{\code{year}}{Numeric, year of survey}
 #'   \item{\code{name}}{Text of location}
@@ -77,7 +77,7 @@
 #'
 #' This is a reference dataset listing what categories and groups are available for each survey by year and location. Not all questions are available for all groups.
 #'
-#' @format A data frame with 82 rows and 3 variables:
+#' @format A data frame with `r nrow(cws_group_meta)` rows and 3 variables:
 #' \describe{
 #'   \item{\code{year}}{Numeric, year of survey}
 #'   \item{\code{name}}{Text of location}
@@ -90,7 +90,7 @@
 #'
 #' This is a data frame listing the maximum margin of error for estimates for each location and year. The values are extracted from the headers of the crosstab spreadsheets, but many are missing, especially for 2015. It's unlikely anyone will need this often beyond the community profiles on our website, so they're not filtered for the same subset of locations as the main data and weights datasets.
 #'
-#' @format A data frame with 111 rows and 3 variables:
+#' @format A data frame with `r nrow(cws_max_moe)` rows and 3 variables:
 #' \describe{
 #'   \item{\code{year}}{Numeric, year of survey}
 #'   \item{\code{name}}{Text of location}

@@ -1,4 +1,4 @@
-devtools::load_all()
+# devtools::load_all()
 # METADATA ----
 codes20 <- dcws:::clean_cws_2020()
 
@@ -9,6 +9,7 @@ paths <- list.files("data-raw/crosstabs", pattern = "\\.xlsx?", full.names = TRU
                 name = dplyr::recode(name, Valley = "Lower Naugatuck Valley"))
 
 # use empty code for 2020
+tictoc::tic()
 full_meta <- paths %>%
   dplyr::mutate(code_patt = ifelse(year == 2020, "^$", formals(cwi::xtab2df)$code_pattern)) %>%
   dplyr::mutate(data = purrr::pmap(list(path, year, code_patt), function(path, year, code_patt) {
@@ -16,10 +17,15 @@ full_meta <- paths %>%
   }) %>%
     purrr::map(dplyr::mutate,
                dplyr::across(c(category, group), clean_lvls),
+               # category = forcats::as_factor(dplyr::case_when(
+               #   group %in% stringr::str_to_title(levels(cwi::ct5_clusters$cluster)) ~ "Five Connecticuts",
+               #   (category %in% c("Connecticut", "HIC") | category == name)          ~ "Total",
+               #   TRUE                                                                ~ category
+               # )),
                category = forcats::as_factor(ifelse(group %in% stringr::str_to_title(levels(cwi::ct5_clusters$cluster)),
                                                     "Five Connecticuts",
                                                     as.character(category))),
-               category = forcats::as_factor(ifelse(category %in% c("Connecticut", name), "Total", as.character(category))),
+               category = forcats::as_factor(ifelse(category %in% c("Connecticut", "HIC", name), "Total", as.character(category))),
                group = forcats::fct_recode(group, Connecticut = "Total"),
                question = stringr::str_replace_all(question, "\\´", "'"))) %>%
   dplyr::arrange(year, name) %>%
@@ -31,6 +37,7 @@ full_meta <- paths %>%
       dplyr::mutate(data = purrr::map(data, dplyr::select, code, dplyr::everything(), -q_number))
   }) %>%
   dplyr::bind_rows()
+tictoc::toc()
 
 # order group levels within categories
 lvls <- full_meta %>%
@@ -50,6 +57,7 @@ full_meta <- full_meta %>%
   tidyr::unnest(data) %>%
   dplyr::mutate(group = forcats::fct_relevel(group, levels(purrr::reduce(lvls, c)))) %>%
   dplyr::mutate(group = forcats::fct_relevel(group, "Connecticut")) %>%
+  dplyr::mutate(category = forcats::fct_relevel(category, "Total", "Five Connecticuts")) %>%
   tidyr::nest(data = code:value)
 
 

@@ -5,7 +5,7 @@
 \alias{cws_full_data}
 \title{Contents of DataHaven Community Wellbeing Crosstabs}
 \format{
-A data frame of 73 rows and 3 columns.
+A data frame of 97 rows and 3 columns.
 \subsection{Outer structure:}{
 
 \describe{

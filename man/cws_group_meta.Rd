@@ -5,7 +5,7 @@
 \alias{cws_group_meta}
 \title{DCWS group metadata}
 \format{
-A data frame with 82 rows and 3 variables:
+A data frame with 112 rows and 3 variables:
 \describe{
 \item{\code{year}}{Numeric, year of survey}
 \item{\code{name}}{Text of location}

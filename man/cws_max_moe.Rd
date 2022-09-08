@@ -5,7 +5,7 @@
 \alias{cws_max_moe}
 \title{DCWS maximum margins of error}
 \format{
-A data frame with 111 rows and 3 variables:
+A data frame with 112 rows and 3 variables:
 \describe{
 \item{\code{year}}{Numeric, year of survey}
 \item{\code{name}}{Text of location}

@@ -3,7 +3,7 @@ test_that("fetch_cws returns correct dimensions", {
   cws_unnest <- fetch_cws(.unnest = TRUE)
   cws_vec <- fetch_cws(.year = c(2015, 2018))
 
-  expect_length(unique(cws_full$year), 4)
+  expect_length(unique(cws_full$year), 5) # 2015, 2018, 2020, 2021, 2022
   expect_length(unique(cws_vec$year), 2)
 
   # 70 qs in 2020
