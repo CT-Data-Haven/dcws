@@ -31,11 +31,11 @@ devtools::install_github("CT-Data-Haven/dcws")
 As of 2022-09-08, the data included here are:
 
 | name                   |  2015  |  2018  | 2020  |  2021  | 2022  |
-|:-----------------------|:------:|:------:|:-----:|:------:|:------|
+|:-----------------------|:------:|:------:|:-----:|:------:|:-----:|
 | 5CT                    |   x    |   x    |       |        |       |
 | Bridgeport             |   x    |   x    |       |   x    |       |
 | Bristol                |   x    |   x    |       |   x    |       |
-| Connecticut            |   x    |   x    |   x   |   x    | x     |
+| Connecticut            |   x    |   x    |   x   |   x    |   x   |
 | Danbury                |   x    |   x    |       |   x    |       |
 | Darien                 |        |   x    |       |   x    |       |
 | East Hartford          |        |   x    |       |        |       |

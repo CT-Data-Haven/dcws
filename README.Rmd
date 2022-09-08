@@ -53,6 +53,6 @@ xt_total <- xt_tbl %>%
 
 rbind(xt_tbl, xt_total) %>%
   tidyr::pivot_wider(id_cols = name, names_from = year, values_fill = list(value = ""), names_sort = TRUE) %>%
-  knitr::kable(align = "lcccc")
+  knitr::kable(align = "lccccc")
 ```
 

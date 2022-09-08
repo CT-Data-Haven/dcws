@@ -38,7 +38,10 @@ grps %>%
   split(.$category, drop = TRUE) %>%
   purrr::map(pivot_wider, id_cols = c(name), names_from = group, values_from = year, values_fn = list(year = toString), names_sort = TRUE, values_fill = "") %>%
   purrr::map(arrange, name) %>%
-  purrr::map(knitr::kable)
+  purrr::iwalk(function(df, category) {
+    cat(paste("##", category))
+    print(knitr::kable(df))
+  })
 ```
 
 
