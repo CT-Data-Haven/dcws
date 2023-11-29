@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 This is a quick attempt at creating standardized definitions of many of the indicators we use. For example, the question about the condition of local parks is a Likert-style question with answers of strongly agree, somewhat agree, somewhat disagree, strongly disagree. When we report this indicator, however, we do it as the percentage that says either strongly or somewhat agree. The data frame `cws_defs` has definitions of each indicator of this type, how the question was phrased, and the definition of what responses get collapsed into the summary indicator.
 
-```{r setup}
+```{r setup, message=FALSE}
 library(dcws)
 library(dplyr)
 ```
