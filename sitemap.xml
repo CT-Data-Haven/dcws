@@ -7,6 +7,9 @@
     <loc>https://ct-data-haven.github.io/dcws/LICENSE.html</loc>
   </url>
   <url>
+    <loc>https://ct-data-haven.github.io/dcws/articles/definitions.html</loc>
+  </url>
+  <url>
     <loc>https://ct-data-haven.github.io/dcws/articles/extra-regions.html</loc>
   </url>
   <url>
@@ -29,6 +32,9 @@
   </url>
   <url>
     <loc>https://ct-data-haven.github.io/dcws/reference/clean_lvls.html</loc>
+  </url>
+  <url>
+    <loc>https://ct-data-haven.github.io/dcws/reference/cws_defs.html</loc>
   </url>
   <url>
     <loc>https://ct-data-haven.github.io/dcws/reference/cws_full_data.html</loc>

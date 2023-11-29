@@ -8,10 +8,10 @@
 <meta name="description" content="dcws">
 <title>Fetching DCWS data • dcws</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Fetching DCWS data">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Fetching DCWS data">
 <meta property="og:description" content="dcws">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">dcws</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.5</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,6 +41,7 @@
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/definitions.html">Indicator definitions</a>
     <a class="dropdown-item" href="../articles/extra-regions.html">Extra regions</a>
     <a class="dropdown-item" href="../articles/fetching-dcws-data.html">Fetching DCWS data</a>
     <a class="dropdown-item" href="../articles/groups.html">Group reference</a>
@@ -75,15 +76,36 @@
 
     
     
-<p>This package has a dataset of all the data extracted from all the crosstabs for every survey wave that I had access to as of January 2021, a total of 97 files. It’s all been cleaned up so that names, categories, and groups should be standardized to match across every location and year, and should be the same in the weights as in the data tables themselves. Every data point has its corresponding question text and code.</p>
-<p>When it’s all combined and unnested, there are more than 757,000 rows of data, and no one needs all of that. Instead, use the function <code>fetch_cws</code> to pull out just the data you need, whether that’s just one location across multiple years, multiple locations, a single question, or whatever.</p>
-<p>Here are some pretty common examples of how we might work with DCWS data using this package, <code>cwi</code>, and some tidyverse. I’ll mostly use some of the more straightforward questions that we ask every year, with Greater New Haven as an example because I know most of our demographic groups are available.</p>
+<p>This package has a dataset of all the data extracted from all the
+crosstabs for every survey wave that I had access to as of January 2021,
+a total of 97 files. It’s all been cleaned up so that names, categories,
+and groups should be standardized to match across every location and
+year, and should be the same in the weights as in the data tables
+themselves. Every data point has its corresponding question text and
+code.</p>
+<p>When it’s all combined and unnested, there are more than 757,000 rows
+of data, and no one needs all of that. Instead, use the function
+<code>fetch_cws</code> to pull out just the data you need, whether
+that’s just one location across multiple years, multiple locations, a
+single question, or whatever.</p>
+<p>Here are some pretty common examples of how we might work with DCWS
+data using this package, <code>cwi</code>, and some tidyverse. I’ll
+mostly use some of the more straightforward questions that we ask every
+year, with Greater New Haven as an example because I know most of our
+demographic groups are available.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ct-data-haven.github.io/dcws">dcws</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/CT-Data-Haven/cwi" class="external-link">cwi</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://forcats.tidyverse.org/" class="external-link">forcats</a></span><span class="op">)</span></span></code></pre></div>
-<p>A common thing we’ll present is a question represented as a single number (percent responding “yes”, percent responding “strongly agree” or “somewhat agree”, etc.) for the state, the region, a couple groups within that region, and large towns in the region. For this, I’ll use named arguments for the year and categories of respondents, plus some of the open-ended filtering. I’ll start out looking at food insecurity, since it’s a simple yes or no. Since I’m doing this a couple times, I’ll write a (pretty crappy) function.</p>
+<p>A common thing we’ll present is a question represented as a single
+number (percent responding “yes”, percent responding “strongly agree” or
+“somewhat agree”, etc.) for the state, the region, a couple groups
+within that region, and large towns in the region. For this, I’ll use
+named arguments for the year and categories of respondents, plus some of
+the open-ended filtering. I’ll start out looking at food insecurity,
+since it’s a simple yes or no. Since I’m doing this a couple times, I’ll
+write a (pretty crappy) function.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">calc_food</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -313,7 +335,10 @@
 <div class="section level3">
 <h3 id="one-question-one-year-compare-groups-and-locations">One question, one year, compare groups and locations<a class="anchor" aria-label="anchor" href="#one-question-one-year-compare-groups-and-locations"></a>
 </h3>
-<p>I want just the location-wide values for towns in Greater New Haven, or by race for Greater New Haven. I could do this filtering inside <code>fetch_cws</code> if I wanted to dig into the nested data with <code>purrr</code>, but I don’t, so I’ll just be a little redundant.</p>
+<p>I want just the location-wide values for towns in Greater New Haven,
+or by race for Greater New Haven. I could do this filtering inside
+<code>fetch_cws</code> if I wanted to dig into the nested data with
+<code>purrr</code>, but I don’t, so I’ll just be a little redundant.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">food_towns</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_cws.html">fetch_cws</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Have there been times .+ food"</span>, <span class="va">question</span><span class="op">)</span>, </span>
 <span>          .name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Greater New Haven"</span>, <span class="fu">cwi</span><span class="fu">::</span><span class="va"><a href="https://CT-Data-Haven.github.io/cwi/reference/regions.html" class="external-link">regions</a></span><span class="op">$</span><span class="va">`Greater New Haven`</span><span class="op">)</span>,</span>
@@ -397,7 +422,11 @@
 <div class="section level3">
 <h3 id="several-questions-with-same-responses">Several questions with same responses<a class="anchor" aria-label="anchor" href="#several-questions-with-same-responses"></a>
 </h3>
-<p>Usually I like to analyze questions separately because they might not have the same set of responses, but for a bank of related questions you can do them all at once. In 2020 and 2021 we added a question about trust in several types of institutions. I can’t remember the codes for them but they all have “trust” in the question text.</p>
+<p>Usually I like to analyze questions separately because they might not
+have the same set of responses, but for a bank of related questions you
+can do them all at once. In 2020 and 2021 we added a question about
+trust in several types of institutions. I can’t remember the codes for
+them but they all have “trust” in the question text.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/fetch_cws.html">fetch_cws</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"[Tt]rust"</span>, <span class="va">question</span><span class="op">)</span>, .year <span class="op">=</span> <span class="fl">2021</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">code</span>, <span class="va">question</span><span class="op">)</span></span>
@@ -411,8 +440,14 @@
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> TRUSTE How much trust do you have in each of the following to look out for th…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Q17G   People in this neighborhood can be trusted.                            </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> CVAX10 (If not vaccinated) How concerned are you, if at all, that you won't b…</span></span></code></pre></div>
-<p>Oh duh, the codes are all “TRUST” and then a letter! If this type of lookup table / function would be useful, I can add one, but it’s pretty simple to do on the fly.</p>
-<p>The responses for these questions are a great deal, a fair amount, not very much, or none at all. I’m going to collapse great deal and fair amount into one, then present just that. Each question has the same beginning text, then at the end names the institution being asked about.</p>
+<p>Oh duh, the codes are all “TRUST” and then a letter! If this type of
+lookup table / function would be useful, I can add one, but it’s pretty
+simple to do on the fly.</p>
+<p>The responses for these questions are a great deal, a fair amount,
+not very much, or none at all. I’m going to collapse great deal and fair
+amount into one, then present just that. Each question has the same
+beginning text, then at the end names the institution being asked
+about.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">trust_insts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_cws.html">fetch_cws</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^TRUST[A-Z]$"</span>, <span class="va">code</span><span class="op">)</span>, .name <span class="op">=</span> <span class="st">"Greater New Haven"</span>, .year <span class="op">=</span> <span class="fl">2021</span>,</span>
 <span>          .category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Total"</span>, <span class="st">"Age"</span><span class="op">)</span>, .unnest <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -491,12 +526,22 @@
 </tr>
 </tbody>
 </table>
-<p>Lots of ways you could chop this data up now that you’ve got several groups and several questions together.</p>
+<p>Lots of ways you could chop this data up now that you’ve got several
+groups and several questions together.</p>
 </div>
 <div class="section level3">
 <h3 id="comparing-to-the-state">Comparing to the state<a class="anchor" aria-label="anchor" href="#comparing-to-the-state"></a>
 </h3>
-<p>All the crosstabs include Connecticut total values to compare to. The script that extracts all the crosstab data includes these, because they’re sometimes useful: in most of the tables and charts we publish of survey data for one location includes state values. The benefit is that if you want, say, Greater New Haven data, you don’t have to do anything special to also have Connecticut totals. However, if you pull data for multiple locations, this would be annoyingly redundant. So I’ve added an argument <code>.drop_ct</code> that defaults to true, in which case Connecticut values from other locations’ crosstabs are dropped before your data are returned.</p>
+<p>All the crosstabs include Connecticut total values to compare to. The
+script that extracts all the crosstab data includes these, because
+they’re sometimes useful: in most of the tables and charts we publish of
+survey data for one location includes state values. The benefit is that
+if you want, say, Greater New Haven data, you don’t have to do anything
+special to also have Connecticut totals. However, if you pull data for
+multiple locations, this would be annoyingly redundant. So I’ve added an
+argument <code>.drop_ct</code> that defaults to true, in which case
+Connecticut values from other locations’ crosstabs are dropped before
+your data are returned.</p>
 <p>With <code>.drop_ct = TRUE</code> (the default):</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/fetch_cws.html">fetch_cws</a></span><span class="op">(</span><span class="va">code</span> <span class="op">==</span> <span class="st">"Q1"</span>, .year <span class="op">=</span> <span class="fl">2021</span>, .name <span class="op">=</span> <span class="st">"Greater New Haven"</span>, </span>
@@ -525,8 +570,19 @@
 <div class="section level2">
 <h2 id="weights">Weights<a class="anchor" aria-label="anchor" href="#weights"></a>
 </h2>
-<p>The crosstabs each have a table of survey weights for each group, either as a standalone section at the bottom of the Excel spreadsheet or as a couple rows at the top of each question. <code><a href="https://CT-Data-Haven.github.io/cwi/reference/read_xtabs.html" class="external-link">cwi::read_weights</a></code> now works with either of these formats; for the latter, the weights are taken from the first question (always the satisfied with your area question, which every participant receives). Just like preparing this package meant extracting all the data, there’s also a stash of all the weights from all the files. These are useful for operations like collapsing multiple small groups into larger ones, usually income brackets or other groupings that may not be consistent between years or locations otherwise.</p>
-<p>There’s a function for getting weights on their own, with most of the same arguments as for getting data…</p>
+<p>The crosstabs each have a table of survey weights for each group,
+either as a standalone section at the bottom of the Excel spreadsheet or
+as a couple rows at the top of each question.
+<code><a href="https://CT-Data-Haven.github.io/cwi/reference/read_xtabs.html" class="external-link">cwi::read_weights</a></code> now works with either of these formats;
+for the latter, the weights are taken from the first question (always
+the satisfied with your area question, which every participant
+receives). Just like preparing this package meant extracting all the
+data, there’s also a stash of all the weights from all the files. These
+are useful for operations like collapsing multiple small groups into
+larger ones, usually income brackets or other groupings that may not be
+consistent between years or locations otherwise.</p>
+<p>There’s a function for getting weights on their own, with most of the
+same arguments as for getting data…</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/fetch_wts.html">fetch_wts</a></span><span class="op">(</span>.year <span class="op">=</span> <span class="fl">2021</span>, .name <span class="op">=</span> <span class="st">"Greater New Haven"</span>, .unnest <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 4</span></span></span>
@@ -538,8 +594,16 @@
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>  <span style="text-decoration: underline;">2</span>021 Greater New Haven Female             0.529</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>  <span style="text-decoration: underline;">2</span>021 Greater New Haven Ages 18-34         0.313</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>  <span style="text-decoration: underline;">2</span>021 Greater New Haven Ages 35-49         0.238</span></span></code></pre></div>
-<p>…or you can just use the <code>.add_wts</code> argument in <code>fetch_cws</code> to do this for you. You can also use <code><a href="https://CT-Data-Haven.github.io/cwi/reference/collapse_n_wt.html" class="external-link">cwi::collapse_n_wt</a></code> to help with the calculation, but basically you’re collapsing several levels, then getting weighted means.</p>
-<p>One reason for doing this is that locations might have different income brackets depending on sample size, and we’ve moved toward using larger income brackets in the latest wave of the survey. So in addition to sample size, you might also collapse groups so you can compare across locations or years.</p>
+<p>…or you can just use the <code>.add_wts</code> argument in
+<code>fetch_cws</code> to do this for you. You can also use
+<code><a href="https://CT-Data-Haven.github.io/cwi/reference/collapse_n_wt.html" class="external-link">cwi::collapse_n_wt</a></code> to help with the calculation, but
+basically you’re collapsing several levels, then getting weighted
+means.</p>
+<p>One reason for doing this is that locations might have different
+income brackets depending on sample size, and we’ve moved toward using
+larger income brackets in the latest wave of the survey. So in addition
+to sample size, you might also collapse groups so you can compare across
+locations or years.</p>
 <p>For example, check out how obnoxious this is:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">satisfied_area</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_cws.html">fetch_cws</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"satisfied with the city"</span>, <span class="va">question</span><span class="op">)</span>, </span>
@@ -767,6 +831,16 @@
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">asthma18</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
+<colgroup>
+<col width="5%">
+<col width="21%">
+<col width="5%">
+<col width="10%">
+<col width="17%">
+<col width="21%">
+<col width="10%">
+<col width="7%">
+</colgroup>
 <thead><tr class="header">
 <th align="right">year</th>
 <th align="left">name</th>
@@ -854,7 +928,9 @@
 <div class="section level2">
 <h2 id="output">Output<a class="anchor" aria-label="anchor" href="#output"></a>
 </h2>
-<p>That’s it! Usually I’ll save a bunch of related analyses into lists of data frames, and then write those out to rds files for easy loading.</p>
+<p>That’s it! Usually I’ll save a bunch of related analyses into lists
+of data frames, and then write those out to rds files for easy
+loading.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
@@ -869,7 +945,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
     </footer>
