@@ -71,11 +71,18 @@
 #'}
 #' @source Compiled DCWS crosstabs
 #' @seealso [fetch_cws()], [fetch_wts()]
+#' @examples
+#' cws_full_wts
+#'
+#' cws_full_wts |>
+#'   dplyr::filter(name == "Greater New Haven") |>
+#'   tidyr::unnest(weights)
+#'
 "cws_full_wts"
 
 #' DCWS group metadata
 #'
-#' This is a reference dataset listing what categories and groups are available for each survey by year and location. Not all questions are available for all groups.
+#' This is a reference dataset listing what categories and groups are available for each survey by year and location. Not all questions are available for all groups, and not all groups are available every year or for every location.
 #'
 #' @format A data frame with `r nrow(cws_group_meta)` rows and 3 variables:
 #' \describe{
@@ -84,6 +91,20 @@
 #'   \item{\code{groups}}{A list of nested data frames, each of which has 2 columns for category and group.}
 #'}
 #' @source Compiled DCWS crosstabs
+#' @examples
+#' # larger areas have more groups available each year (see number of rows per nested tibble)
+#' cws_group_meta
+#'
+#' cws_group_meta |>
+#'   dplyr::filter(name == "Greater New Haven") |>
+#'   tidyr::unnest(groups)
+#'
+#' # this is useful if you want to know what locations have data for a certain
+#' # set of conditions, e.g. 2021 values by income
+#' cws_group_meta |>
+#'   tidyr::unnest(groups) |>
+#'   dplyr::filter(year == 2021, category == "Income")
+#'
 "cws_group_meta"
 
 #' DCWS maximum margins of error
@@ -97,4 +118,25 @@
 #'   \item{\code{moe}}{Numeric, value of maximum MOE}
 #' }
 #' @source Compiled DCWS crosstabs
+#' @examples
+#' cws_max_moe
+#'
 "cws_max_moe"
+
+#' DCWS indicator definitions
+#'
+#' This data frame is a reference of how indicators are defined, such as Likert questions that get collapsed into a single number (e.g. strongly agree & somewhat agree --> percent agree). It also has more complicated indicators, such as smoking rate and underemployment, and notes on the calculations of each. Other than depression, which starting in 2018 moved to the standardized PHQ-2 phrasing, definitions are consistent across years.
+#'
+#' @format A data frame with `r nrow(cws_defs)` rows and 5 variables:
+#' \describe{
+#'   \item{\code{indicator}}{Text of abbreviated indicator name, e.g. "safe biking"}
+#'   \item{\code{question}}{Text of question as given on the survey with punctuation and capital letters removed, e.g. "there are places to bicycle in or near my neighborhood that are safe from traffic such as on the street or on special lanes separate paths or trails"}
+#'   \item{\code{collapsed_responses}}{Comma-separated text of responses that are collapsed into the indicator, e.g. "Strongly agree, Somewhat agree". In a few cases may not *exactly* match the real response choice}
+#'   \item{\code{universe}}{Text describing the universe over which the indicator should be calculated, e.g. percent who have smoked 100 cigarettes is the universe for percent currently smoking. If missing, no need to do anything special.}
+#'   \item{\code{calculation}}{Text describing the calculation if there's anything unusual to be done.}
+#' }
+#' @source Handwritten by Camille
+#' @examples
+#' cws_defs
+#'
+"cws_defs"

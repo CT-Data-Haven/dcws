@@ -7,7 +7,7 @@ Description: This is a collection of data from all past years of the DCWS, plus 
 License: CC BY 4.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 URL: https://ct-data-haven.github.io/dcws
 Imports: 
     cli,
@@ -34,7 +34,7 @@ Suggests:
 Remotes: 
     ct-data-haven/cwi
 Depends: 
-    R (>= 4.0.0)
+    R (>= 4.1.0)
 LazyData: true
 Config/testthat/edition: 3
 Config/Needs/website: pkgdown, 

@@ -19,6 +19,21 @@ Compiled DCWS crosstabs
 cws_group_meta
 }
 \description{
-This is a reference dataset listing what categories and groups are available for each survey by year and location. Not all questions are available for all groups.
+This is a reference dataset listing what categories and groups are available for each survey by year and location. Not all questions are available for all groups, and not all groups are available every year or for every location.
+}
+\examples{
+# larger areas have more groups available each year (see number of rows per nested tibble)
+cws_group_meta
+
+cws_group_meta |>
+  dplyr::filter(name == "Greater New Haven") |>
+  tidyr::unnest(groups)
+
+# this is useful if you want to know what locations have data for a certain
+# set of conditions, e.g. 2021 values by income
+cws_group_meta |>
+  tidyr::unnest(groups) |>
+  dplyr::filter(year == 2021, category == "Income")
+
 }
 \keyword{datasets}

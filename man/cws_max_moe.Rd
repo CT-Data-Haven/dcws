@@ -21,4 +21,8 @@ cws_max_moe
 \description{
 This is a data frame listing the maximum margin of error for estimates for each location and year. The values are extracted from the headers of the crosstab spreadsheets, but many are missing, especially for 2015. It's unlikely anyone will need this often beyond the community profiles on our website, so they're not filtered for the same subset of locations as the main data and weights datasets.
 }
+\examples{
+cws_max_moe
+
+}
 \keyword{datasets}
