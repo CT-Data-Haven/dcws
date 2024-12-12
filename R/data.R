@@ -123,20 +123,20 @@
 #'
 "cws_max_moe"
 
-#' DCWS indicator definitions
-#'
-#' This data frame is a reference of how indicators are defined, such as Likert questions that get collapsed into a single number (e.g. strongly agree & somewhat agree --> percent agree). It also has more complicated indicators, such as smoking rate and underemployment, and notes on the calculations of each. Other than depression, which starting in 2018 moved to the standardized PHQ-2 phrasing, definitions are consistent across years.
-#'
-#' @format A data frame with `r nrow(cws_defs)` rows and 5 variables:
-#' \describe{
-#'   \item{\code{indicator}}{Text of abbreviated indicator name, e.g. "safe biking"}
-#'   \item{\code{question}}{Text of question as given on the survey with punctuation and capital letters removed, e.g. "there are places to bicycle in or near my neighborhood that are safe from traffic such as on the street or on special lanes separate paths or trails"}
-#'   \item{\code{collapsed_responses}}{Comma-separated text of responses that are collapsed into the indicator, e.g. "Strongly agree, Somewhat agree". In a few cases may not *exactly* match the real response choice}
-#'   \item{\code{universe}}{Text describing the universe over which the indicator should be calculated, e.g. percent who have smoked 100 cigarettes is the universe for percent currently smoking. If missing, no need to do anything special.}
-#'   \item{\code{calculation}}{Text describing the calculation if there's anything unusual to be done.}
-#' }
-#' @source Handwritten by Camille
-#' @examples
-#' cws_defs
-#'
-"cws_defs"
+# #' DCWS indicator definitions
+# #'
+# #' This data frame is a reference of how indicators are defined, such as Likert questions that get collapsed into a single number (e.g. strongly agree & somewhat agree --> percent agree). It also has more complicated indicators, such as smoking rate and underemployment, and notes on the calculations of each. Other than depression, which starting in 2018 moved to the standardized PHQ-2 phrasing, definitions are consistent across years.
+# #'
+# #' @format A data frame with `r nrow(cws_defs)` rows and 5 variables:
+# #' \describe{
+# #'   \item{\code{indicator}}{Text of abbreviated indicator name, e.g. "safe biking"}
+# #'   \item{\code{question}}{Text of question as given on the survey with punctuation and capital letters removed, e.g. "there are places to bicycle in or near my neighborhood that are safe from traffic such as on the street or on special lanes separate paths or trails"}
+# #'   \item{\code{collapsed_responses}}{Comma-separated text of responses that are collapsed into the indicator, e.g. "Strongly agree, Somewhat agree". In a few cases may not *exactly* match the real response choice}
+# #'   \item{\code{universe}}{Text describing the universe over which the indicator should be calculated, e.g. percent who have smoked 100 cigarettes is the universe for percent currently smoking. If missing, no need to do anything special.}
+# #'   \item{\code{calculation}}{Text describing the calculation if there's anything unusual to be done.}
+# #' }
+# #' @source Handwritten by Camille
+# #' @examples
+# #' cws_defs
+# #'
+# "cws_defs"

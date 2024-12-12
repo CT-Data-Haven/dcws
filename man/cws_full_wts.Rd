@@ -5,7 +5,7 @@
 \alias{cws_full_wts}
 \title{DCWS weights}
 \format{
-A data frame with 97 rows and 3 variables:
+A data frame with 298 rows and 3 variables:
 \describe{
 \item{\code{year}}{Numeric, year of survey}
 \item{\code{name}}{Text of location}
