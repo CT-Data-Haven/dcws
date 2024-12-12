@@ -5,3 +5,9 @@
 .DS_Store
 inst/doc
 docs
+.snakemake
+.flags
+logs
+.env
+data-raw/crosstabs/dcws_*_2024*.xlsx
+data-raw/crosstabs/downloads

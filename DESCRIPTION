@@ -7,34 +7,37 @@ Description: This is a collection of data from all past years of the DCWS, plus 
 License: CC BY 4.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 URL: https://ct-data-haven.github.io/dcws
 Imports: 
     cli,
-    cwi (>= 0.4.2),
     dplyr,
     forcats,
+    janitor,
     magrittr,
+    officer (>= 0.6.7),
     purrr,
+    readxl,
     rlang (>= 0.4.11),
     stringr,
     tibble,
     tidyr,
     tidyselect
 Suggests: 
+    cwi (>= 0.4.2),
     testthat (>= 3.0.0),
     fuzzyjoin,
-    officer,
     roxygen2,
     xfun,
     knitr,
     rmarkdown,
-    openxlsx,
+    openxlsx2,
     covr
 Remotes: 
-    ct-data-haven/cwi
+    ct-data-haven/cwi,
+    davidgohel/officer
 Depends: 
-    R (>= 4.1.0)
+    R (>= 4.2.0)
 LazyData: true
 Config/testthat/edition: 3
 Config/Needs/website: pkgdown, 

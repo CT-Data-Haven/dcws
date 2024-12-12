@@ -8,3 +8,7 @@
 ^pkgdown$
 ^\.github$
 ^codecov\.yml$
+^\.snakemake$
+^logs$
+^\.flags$
+^\.env$

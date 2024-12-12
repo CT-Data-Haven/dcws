@@ -51,7 +51,25 @@ to_recode <- list(
 to_collapse <- list(
   "Not white" = c("Not White", "Non-White", "Not-White"),
   "Black" = c("Black/Afr Amer", "Black/ Afr Amer", "African American/Black"),
-  "Native American" = c("Native Amer", "American Indian")
+  "Indigenous" = c("Native Amer", "American Indian", "Native American")
+)
+
+# full xwalk
+grp2cat <- list(
+  "Five Connecticuts" = c("Wealthy", "Suburban", "Rural", "Urban Periphery", "Urban Core"),
+  "Gender" = c("Male", "Female", "Nonbinary"),
+  "Age" = c("Ages 18-34", "Ages 18-49", "Ages 35-49", "Ages 35-54", "Ages 50-64", "Ages 50+", "Under age 55", "Ages 55+", "Ages 65+"),
+  "Race/Ethnicity" = c("White", "Black", "Latino", "Asian", "Indigenous", "Not white", "Other race"),
+  "Education" = c("Less than high school", "High school or less", "High school", "Some college or less", "Some college or Associate's", "Some college or higher", "Less than Bachelor's", "Bachelor's or higher"),
+  "Income" = c("<$15K", "$15K-$30K", "<$30K", "$30K-$50K", "$30K-$75K", "$30K-$100K", "$50K-$75K", "<$75K", "$75K-$100K", "$75K+", "<$100K", "$100K-$200K", ">$100K", "$100K+", ">$200K", "$200K+"),
+  "With children" = c("No kids", "Kids in home"),
+  "Sexual orientation & gender identity" = c("Cisgender and straight", "Identifies as LGBTQ"),
+  "Sexual orientation" = c("Lesbian, gay, or bisexual", "Straight"),
+  "Place of birth" = c("Born in the US", "Born outside the US"),
+  "Latino origin" = c("Mexican", "Puerto Rican", "Puerto Rican, born in Puerto Rico", "Puerto Rican, mainland born", "Other Latino"),
+  "Disability" = c("Disabled", "Not disabled"),
+  "Incarceration history" = c("Never incarcerated", "Incarcerated once", "Incarcerated two or more times"),
+  "Gender identity" = c("Cisgender", "Transgender")
 )
 
 #' @title Clean up categories and groups from crosstabs
@@ -61,15 +79,15 @@ to_collapse <- list(
 #' # vector of strings as read in from crosstabs
 #' categories <- c("Connecticut", "NH Inner Ring", "Gender", "Age",
 #'                 "Race/Ethnicity", "Education", "Income", "Children in HH")
-#' levels(clean_lvls(categories))
+#' levels(clean_dcws_lvls(categories))
 #'
 #' groups <- c("M", "F", "18-34", "35 to 49", "65 and older",
 #'             "Black/Afr Amer", "African American/Black", "High School",
 #'             "Less than $15,000", "$15,000 to $30,000", "No")
-#' levels(clean_lvls(groups))
+#' levels(clean_dcws_lvls(groups))
 #' @return A factor
 #' @export
-clean_lvls <- function(x) {
+clean_dcws_lvls <- function(x) {
   if (!is.factor(x)) x <- forcats::as_factor(x)
   suppressWarnings({
     x <- forcats::fct_relabel(x, stringr::str_replace_all, to_replace)
@@ -79,6 +97,19 @@ clean_lvls <- function(x) {
     x <- forcats::fct_relabel(x, stringr::str_squish)
     x
   })
+}
+
+add_cats <- function(x, return_table) {
+  x <- clean_dcws_lvls(x)
+  cats <- suppressWarnings(forcats::fct_collapse(x, !!!grp2cat))
+  cats <- ifelse(grepl(" total", cats), "Total", as.character(cats))
+  # cats <- forcats::as_factor(cats)
+  # cats <- suppressWarnings(forcats::fct_relevel(cats, names(grp2cat)))
+  if (return_table) {
+    data.frame(category = cats, group = x)
+  } else {
+    cats
+  }
 }
 
 
