@@ -32,7 +32,10 @@ Suggests:
     knitr,
     rmarkdown,
     openxlsx2,
-    covr
+    covr,
+    snakecase,
+    gh,
+    duckdb
 Remotes: 
     ct-data-haven/cwi,
     davidgohel/officer

@@ -24,7 +24,8 @@ to_remove <- paste(c(
   "(?<=(/|\\<))\\s",
   "(?<=Associate's)( degree)",
   "(?<=Bachelor's)( degree)",
-  "\\*$"
+  "\\*$",
+  "\\stotal$"
 ), collapse = "|")
 
 # full strings

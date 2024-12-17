@@ -49,10 +49,17 @@ rule download_2024:
         for f in {output}; do unzip -j -o "$f" *.xlsx -d data-raw/crosstabs; done
         '''
 
+rule cws20:
+    input:
+        xtab = 'data-raw/crosstabs/DataHaven2020 Connecticut Crosstabs.xlsx',
+        doc = 'data-raw/misc_input/DataHaven0720_Prn2.docx',
+    script:
+        'R/clean_cws_2020.R'
 
 rule data:
-    input:
+    input:  
         xlsx = Path('data-raw/crosstabs').glob('*.xlsx'),
+        scripts = ['R/clean_cws_2020.R', 'R/clean_paths.R', 'R/read_dcws.R', 'R/clean_dcws_lvls.R'],
     output:
         # protected(datasets['path'].unique()),
         datasets['path'].unique(),
@@ -60,21 +67,21 @@ rule data:
         'data-raw/prep_cws.R'
 
 
-# depends on cws_full_data
 rule definitions:
-    input:
-        defs = 'data-raw/misc_input/cws_defs_filled.csv',
-        full_data = 'data/cws_full_data.rda',
     output:
         # protected('data/cws_defs.rda'),
         'data/cws_defs.rda',
     script:
         'data-raw/cws_definitions.R'
 
+rule data_raw:
+    input:
+        rules.data.output,
+        rules.definitions.output,
 
 rule check:
     input:
-        rules.data.output,
+        rules.data_raw.output,
     output:
         flag = touch('.flags/pkg-check.txt'),
     shell:
@@ -83,6 +90,12 @@ rule check:
         # Rscript -e "devtools::check(document = TRUE, cran = FALSE)"
         '''
     
+rule install:
+    input:
+        data = rules.data_raw.input,
+        check_flag = rules.check.output.flag,
+    shell:
+        'Rscript -e "devtools::install()"'
 
 # use constraint with regex to match readme in base of directory
 rule render_quarto:
@@ -106,8 +119,7 @@ rule readme:
 rule all:
     default_target: True
     input:
-        rules.data.output,
-        # rules.definitions.output,
+        rules.data_raw.input,
         rules.check.output.flag,
         'README.md',
 

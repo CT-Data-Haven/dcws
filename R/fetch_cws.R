@@ -1,7 +1,7 @@
 #' @title Fetch and subset DCWS data
 #' @description This function returns the doubly-nested data from `cws_full_data` in a nicer format, with options for subsetting. Filtering by year, location name, and category are named options, any of which take a vector of one or more values, but any valid conditions can be passed to `...` for more flexible filtering. For any named options, `NULL`, the default, will mean no filtering is done by that column.
 #' @param ... Any number of conditions to filter by, which will be passed to `dplyr::filter`. These don't override the named options, so if you filter by `year > 2020` but then set `.year = 2015` you're not going to get any data.
-#' @param .year A vector of one or more numbers giving the year(s) to subset by. If `NULL`, no filtering is done by year.
+#' @param .year A vector of one or more year(s) to subset by. If this is a character that contains a separator (`"_"`, `"-"`, or a space character), it will be assumed to be a span of years, such as for multi-year pooled crosstabs (e.g. `"2015_2024"`). Otherwise it's assumed this is a single year of the survey. If `NULL`, no filtering is done by year.
 #' @param .name A vector of one or more strings giving the name(s) to subset by. If `NULL`, no filtering is done by name.
 #' @param .category A vector of one or more strings giving the category(ies) to subset by. If `NULL`, no filtering is done by category.
 #' @param .unnest Logical: should the `data` column be unnested? This just saves a step of calling `tidyr::unnest` but defaults to false.
@@ -80,6 +80,7 @@ fetch_cws <- function(..., .year = NULL, .name = NULL, .category = NULL, .unnest
                             by = c("year", "name", "group"))
   }
 
+  #TODO: write replacement for where
   out <- dplyr::mutate(out, dplyr::across(where(is.factor), forcats::fct_drop))
 
   if (!.unnest) {
@@ -112,8 +113,7 @@ fetch_wts <- function(..., .year = NULL, .name = NULL, .unnest = FALSE) {
   out <- filter_cws_(out, .year = .year, .name = .name, .category = NULL)
 
   if (nrow(out) == 0) {
-    cli::cli_alert_danger("No weights were found for this combination of years and locations.")
-    return(out)
+    cli::cli_abort("No weights were found for this combination of years and locations.")
   }
 
   if (.unnest) {
@@ -123,19 +123,39 @@ fetch_wts <- function(..., .year = NULL, .name = NULL, .unnest = FALSE) {
   out
 }
 
-
+# cli::cli_abort("change here--don't coerce year to number")
 filter_cws_ <- function(df, .year, .name, .category) {
   if (!is.null(.year)) {
-    if (is.character(.year)) .year <- as.numeric(.year)
-    df <- dplyr::filter(df, year %in% .year)
+    # coerce to string and filter by span
+    yr_chr <- as.character(.year)
+    df <- df[df[["span"]] %in% yr_chr, ]
+    # if (is.character(.year) && grepl("[_\\-\\s]", .year)) {
+    #   df <- dplyr::filter(df, span %in% .year)
+    # } else {
+    #   df <- dplyr::filter(df, year %in% .year)
+    # }
   }
   if (!is.null(.name)) {
-    df <- dplyr::filter(df, name %in% .name)
+    df <- df[df[["name"]] %in% .name, ]
   }
   if (!is.null(.category)) {
-    df <- dplyr::filter(df, category %in% .category)
+    df <- df[df[["category"]] %in% .category, ]
   }
   df
 }
+
+# filter_cws_ <- function(df, .year, .name, .category) {
+#   if (!is.null(.year)) {
+#     if (is.character(.year)) .year <- as.numeric(.year)
+#     df <- dplyr::filter(df, year %in% .year)
+#   }
+#   if (!is.null(.name)) {
+#     df <- dplyr::filter(df, name %in% .name)
+#   }
+#   if (!is.null(.category)) {
+#     df <- dplyr::filter(df, category %in% .category)
+#   }
+#   df
+# }
 
 utils::globalVariables("where")
