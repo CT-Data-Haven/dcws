@@ -9,6 +9,6 @@ docs
 .flags
 logs
 .env
-data-raw/crosstabs/dcws_*_2024*.xlsx
+data-raw/crosstabs/dcws_*-v*.xlsx
 data-raw/crosstabs/downloads
 **/*.duckdb

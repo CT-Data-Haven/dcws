@@ -12,6 +12,11 @@
 #' don't have categories included in headings in excel, but this function will
 #' add them.
 #' @param data A data frame as returned from `read_xtab`.
+#' @param year Numeric: year of the survey (or end year, in the case of pooled data).
+#' This tells the functions how to read the files, since formatting has changed
+#' across years of the survey. Because the ability to read a file depends so much
+#' on the year for which it was produced, this argument no longer has a default;
+#' instead it must be supplied explicitly.
 #' @param col The bare column name of where to find question codes and text.
 #' Default: x1, based on names assigned by `read_xtab`
 #' @param code_pattern String: regex pattern denoting how to find cells that
@@ -20,11 +25,7 @@
 #' pretty finicky, so you probably don't want to change it.
 #' If `NULL` (the default), the function will fill in `"^[A-Z\\d_]{2,20}$"` for
 #' years before 2024, or `"^[A-Z\\d_]+(?=\\. )"` for 2024 onward.
-#' @param year Numeric: year of the survey (or end year, in the case of pooled data).
-#' This tells the functions how to read the files, since formatting has changed
-#' across years of the survey. Because the ability to read a file depends so much
-#' on the year for which it was produced, this argument no longer has a default;
-#' instead it must be supplied explicitly.
+#' @param verbose Boolean: whether to print helpful information to the console. Defaults `TRUE`.
 #' @return A data frame with the following columns:
 #' * code (if questions have codes in crosstabs)
 #' * q_number (if questions don't have codes in crosstabs, assigned in order they occur)
@@ -42,8 +43,8 @@
 #' @export
 #' @rdname xtab2df
 #' @seealso [read_xtabs()]
-xtab2df <- function(data, year, col = x1, code_pattern = NULL) {
-  year <- cws_check_yr(path = NULL, year = year)
+xtab2df <- function(data, year, col = x1, code_pattern = NULL, verbose = TRUE) {
+  year <- cws_check_yr(path = NULL, year = year, verbose = verbose)
 
   if (is.null(code_pattern)) {
     code_pattern <- default_code_patt(year)
@@ -53,17 +54,23 @@ xtab2df <- function(data, year, col = x1, code_pattern = NULL) {
   } else {
     out <- xtab2df_r_(data, {{ col }}, code_pattern)
   }
+  # small areas might not have group column if no demographics
+  if (!"group" %in% names(out)) {
+    out[["group"]] <- "Total"
+  }
+  out[["category"]] <- clean_cws_lvls(out[["category"]])
+  out[["group"]] <- clean_cws_lvls(out[["group"]])
   # fix misspellings in categories
   if ("category" %in% names(out)) {
-    out[["category"]] <- stringr::str_remove(out[["category"]], "\\*$")
-    out[["category"]] <- stringr::str_replace(out[["category"]], "Etnicity", "Ethnicity")
+    # out[["category"]] <- stringr::str_remove(out[["category"]], "\\*$")
+    # out[["category"]] <- stringr::str_replace(out[["category"]], "Etnicity", "Ethnicity")
   }
   out
 }
 
 default_code_patt <- function(year) {
   if (!is.numeric(year)) {
-    cli::cli_abort("{.var year} must be numeric")
+    cli::cli_abort("{.var year} should be a number for the year or end year of the survey.")
   }
   if (year == 2020) {
     "^$"
@@ -86,8 +93,12 @@ xtab2df_spss_ <- function(data, col, code_pattern) {
   out <- tidyr::pivot_longer(out, cols = -c(code, q_number, question, {{ col }}), names_to = "column")
   out <- dplyr::left_join(out, headings, by = "column")
   out <- dplyr::select(out, code, q_number, question, dplyr::matches("^h\\d+"), response = {{ col }}, value)
-  out <- dplyr::rename_with(out, ~hier[seq_along(.)], dplyr::matches("^h\\d+"))
-  out <- dplyr::mutate(out, value = readr::parse_number(value))
+  out <- dplyr::rename_with(out, \(x) hier[seq_along(x)], dplyr::matches("^h\\d+"))
+  if (rlang::is_installed("readr")) {
+    out <- dplyr::mutate(out, value = readr::parse_number(value))
+  } else {
+    out <- dplyr::mutate(out, value = as.numeric(value))
+  }
   out <- dplyr::filter(out, !is.na(value))
 
   if (any(nchar(out$code) > 0)) {
@@ -112,8 +123,7 @@ xtab2df_r_ <- function(data, col, code_pattern) {
   # out <- dplyr::left_join(out, cws_cats24, by = "group")
   # out <- dplyr::mutate(out, category = dplyr::if_else(grepl(" total$", group) & is.na(category), "Total", category))
   #
-  # out <- dplyr::select(out, code, question, category, group, response = Response, value)
-  out <- janitor::clean_names(out)
+  out <- dplyr::select(out, code, question, category, group, response = Response, value)
   out
 }
 
@@ -127,7 +137,7 @@ count_valid_cols <- function(data) {
 
 reshape_single_xt_ <- function(data) {
   # top row minus first 2 columns
-  hdr <- as.data.frame(data)[1, -1:-2]
+  hdr <- unlist(unname(as.data.frame(data)[1, -1:-2, drop = TRUE]))
   names(data)[-1:-2] <- hdr
   out <- dplyr::filter(data, !stringr::str_detect(Response, "Response") & !stringr::str_detect(Response, "^Weight"))
   out <- tidyr::pivot_longer(out, cols = c(-code, -question, -Response), names_to = "group", values_to = "value")

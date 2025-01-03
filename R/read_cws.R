@@ -54,7 +54,7 @@ read_xtabs <- function(path,
                        verbose = TRUE,
                        ...) {
   # return columns code, question, category, group, response, value
-  year <- cws_check_yr(path, year)
+  year <- cws_check_yr(path, year, verbose)
 
   data <- read_xtabs_(path, year = year, name_prefix = name_prefix)
 
@@ -82,9 +82,9 @@ read_xtabs <- function(path,
 
 #' @export
 #' @rdname read_xtabs
-read_weights <- function(path, year = NULL, marker = "Nature of the [Ss]ample") {
+read_weights <- function(path, year = NULL, marker = "Nature of the [Ss]ample", verbose = TRUE) {
   # return columns group & weight
-  year <- cws_check_yr(path, year)
+  year <- cws_check_yr(path, year, verbose)
 
   if (year < 2024) {
     wts <- read_wts_spss_(path, year, marker)
@@ -92,7 +92,7 @@ read_weights <- function(path, year = NULL, marker = "Nature of the [Ss]ample") 
     wts <- read_wts_r_(path)
   }
 
-  wts$group <- clean_dcws_lvls(wts$group)
+  wts$group <- clean_cws_lvls(wts$group)
   wts
 }
 

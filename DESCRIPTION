@@ -14,8 +14,6 @@ Imports:
     dplyr,
     forcats,
     janitor,
-    magrittr,
-    officer (>= 0.6.7),
     purrr,
     readxl,
     rlang (>= 0.4.11),
@@ -31,11 +29,13 @@ Suggests:
     xfun,
     knitr,
     rmarkdown,
+    officer (>= 0.6.7),
     openxlsx2,
     covr,
     snakecase,
     gh,
-    duckdb
+    duckdb,
+    readr
 Remotes: 
     ct-data-haven/cwi,
     davidgohel/officer

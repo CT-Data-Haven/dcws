@@ -32,11 +32,11 @@
 #' fetch_cws(question %in% c("Diabetes", "Asthma"), .name = "Bridgeport")
 #'
 #' # how you might use this to make a beautiful table
-#' fetch_cws(code == "Q1", .year = 2021, .category = c("Income", "Gender"), .unnest = TRUE) %>%
-#'   dplyr::group_by(name, category, group) %>%
+#' fetch_cws(code == "Q1", .year = 2021, .category = c("Income", "Gender"), .unnest = TRUE) |>
+#'   dplyr::group_by(name, category, group) |>
 #'   # might want to remove refused, don't know responses
-#'   # cwi::sub_nonanswers() %>%
-#'   dplyr::filter(response == "Yes") %>%
+#'   # cwi::sub_nonanswers() |>
+#'   dplyr::filter(response == "Yes") |>
 #'   tidyr::pivot_wider(id_cols = name, names_from = group, values_from = value)
 #'
 #' # adding weights to collapse groups (e.g. combining income brackets)
@@ -65,9 +65,8 @@ fetch_cws <- function(..., .year = NULL, .name = NULL, .category = NULL, .unnest
   out <- filter_cws_(out, .year = .year, .name = .name, .category = .category)
 
   if (nrow(out) == 0) {
-    cli::cli_alert_danger("No data were found for this combination of years, locations, and/or categories.")
-    # still go through the motions of joining, unnesting, etc. to return the columns the data frame *would* have had
-    # return(out)
+    # used to be a warning, but that creates errors further down.
+    cli::cli_abort("No data were found for this combination of years, locations, and/or categories.")
   }
 
   if (.drop_ct) {
@@ -104,7 +103,7 @@ fetch_cws <- function(..., .year = NULL, .name = NULL, .category = NULL, .unnest
 #' # weights are generally useful in combination with actual data
 #' # but unless you unnest in advance, this is messy
 #' fetch_cws(code == "Q4E", .year = 2021,
-#'           .name = c("Greater New Haven", "New Haven"), .unnest = TRUE) %>%
+#'           .name = c("Greater New Haven", "New Haven"), .unnest = TRUE) |>
 #'   dplyr::left_join(fetch_wts(.unnest = TRUE), by = c("year", "name", "group"))
 #' @export
 #' @seealso fetch_cws
@@ -123,7 +122,6 @@ fetch_wts <- function(..., .year = NULL, .name = NULL, .unnest = FALSE) {
   out
 }
 
-# cli::cli_abort("change here--don't coerce year to number")
 filter_cws_ <- function(df, .year, .name, .category) {
   if (!is.null(.year)) {
     # coerce to string and filter by span

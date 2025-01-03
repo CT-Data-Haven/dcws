@@ -32,25 +32,25 @@
 #' @examples
 #' # bunch of different ways to work with this
 #' # specific question for one location and one year
-#' cws_full_data %>%
-#'   dplyr::filter(year == 2018, name == "Greater New Haven") %>%
-#'   tidyr::unnest(survey) %>%
-#'   dplyr::filter(grepl("suitable employment", question)) %>%
+#' cws_full_data |>
+#'   dplyr::filter(year == 2018, name == "Greater New Haven") |>
+#'   tidyr::unnest(survey) |>
+#'   dplyr::filter(grepl("suitable employment", question)) |>
 #'   tidyr::unnest(data)
 #'
 #' # simpler but a bit slower--has to unnest to full 600k rows
-#' cws_full_data %>%
-#'   tidyr::unnest(survey) %>%
-#'   tidyr::unnest(data) %>%
+#' cws_full_data |>
+#'   tidyr::unnest(survey) |>
+#'   tidyr::unnest(data) |>
 #'   dplyr::filter(year == 2018,
 #'                 name == "Greater New Haven",
 #'                 grepl("suitable employment", question))
 #'
 #' # specific question, one location, multiple years
-#' cws_full_data %>%
-#'   dplyr::mutate(survey = purrr::map(survey, dplyr::filter, question == "Diabetes")) %>%
-#'   dplyr::filter(name == "New Haven") %>%
-#'   tidyr::unnest(survey) %>%
+#' cws_full_data |>
+#'   dplyr::mutate(survey = purrr::map(survey, dplyr::filter, question == "Diabetes")) |>
+#'   dplyr::filter(name == "New Haven") |>
+#'   tidyr::unnest(survey) |>
 #'   tidyr::unnest(data)
 #'
 #' # make things easier with fetch_cws: flexibly grab by location, year, and/or

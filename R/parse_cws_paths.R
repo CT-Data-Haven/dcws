@@ -1,13 +1,33 @@
-clean_paths <- function(x) {
-    paths <- x
-    x <- xfun::sans_ext(basename(x))
+# if not including years, return single vector of names
+# else return tibble
+#' @title parse_cws_paths
+#' @description Extract location names and years from DCWS crosstab paths
+#' @param paths String: path
+#' @param incl_year Boolean: whether to extract year(s)
+#' @param incl_tag Boolean: whether to extract tag
+#' @return Data frame
+parse_cws_paths <- function(paths, incl_year = TRUE, incl_tag = TRUE) {
+    name <- xfun::sans_ext(basename(paths))
     # decide which function to use based on 2024 flags
-    x <- ifelse(grepl("^dcws_.+\\-v", x),
-        clean_paths_r_(x),
-        clean_paths_spss_(x)
+    name <- ifelse(grepl("^dcws_.+\\-v", name),
+        extract_name_r_(name),
+        extract_name_spss_(name)
     )
-    x <- path_regex_(x)
-    stats::setNames(paths, x)
+    name <- path_regex_(name)
+    if (incl_year) {
+        span <- stringr::str_extract_all(paths, "(?<=\\D)(\\d{4})(?=[_\\s\\-])")
+        span <- purrr::map_chr(span, paste, collapse = "_")
+        year <- as.numeric(stringr::str_remove(span, "^\\d{4}_"))
+    } else {
+        span <- NULL
+        year <- NULL
+    }
+    if (incl_tag) {
+        tag <- extract_tag_(paths)
+    } else {
+        tag <- NULL
+    }
+    tibble::tibble(name, span, year, tag = tag, path = paths)
 }
 
 collapse_patt_ <- function(patt) {
@@ -19,15 +39,21 @@ path_regex_ <- function(x) {
     abbrevs <- collapse_patt_(c("\\bCog\\b", "Echn", "\\bZip\\b", "5ct"))
     apost <- sprintf("\\b%s(s)\\b", collapse_patt_(c("Children", "Vincent", "Mary")))
     replace <- c("Uconn" = "UConn", "Lawrence Memorial" = "Lawrence + Memorial")
-    
+
     x <- gsub(abbrevs, "\\U\\1", x, perl = TRUE)
     x <- stringr::str_replace_all(x, apost, "\\1'\\2")
     x <- stringr::str_replace_all(x, replace)
     x
 }
 
+extract_tag_ <- function(x, patt = "\\-v(\\d\\.){3,4}") {
+  x <- stringr::str_extract(x, patt)
+  # drop leading / trailing punct
+  x <- stringr::str_remove_all(x, "(^[[:punct:]]|[[:punct:]]$)")
+  x
+}
 
-clean_paths_spss_ <- function(x) {
+extract_name_spss_ <- function(x) {
     x <- stringr::str_remove(x, "^DataHaven\\d{4}[\\s_]")
     x <- stringr::str_remove_all(x, "[\\s_](Crosstabs|Pub)")
     x <- stringr::str_replace_all(x, c(
@@ -47,7 +73,7 @@ clean_paths_spss_ <- function(x) {
     x
 }
 
-clean_paths_r_ <- function(x) {
+extract_name_r_ <- function(x) {
     x <- stringr::str_remove(x, "^dcws_")
     x <- stringr::str_remove(x, "\\-.+$")
     x <- stringr::str_remove(x, "(_\\d{4})+$")

@@ -35,12 +35,19 @@ datasets['path'] = datasets.apply(lambda x: data_path(x['id'], x.name), axis = 1
 repo24 = 'dcws24_crosstabs'
 tag24 = get_latest_tag(repo24)
 
+# scripts of functions that need tests
+funcs = ['clean_dcws_lvls', 'parse_cws_paths', 'fetch_cws', 'read_cws', 'xtab2df']
+
+
 rule download_2024:
     output:
         f'data-raw/crosstabs/downloads/dcws15_24-{tag24}.zip',
         f'data-raw/crosstabs/downloads/dcws24-{tag24}.zip',
     shell:
         '''
+        # clean old downloads
+        rm -f data-raw/crosstabs/dcws_*-v*.xlsx
+
         mkdir -p data-raw/crosstabs/downloads && touch data-raw/crosstabs/downloads/.dummy
         gh release download {tag24} --repo ct-data-haven/{repo24} \
             --pattern 'dcws*.zip' \
@@ -53,13 +60,16 @@ rule cws20:
     input:
         xtab = 'data-raw/crosstabs/DataHaven2020 Connecticut Crosstabs.xlsx',
         doc = 'data-raw/misc_input/DataHaven0720_Prn2.docx',
+    output:
+        lookup = 'data/cws20_lookup.rda',
     script:
-        'R/clean_cws_2020.R'
+        'data-raw/cws20_lookup.R'
 
-rule data:
+rule main_data:
     input:  
         xlsx = Path('data-raw/crosstabs').glob('*.xlsx'),
-        scripts = ['R/clean_cws_2020.R', 'R/clean_paths.R', 'R/read_dcws.R', 'R/clean_dcws_lvls.R'],
+        scripts = ['R/parse_cws_paths.R', 'R/read_cws.R', 'R/clean_cws_lvls.R'],
+        lookup20 = rules.cws20.output.lookup,
     output:
         # protected(datasets['path'].unique()),
         datasets['path'].unique(),
@@ -76,12 +86,25 @@ rule definitions:
 
 rule data_raw:
     input:
-        rules.data.output,
+        rules.main_data.output,
         rules.definitions.output,
+        rules.cws20.output,
+
+rule tests:
+    input:
+        rules.data_raw.input,
+        r = expand('R/{func}.R', func = funcs),
+        test = expand('tests/testthat/test-{func}.R', func = funcs),
+    shell:
+        '''
+        Rscript -e "devtools::test()"
+        '''
+    
+
 
 rule check:
     input:
-        rules.data_raw.output,
+        rules.data_raw.input,
     output:
         flag = touch('.flags/pkg-check.txt'),
     shell:
@@ -130,5 +153,6 @@ rule clean:
             man/*.Rd \
             data/*.rda \
             R/sysdata.rda \
-            data-raw/crosstabs/downloads/*.zip
+            data-raw/crosstabs/downloads/*.zip \
+            data-raw/crosstabs/dcws_*-v*.xlsx
         '''

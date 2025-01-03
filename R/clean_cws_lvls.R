@@ -14,7 +14,10 @@ to_replace <- c(
   "^\\b(\\d+)" = "Ages \\1",
   "hich school" = "high school",
   ",000" = "K",
-  "Age\\b(?=.)" = "Ages"
+  "Age\\b(?=.)" = "Ages",
+  # "Children" = "Kids",
+  # "children" = "kids",
+  "\\bHH" = "home"
 )
 
 # regex
@@ -24,14 +27,15 @@ to_remove <- paste(c(
   "(?<=(/|\\<))\\s",
   "(?<=Associate's)( degree)",
   "(?<=Bachelor's)( degree)",
-  "\\*$",
-  "\\stotal$"
+  "^Income ",
+  "\\*$"
 ), collapse = "|")
 
 # full strings
 to_recode <- list(
   "Greater Waterbury" = "CCF",
   "Greater Waterbury" = "CCF Area",
+  "Greater Waterbury" = "CCF Towns",
   "Greater Hartford" = "CRCOG",
   "Port Chester NY" = "Port Chester",
   # "5CT" = "Five Connecticuts",
@@ -63,7 +67,7 @@ grp2cat <- list(
   "Race/Ethnicity" = c("White", "Black", "Latino", "Asian", "Indigenous", "Not white", "Other race"),
   "Education" = c("Less than high school", "High school or less", "High school", "Some college or less", "Some college or Associate's", "Some college or higher", "Less than Bachelor's", "Bachelor's or higher"),
   "Income" = c("<$15K", "$15K-$30K", "<$30K", "$30K-$50K", "$30K-$75K", "$30K-$100K", "$50K-$75K", "<$75K", "$75K-$100K", "$75K+", "<$100K", "$100K-$200K", ">$100K", "$100K+", ">$200K", "$200K+"),
-  "With children" = c("No kids", "Kids in home"),
+  "With children" = c("No kids", "Kids in home", "No kids in home"),
   "Sexual orientation & gender identity" = c("Cisgender and straight", "Identifies as LGBTQ"),
   "Sexual orientation" = c("Lesbian, gay, or bisexual", "Straight"),
   "Place of birth" = c("Born in the US", "Born outside the US"),
@@ -80,19 +84,20 @@ grp2cat <- list(
 #' # vector of strings as read in from crosstabs
 #' categories <- c("Connecticut", "NH Inner Ring", "Gender", "Age",
 #'                 "Race/Ethnicity", "Education", "Income", "Children in HH")
-#' levels(clean_dcws_lvls(categories))
+#' levels(clean_cws_lvls(categories))
 #'
 #' groups <- c("M", "F", "18-34", "35 to 49", "65 and older",
 #'             "Black/Afr Amer", "African American/Black", "High School",
 #'             "Less than $15,000", "$15,000 to $30,000", "No")
-#' levels(clean_dcws_lvls(groups))
+#' levels(clean_cws_lvls(groups))
 #' @return A factor
 #' @export
-clean_dcws_lvls <- function(x) {
+clean_cws_lvls <- function(x) {
   if (!is.factor(x)) x <- forcats::as_factor(x)
   suppressWarnings({
-    x <- forcats::fct_relabel(x, stringr::str_replace_all, to_replace)
+    # weird but might work best to do twice
     x <- forcats::fct_relabel(x, stringr::str_remove_all, to_remove)
+    x <- forcats::fct_relabel(x, stringr::str_replace_all, to_replace)
     x <- forcats::fct_recode(x, !!!to_recode)
     x <- forcats::fct_collapse(x, !!!to_collapse)
     x <- forcats::fct_relabel(x, stringr::str_squish)
@@ -101,10 +106,10 @@ clean_dcws_lvls <- function(x) {
 }
 
 add_cats <- function(x, return_table) {
-  x <- clean_dcws_lvls(x)
+  x <- clean_cws_lvls(x)
   cats <- suppressWarnings(forcats::fct_collapse(x, !!!grp2cat))
   cats <- ifelse(grepl(" total", cats), "Total", as.character(cats))
-  # cats <- forcats::as_factor(cats)
+  cats <- forcats::as_factor(cats)
   # cats <- suppressWarnings(forcats::fct_relevel(cats, names(grp2cat)))
   if (return_table) {
     data.frame(category = cats, group = x)

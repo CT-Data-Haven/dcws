@@ -9,17 +9,35 @@ streak <- function(x) {
   rep(seq_along(durations), times = durations)
 }
 
-cws_check_yr <- function(path, year) {
+cws_check_yr <- function(path, year, verbose) {
+  if (length(path) > 1) {
+    cli::cli_abort("Because of how it handles parsing years, `cws_check_yr` only takes 1 path at a time.")
+  }
   if (is.null(year) & is.null(path)) {
     cli::cli_abort("Guessing the year is only available for functions that take a path argument. Please supply the year explicitly.")
   }
+  # if not numeric, try to guess before error
+  if (!is.numeric(year)) {
+    year <- NULL
+  }
   if (is.null(year)) {
+    guessing <- TRUE
     # match year pattern, get last match
-    year <- stringr::str_extract_all(path, "(?<=[\\ba-z_])(\\d{4})(?=[\\b\\-_\\s])")[[1]]
+    # also need to handle test files
+    if (grepl("test_xtab", path)) {
+      patt <- "(\\d{4})"
+    } else {
+      patt <- "(?<=\\D)(\\d{4})(?=[\\b\\-_\\s])"
+    }
+    year <- stringr::str_extract_all(basename(path), patt)[[1]]
     year <- year[length(year)]
     year <- as.numeric(year)
-    cli::cli_inform(c("Guessing year from the path",
-                      "i" = "Based on the path {path}, assuming {.var year} = {year}."))
+    if (verbose) {
+      cli::cli_inform(c("Guessing year from the path",
+                        "i" = "Based on the path {path}, assuming {.var year} = {year}."))
+    }
+  } else {
+    guessing <- FALSE
   }
   if (!is.numeric(year)) {
     cli::cli_abort("{.var year} should be a number for the year or end year of the survey.")
