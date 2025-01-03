@@ -1,26 +1,25 @@
 devtools::load_all()
 # METADATA ----
-codes20 <- clean_cws_2020()
-
 # spss-based xtabs come from excel sheets but r-based can come from single csv + codebook
 paths <- list.files("data-raw/crosstabs", pattern = "\\.xlsx?", full.names = TRUE) |>
-    clean_paths() |>
-    tibble::enframe(value = "path") |>
-    # get end year
-    dplyr::mutate(yrs = stringr::str_extract_all(path, "(?<=\\D)(\\d{4})(?=[_\\s\\-])")) |>
-    dplyr::mutate(span = purrr::map_chr(yrs, paste, collapse = "_")) |>
-    dplyr::mutate(year = as.numeric(stringr::str_extract(span, "\\d{4}$"))) |>
-    dplyr::mutate(name = dplyr::recode(name, Valley = "Lower Naugatuck Valley")) #|>
-# dplyr::mutate(code_patt = ifelse(year == 2020, "^$", "^[A-Z\\d_]{2,20}$"))
+    parse_cws_paths(incl_year = TRUE, incl_tag = TRUE) |>
+    dplyr::mutate(name = dplyr::recode(name, Valley = "Lower Naugatuck Valley"))
+# for tagged releases, check that only using most recent tag
+dupes <- paths |>
+    dplyr::count(name, span) |>
+    dplyr::filter(n > 1)
+if (nrow(dupes) > 0) {
+    cli::cli_abort("duplicate crosstabs found--check in prep_cws.R")
+}
 
 # use empty code for 2020
 ct5 <- c("Urban Core", "Urban Periphery", "Suburban", "Rural", "Wealthy")
 safe_read_xtabs <- purrr::possibly(read_xtabs, otherwise = NULL)
 full_meta <- paths |>
-    dplyr::mutate(data = purrr::pmap(list(path, year), function(path, year) {
+    dplyr::mutate(data = purrr::pmap(list(name, span, year, path), function(name, span, year, path) {
         safe_read_xtabs(path, year = year, process = TRUE, verbose = FALSE)
     }))
-full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate, dplyr::across(c(category, group), clean_dcws_lvls)))
+full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate, dplyr::across(c(category, group), clean_cws_lvls)))
 full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate, category = dplyr::case_when(
     group %in% ct5 ~ "Five Connecticuts",
     category %in% c("Connecticut", "HIC", name) ~ "Total",
@@ -33,19 +32,21 @@ full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate,
     group = suppressWarnings(forcats::fct_recode(group, Connecticut = "Total"))
 ))
 full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate,
-    question = stringr::str_replace_all(question, "\\´", "'")
+    question = question |>
+      stringr::str_replace_all("\\´", "'") |>
+      stringr::str_replace_all("…", "...") |>
+      enc2utf8()
 ))
 full_meta <- dplyr::arrange(full_meta, year, name)
 # full_meta <- dplyr::select(full_meta, -code_patt)
 full_meta <- split(full_meta, full_meta$year)
 full_meta[["2020"]] <- dplyr::mutate(full_meta[["2020"]],
-    data = purrr::map(data, \(x) dplyr::left_join(x, codes20, by = "q_number", relationship = "many-to-many"))
+    data = purrr::map(data, \(x) dplyr::left_join(x, cws20_lookup, by = "q_number", relationship = "many-to-many"))
 )
 full_meta[["2020"]] <- dplyr::mutate(full_meta[["2020"]],
     data = purrr::map(data, dplyr::select, code, dplyr::everything(), -q_number)
 )
 full_meta <- dplyr::bind_rows(full_meta)
-
 
 # order group levels within categories
 lvls <- full_meta |>
@@ -76,11 +77,10 @@ cws_group_meta <- full_meta |>
 response_meta <- full_meta |>
     dplyr::filter(name == "Connecticut") |>
     tidyr::unnest(data) |>
-    dplyr::distinct(year, code, question, response) |>
-    dplyr::group_by(year) |>
-    dplyr::mutate(row = rleid(question)) |>
-    dplyr::group_by(year, row, code, question) |>
-    dplyr::summarise(response = paste(response, collapse = " / ")) |>
+    dplyr::distinct(year, code, response) |>
+    dplyr::filter(code != "") |> # only landline vs cell question
+    dplyr::group_by(year, code) |>
+    dplyr::summarise(responses = list(response)) |>
     dplyr::ungroup()
 
 
@@ -93,6 +93,13 @@ cws_full_data <- full_meta |>
     dplyr::select(year, span, name, data) |>
     tidyr::unnest(data) |>
     tidyr::nest(data = category:value) |>
+    # add full set of available responses per code-year
+    dplyr::left_join(response_meta, by = c("year", "code")) |>
+    dplyr::mutate(data = purrr::map2(data, responses, function(df, resp_lvls) {
+        df |>
+          dplyr::mutate(response = forcats::as_factor(response) |> forcats::fct_expand(resp_lvls)) |>
+          tidyr::complete(tidyr::nesting(category, group), response)
+    })) |>
     tidyr::nest(survey = c(-year, -span, -name))
 
 
@@ -115,8 +122,8 @@ add_wt1 <- function(data, name) {
 # tack on 1.0 weights to top
 cws_full_wts <- paths |>
     dplyr::mutate(weights = path |>
-        purrr::map(safe_wts) |>
-        purrr::map(dplyr::mutate, group = clean_dcws_lvls(group)) |>
+        purrr::map(safe_wts, verbose = FALSE) |>
+        purrr::map(dplyr::mutate, group = clean_cws_lvls(group)) |>
         purrr::map2(name, add_wt1)) |>
     dplyr::select(year, span, name, weights) |>
     dplyr::semi_join(cws_full_data, by = c("year", "span", "name"))
