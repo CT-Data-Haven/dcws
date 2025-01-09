@@ -16,9 +16,16 @@ cws_check_yr <- function(path, year, verbose) {
   if (is.null(year) & is.null(path)) {
     cli::cli_abort("Guessing the year is only available for functions that take a path argument. Please supply the year explicitly.")
   }
-  # if not numeric, try to guess before error
-  if (!is.numeric(year)) {
-    year <- NULL
+  # if not numeric, try:
+  # * to coerce
+  # * to guess before error
+  if (!is.null(year)) {
+    if (!is.numeric(year)) {
+      year <- suppressWarnings(as.numeric(year))
+    }
+    if (is.na(year) | year < 1900 | year > 2100) {
+      year <- NULL
+    }
   }
   if (is.null(year)) {
     guessing <- TRUE

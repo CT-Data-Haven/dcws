@@ -4,9 +4,10 @@
 #' @param .year A vector of one or more year(s) to subset by. If this is a character that contains a separator (`"_"`, `"-"`, or a space character), it will be assumed to be a span of years, such as for multi-year pooled crosstabs (e.g. `"2015_2024"`). Otherwise it's assumed this is a single year of the survey. If `NULL`, no filtering is done by year.
 #' @param .name A vector of one or more strings giving the name(s) to subset by. If `NULL`, no filtering is done by name.
 #' @param .category A vector of one or more strings giving the category(ies) to subset by. If `NULL`, no filtering is done by category.
-#' @param .unnest Logical: should the `data` column be unnested? This just saves a step of calling `tidyr::unnest` but defaults to false.
-#' @param .add_wts Logical: should groups' survey weights be attached, via a left-join with `dcws::cws_full_wts`? This is useful if you need to collapse groups later; otherwise you might get stuck in annoying `tidyr::unnest` messes.
-#' @param .drop_ct Logical: should statewide totals be included for each crosstab extract? This can be useful for a single location in order to have Connecticut values to compare against, but becomes redundant with multiple locations. The default `TRUE` means statewide averages will not be included.
+#' @param .unnest Boolean: should the `data` column be unnested? This just saves a step of calling `tidyr::unnest` but defaults to false.
+#' @param .add_wts Boolean: should groups' survey weights be attached, via a left-join with `dcws::cws_full_wts`? This is useful if you need to collapse groups later; otherwise you might get stuck in annoying `tidyr::unnest` messes.
+#' @param .drop_ct Boolean: should statewide totals be included for each crosstab extract? This can be useful for a single location in order to have Connecticut values to compare against, but becomes redundant with multiple locations. The default `TRUE` means statewide averages will not be included.
+#' @param .incl_questions Boolean: should the full text of each question be included? If `FALSE`, questions will be demarcated by just their codes, which take up less space but can change year to year. Defaults `TRUE`.
 #' @return A data frame, with between 5 and 9 columns, depending on arguments. Columns `year`, `name`, `code`, and `question` are always included. Additional columns:
 #'
 #' |arguments                 |columns                                                          |
@@ -33,60 +34,78 @@
 #'
 #' # how you might use this to make a beautiful table
 #' fetch_cws(code == "Q1", .year = 2021, .category = c("Income", "Gender"), .unnest = TRUE) |>
-#'   dplyr::group_by(name, category, group) |>
-#'   # might want to remove refused, don't know responses
-#'   # cwi::sub_nonanswers() |>
-#'   dplyr::filter(response == "Yes") |>
-#'   tidyr::pivot_wider(id_cols = name, names_from = group, values_from = value)
+#'     dplyr::group_by(name, category, group) |>
+#'     # might want to remove refused, don't know responses
+#'     # cwi::sub_nonanswers() |>
+#'     dplyr::filter(response == "Yes") |>
+#'     tidyr::pivot_wider(id_cols = name, names_from = group, values_from = value)
 #'
 #' # adding weights to collapse groups (e.g. combining income brackets)
 #' fetch_cws(code == "Q1", .year = 2021, .add_wts = TRUE)
-#' fetch_cws(.year = 2021, .name = "New Haven", .category = c("Total", "Age", "Income"),
-#'           .add_wts = TRUE, .unnest = TRUE)
+#' fetch_cws(
+#'     .year = 2021, .name = "New Haven", .category = c("Total", "Age", "Income"),
+#'     .add_wts = TRUE, .unnest = TRUE
+#' )
 #' @seealso cws_full_data, cws_full_wts
 #' @import tidyselect
 #' @export
-fetch_cws <- function(..., .year = NULL, .name = NULL, .category = NULL, .unnest = FALSE, .add_wts = FALSE, .drop_ct = TRUE) {
-  # warn if code is used anywhere--not stable year to year
-  q <- purrr::map_chr(rlang::enquos(...), rlang::as_label)
-  if (any(grepl("\\bcode\\b", q)) & (is.null(.year) | length(.year) > 1)) {
-    cli::cli_alert_warning("Keep in mind that codes might change between years--double check before using {.var code} as a filter.")
-  }
+fetch_cws <- function(...,
+                      .year = NULL,
+                      .name = NULL,
+                      .category = NULL,
+                      .unnest = FALSE,
+                      .add_wts = FALSE,
+                      .drop_ct = TRUE,
+                      .incl_questions = TRUE) {
+    # warn if code is used anywhere--not stable year to year
+    q <- purrr::map_chr(rlang::enquos(...), rlang::as_label)
+    if (any(grepl("\\bcode\\b", q)) && (is.null(.year) || length(.year) > 1)) {
+        cli::cli_alert_warning("Keep in mind that codes might change between years--double check before using {.var code} as a filter.")
+    }
 
-  out <- tidyr::unnest(dcws::cws_full_data, survey)
-  out <- dplyr::filter(out, !!!rlang::quos(...))
+    # add question text here to have it available for filtering, then drop if not needed
+    out <- tidyr::unnest(dcws::cws_full_data, survey)
+    codebook <- dcws::cws_codebook[, c("year", "code", "question")]
+    out <- dplyr::left_join(out, codebook, by = c("year", "code"))
+    out <- dplyr::relocate(out, question, .after = code)
+    out <- dplyr::filter(out, !!!rlang::quos(...))
 
-  # unnest first--filtering is 15x faster if unnested than by mapping
-  # if filtering categories
-  # if dropping ct
-  # if adding wts
-  # if not unnesting, re-nest
-  out <- tidyr::unnest(out, data)
-  out <- filter_cws_(out, .year = .year, .name = .name, .category = .category)
+    # unnest first--filtering is 15x faster if unnested than by mapping
+    # if filtering categories
+    # if dropping ct
+    # if adding wts
+    # if not unnesting, re-nest
+    out <- tidyr::unnest(out, data)
+    out <- filter_cws_(out, .year = .year, .name = .name, .category = .category)
 
-  if (nrow(out) == 0) {
-    # used to be a warning, but that creates errors further down.
-    cli::cli_abort("No data were found for this combination of years, locations, and/or categories.")
-  }
+    if (nrow(out) == 0) {
+        # used to be a warning, but that creates errors further down.
+        cli::cli_abort("No data were found for this combination of years, locations, and/or categories.")
+    }
 
-  if (.drop_ct) {
-    out <- dplyr::filter(out, !(name != "Connecticut" & group == "Connecticut"))
-  }
+    if (.drop_ct) {
+        out <- dplyr::filter(out, !(name != "Connecticut" & group == "Connecticut"))
+    }
 
-  if (.add_wts) {
-    out <- dplyr::left_join(out,
-                            tidyr::unnest(dcws::cws_full_wts, weights),
-                            by = c("year", "name", "group"))
-  }
+    if (.add_wts) {
+        out <- dplyr::left_join(out,
+            tidyr::unnest(dcws::cws_full_wts, weights),
+            by = c("year", "span", "name", "group")
+        )
+    }
 
-  #TODO: write replacement for where
-  out <- dplyr::mutate(out, dplyr::across(where(is.factor), forcats::fct_drop))
+    if (!.incl_questions) {
+        out$question <- NULL
+    }
 
-  if (!.unnest) {
-    out <- tidyr::nest(out, data = -year:-question)
-  }
+    # TODO: write replacement for where
+    out <- dplyr::mutate(out, dplyr::across(tidyselect::where(is.factor), forcats::fct_drop))
 
-  out
+    if (!.unnest) {
+        out <- tidyr::nest(out, data = tidyselect::any_of(c("category", "group", "response", "value", "weight")))
+    }
+
+    out
 }
 
 
@@ -102,58 +121,45 @@ fetch_cws <- function(..., .year = NULL, .name = NULL, .category = NULL, .unnest
 #'
 #' # weights are generally useful in combination with actual data
 #' # but unless you unnest in advance, this is messy
-#' fetch_cws(code == "Q4E", .year = 2021,
-#'           .name = c("Greater New Haven", "New Haven"), .unnest = TRUE) |>
-#'   dplyr::left_join(fetch_wts(.unnest = TRUE), by = c("year", "name", "group"))
+#' fetch_cws(code == "Q4E",
+#'     .year = 2021,
+#'     .name = c("Greater New Haven", "New Haven"), .unnest = TRUE
+#' ) |>
+#'     dplyr::left_join(fetch_wts(.unnest = TRUE), by = c("year", "name", "group"))
 #' @export
 #' @seealso fetch_cws
 fetch_wts <- function(..., .year = NULL, .name = NULL, .unnest = FALSE) {
-  out <- dplyr::filter(dcws::cws_full_wts, !!!rlang::quos(...))
-  out <- filter_cws_(out, .year = .year, .name = .name, .category = NULL)
+    out <- dplyr::filter(dcws::cws_full_wts, !!!rlang::quos(...))
+    out <- filter_cws_(out, .year = .year, .name = .name, .category = NULL)
 
-  if (nrow(out) == 0) {
-    cli::cli_abort("No weights were found for this combination of years and locations.")
-  }
+    if (nrow(out) == 0) {
+        cli::cli_abort("No weights were found for this combination of years and locations.")
+    }
 
-  if (.unnest) {
-    out <- tidyr::unnest(out, weights)
-  }
+    if (.unnest) {
+        out <- tidyr::unnest(out, weights)
+    }
 
-  out
+    out
 }
 
 filter_cws_ <- function(df, .year, .name, .category) {
-  if (!is.null(.year)) {
-    # coerce to string and filter by span
-    yr_chr <- as.character(.year)
-    df <- df[df[["span"]] %in% yr_chr, ]
-    # if (is.character(.year) && grepl("[_\\-\\s]", .year)) {
-    #   df <- dplyr::filter(df, span %in% .year)
-    # } else {
-    #   df <- dplyr::filter(df, year %in% .year)
-    # }
-  }
-  if (!is.null(.name)) {
-    df <- df[df[["name"]] %in% .name, ]
-  }
-  if (!is.null(.category)) {
-    df <- df[df[["category"]] %in% .category, ]
-  }
-  df
+    if (!is.null(.year)) {
+        # coerce to string and filter by span
+        yr_chr <- as.character(.year)
+        df <- df[df[["span"]] %in% yr_chr, ]
+        # if (is.character(.year) && grepl("[_\\-\\s]", .year)) {
+        #   df <- dplyr::filter(df, span %in% .year)
+        # } else {
+        #   df <- dplyr::filter(df, year %in% .year)
+        # }
+    }
+    if (!is.null(.name)) {
+        df <- df[df[["name"]] %in% .name, ]
+    }
+    if (!is.null(.category)) {
+        df <- df[df[["category"]] %in% .category, ]
+    }
+    df
 }
 
-# filter_cws_ <- function(df, .year, .name, .category) {
-#   if (!is.null(.year)) {
-#     if (is.character(.year)) .year <- as.numeric(.year)
-#     df <- dplyr::filter(df, year %in% .year)
-#   }
-#   if (!is.null(.name)) {
-#     df <- dplyr::filter(df, name %in% .name)
-#   }
-#   if (!is.null(.category)) {
-#     df <- dplyr::filter(df, category %in% .category)
-#   }
-#   df
-# }
-
-utils::globalVariables("where")

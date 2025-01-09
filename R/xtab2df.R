@@ -58,8 +58,8 @@ xtab2df <- function(data, year, col = x1, code_pattern = NULL, verbose = TRUE) {
   if (!"group" %in% names(out)) {
     out[["group"]] <- "Total"
   }
-  out[["category"]] <- clean_cws_lvls(out[["category"]])
-  out[["group"]] <- clean_cws_lvls(out[["group"]])
+  out[["category"]] <- clean_cws_lvls(out[["category"]], is_category = TRUE)
+  out[["group"]] <- clean_cws_lvls(out[["group"]], is_category = FALSE)
   # fix misspellings in categories
   if ("category" %in% names(out)) {
     # out[["category"]] <- stringr::str_remove(out[["category"]], "\\*$")

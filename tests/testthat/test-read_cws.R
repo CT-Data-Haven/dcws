@@ -1,6 +1,6 @@
 
 test_that("read_xtabs: test the test setup", {
-  # yrs <- as.character(c(2015, 2018, 2020, 2021))
+  yrs <- as.character(c(2015, 2018, 2020, 2021, 2024))
 
   expect_equal(names(all_xt(read_xtabs)), yrs)
   expect_equal(names(all_xt(read_weights)), yrs)
@@ -29,11 +29,14 @@ test_that("read_xtabs allows custom name prefixes", {
 })
 
 test_that("read_xtabs successfully passes to xtab2df", {
-  xts_no_process <- all_xt(read_xtabs) |> purrr::map(xtab2df)
+  yrs <- as.character(c(2015, 2018, 2020, 2021, 2024))
+  xts_no_process <- all_xt(read_xtabs) |>
+    purrr::map2(yrs, function(xt, yr) xtab2df(xt, year = yr))
   xts_process <- all_xt(read_xtabs, list(process = TRUE))
   expect_mapequal(xts_no_process, xts_process)
 
-  xts_no_process_args <- all_xt(read_xtabs, list(name_prefix = "v")) |> purrr::map(xtab2df, col = v1)
+  xts_no_process_args <- all_xt(read_xtabs, list(name_prefix = "v")) |>
+    purrr::map2(yrs, function(xt, yr) xtab2df(xt, yr, col = v1))
   xts_process_args <- all_xt(read_xtabs, list(name_prefix = "v", process = TRUE))
   expect_mapequal(xts_no_process_args, xts_process_args)
 })
@@ -45,3 +48,10 @@ test_that("read_xtabs print parameters when passing to xtab2df", {
   expect_silent(dummy <- read_xtabs(demo_xt(2018), year = 2018, process = TRUE, verbose = FALSE))
 })
 
+test_that("read_cws passes verbose to cws_check_yr", {
+  # message about guessing year; if verbose = TRUE, silent even if guessing
+  expect_message(dummy <- read_xtabs(demo_xt(2024), year = NULL, process = TRUE, verbose = TRUE), "Guessing year")
+  expect_message(dummy <- read_weights(demo_xt(2024), year = NULL, verbose = TRUE), "Guessing year")
+  expect_silent(dummy <- read_xtabs(demo_xt(2024), year = NULL, process = TRUE, verbose = FALSE))
+  expect_silent(dummy <- read_weights(demo_xt(2024), year = NULL, verbose = FALSE))
+})

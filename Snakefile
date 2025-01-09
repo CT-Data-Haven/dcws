@@ -26,8 +26,8 @@ def get_latest_tag(repo, owner = 'ct-data-haven'):
     return latest
 
 datasets = {
-    # 'internal': ['full_meta'],
-    'external': ['cws_group_meta', 'cws_full_data', 'cws_full_wts', 'cws_max_moe']
+    'internal': ['tags'],
+    'external': ['cws_group_meta', 'cws_full_data', 'cws_full_wts', 'cws_max_moe', 'cws_codebook']
 }
 datasets = pd.concat([pd.DataFrame({'type': k, 'id': v}) for k, v in datasets.items()]).set_index('type')
 datasets['path'] = datasets.apply(lambda x: data_path(x['id'], x.name), axis = 1)
@@ -36,7 +36,7 @@ repo24 = 'dcws24_crosstabs'
 tag24 = get_latest_tag(repo24)
 
 # scripts of functions that need tests
-funcs = ['clean_dcws_lvls', 'parse_cws_paths', 'fetch_cws', 'read_cws', 'xtab2df']
+funcs = ['clean_cws_lvls', 'parse_cws_paths', 'fetch_cws', 'read_cws', 'xtab2df']
 
 
 rule download_2024:

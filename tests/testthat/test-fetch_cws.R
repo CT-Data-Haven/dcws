@@ -1,21 +1,19 @@
+## FETCH_CWS ----
 test_that("fetch_cws returns correct dimensions", {
   cws_full <- fetch_cws()
   cws_unnest <- fetch_cws(.unnest = TRUE)
-  cws_vec <- fetch_cws(.year = c(2015, 2018))
+  yrs <- c(2015, 2018)
+  cws_vec <- fetch_cws(.year = yrs)
+  cws_no_q <- fetch_cws(.year = yrs, .incl_questions = FALSE)
 
-  expect_length(unique(cws_full$year), 5) # 2015, 2018, 2020, 2021, 2022
-  expect_length(unique(cws_vec$year), 2)
-
-  # 70 qs in 2020
-  n20 <- cws_full %>%
-    dplyr::filter(name == "Connecticut", year == 2020) %>%
-    dplyr::pull(code) %>%
-    unique()
-  expect_length(n20, 70)
+  expect_setequal(unique(cws_full$year), c(2015, 2018, 2020, 2021, 2022, 2024)) # 2015, 2018, 2020, 2021, 2022
+  expect_setequal(unique(cws_vec$year), yrs)
 
   # number of columns, nested vs unnested
-  expect_length(cws_full, 5)
-  expect_length(cws_unnest, 8)
+  univ_cols <- c("year", "span", "name", "code", "question")
+  expect_named(cws_full, c(univ_cols, "data"))
+  expect_named(cws_unnest, c(univ_cols, "category", "group", "response", "value"))
+  expect_named(cws_no_q, c(univ_cols[1:4], "data"))
 })
 
 test_that("fetch_cws drops CT totals", {
@@ -54,17 +52,16 @@ test_that("fetch_cws handles ellipses", {
 })
 
 test_that("fetch_cws has no/few blank codes", {
-  cws_ct <- fetch_cws(.name = "Connecticut") %>%
-    dplyr::distinct(year, code, question) %>%
+  cws_ct <- fetch_cws(.name = "Connecticut") |>
+    dplyr::distinct(year, code, question) |>
     dplyr::filter(code == "")
   # fewer than 10 blanks?
   expect_lt(nrow(cws_ct), 10)
 })
 
-test_that("fetch_cws messages when no matches", {
-  expect_message(fetch_cws(year > 2020, .year = 2015))
-  expect_message(fetch_cws(.year = 2021, .name = "Bethany"))
-  expect_equal(nrow(suppressMessages(fetch_cws(.year = 2021, .name = "Bethany"))), 0)
+test_that("fetch_cws errors when no matches", {
+  expect_error(fetch_cws(year > 2020, .year = 2015))
+  expect_error(fetch_cws(.year = 2021, .name = "Bethany"))
 })
 
 test_that("fetch_cws warns on multi-year code filters", {
@@ -83,12 +80,39 @@ test_that("fetch_cws filters nested data", {
 })
 
 test_that("fetch_cws adds weights properly", {
+  univ_cols <- c("year", "span", "name", "code", "question")
+  nest_wt <- fetch_cws(.year = 2024, .unnest = FALSE, .add_wts = TRUE)
+  unnest_wt <- fetch_cws(.year = 2024, .unnest = TRUE, .add_wts = TRUE)
+  pool_wt <- fetch_cws(.year = "2015_2024", .add_wts = TRUE)
+  expect_named(nest_wt, c(univ_cols, "data"))
+  expect_named(nest_wt$data[[1]], c("category", "group", "response", "value", "weight"))
+  expect_named(unnest_wt, c(univ_cols, "category", "group", "response", "value", "weight"))
+  expect_true(all(pool_wt$span == "2015_2024"))
+})
+
+test_that("fetch_cws handles pooled data", {
+  single <- fetch_cws(.year = 2024)
+  pooled <- fetch_cws(.year = "2015_2024")
+  expect_s3_class(single, "data.frame")
+  expect_s3_class(pooled, "data.frame")
+})
+
+## FETCH_WTS ----
+test_that("fetch_wts adds total weights = 1", {
+  wts_5ct <- fetch_wts(.year = 2015, .name = "5CT", .unnest = TRUE)
+  wts_nhv <- fetch_wts(.name = "New Haven", .unnest = TRUE)
+
+  expect_gt(nrow(wts_5ct), 0)
+  expect_true(all(c("Connecticut", "New Haven") %in% wts_nhv$group))
+})
+
+test_that("fetch_wts has proper number of columns", {
   tbls <- purrr::map_dbl(list(
-    nest_unwt   = fetch_cws(.year = 2021, .unnest = FALSE, .add_wts = FALSE),
-    nest_wt     = fetch_cws(.year = 2021, .unnest = FALSE, .add_wts = TRUE),
-    unnest_unwt = fetch_cws(.year = 2021, .unnest = TRUE,  .add_wts = FALSE),
-    unnest_wt   = fetch_cws(.year = 2021, .unnest = TRUE,  .add_wts = TRUE)
+    wts_nest = fetch_wts(.unnest = FALSE),
+    wts_unnest = fetch_wts(.unnest = TRUE)
   ), ncol)
-  cols <- c(nest_unwt = 5, nest_wt = 5, unnest_unwt = 8, unnest_wt = 9)
-  expect_mapequal(tbls, cols)
+  wts_nest <- fetch_wts(.unnest = FALSE)
+  wts_unnest <- fetch_wts(.unnest = TRUE)
+  expect_named(wts_nest, c("year", "span", "name", "weights"))
+  expect_named(wts_unnest, c("year", "span", "name", "group", "weight"))
 })

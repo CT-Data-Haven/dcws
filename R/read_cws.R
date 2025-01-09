@@ -18,14 +18,14 @@
 #' it's assumed that weights are in headers above the data, such as for 2021,
 #' in which case a different operation is done but the same weights table is
 #' returned. Default: `"Nature of the [Ss]ample"`
-#' @param process Logical: if `FALSE` (the default), this will return the
+#' @param process Boolean: if `FALSE` (the default), this will return the
 #' crosstab data to be processed, most likely by passing along to `xtab2df`. If
 #' `TRUE`, `xtab2df` will be called, and you'll receive a nice, clean data frame
 #' ready for analysis. This is *only* recommended if you already know for sure
 #' what the crosstab data looks like, so you don't accidentally lose some
 #' questions or important description. As a sanity check, you'll see a message
 #' listing the parameters used in the `xtab2df` call.
-#' @param verbose Logical: if `process` is true, should parameters being passed to
+#' @param verbose Boolean: if `process` is true, should parameters being passed to
 #' `xtab2df` be printed? Defaults to `TRUE` to encourage you to double check that
 #' you're passing arguments intentionally.
 #' @param ... Additional arguments passed on to `xtab2df` if `process = TRUE`.
