@@ -1,3 +1,5 @@
+# dcws (development version)
+
 # dcws 0.1.5
 
 * Add indicator definitions --> `cws_defs`
