@@ -1,80 +1,81 @@
 rleid <- function(x) {
-  if (is.factor(x)) x <- as.character(x)
-  durations <- rle(x)$lengths
-  unlist(purrr::imap(durations, function(d, i) rep(i, times = d)))
+    if (is.factor(x)) x <- as.character(x)
+    durations <- rle(x)$lengths
+    unlist(purrr::imap(durations, function(d, i) rep(i, times = d)))
 }
 
 streak <- function(x) {
-  durations <- rle(x)$lengths
-  rep(seq_along(durations), times = durations)
+    durations <- rle(x)$lengths
+    rep(seq_along(durations), times = durations)
 }
 
 cws_check_yr <- function(path, year, verbose) {
-  if (length(path) > 1) {
-    cli::cli_abort("Because of how it handles parsing years, `cws_check_yr` only takes 1 path at a time.")
-  }
-  if (is.null(year) & is.null(path)) {
-    cli::cli_abort("Guessing the year is only available for functions that take a path argument. Please supply the year explicitly.")
-  }
-  # if not numeric, try:
-  # * to coerce
-  # * to guess before error
-  if (!is.null(year)) {
-    if (!is.numeric(year)) {
-      year <- suppressWarnings(as.numeric(year))
+    if (length(path) > 1) {
+        cli::cli_abort("Because of how it handles parsing years, `cws_check_yr` only takes 1 path at a time.")
     }
-    if (is.na(year) | year < 1900 | year > 2100) {
-      year <- NULL
+    if (is.null(year) & is.null(path)) {
+        cli::cli_abort("Guessing the year is only available for functions that take a path argument. Please supply the year explicitly.")
     }
-  }
-  if (is.null(year)) {
-    guessing <- TRUE
-    # match year pattern, get last match
-    # also need to handle test files
-    if (grepl("test_xtab", path)) {
-      patt <- "(\\d{4})"
+    # if not numeric, try:
+    # * to coerce
+    # * to guess before error
+    if (!is.null(year)) {
+        if (!is.numeric(year)) {
+            year <- suppressWarnings(as.numeric(year))
+        }
+        if (is.na(year) | year < 1900 | year > 2100) {
+            year <- NULL
+        }
+    }
+    if (is.null(year)) {
+        guessing <- TRUE
+        # match year pattern, get last match
+        # also need to handle test files
+        if (grepl("test_xtab", path)) {
+            patt <- "(\\d{4})"
+        } else {
+            patt <- "(?<=\\D)(\\d{4})(?=[\\b\\-_\\s])"
+        }
+        year <- stringr::str_extract_all(basename(path), patt)[[1]]
+        year <- year[length(year)]
+        year <- as.numeric(year)
+        if (verbose) {
+            cli::cli_inform(c("Guessing year from the path",
+                "i" = "Based on the path {path}, assuming {.var year} = {year}."
+            ))
+        }
     } else {
-      patt <- "(?<=\\D)(\\d{4})(?=[\\b\\-_\\s])"
+        guessing <- FALSE
     }
-    year <- stringr::str_extract_all(basename(path), patt)[[1]]
-    year <- year[length(year)]
-    year <- as.numeric(year)
-    if (verbose) {
-      cli::cli_inform(c("Guessing year from the path",
-                        "i" = "Based on the path {path}, assuming {.var year} = {year}."))
+    if (!is.numeric(year)) {
+        cli::cli_abort("{.var year} should be a number for the year or end year of the survey.")
     }
-  } else {
-    guessing <- FALSE
-  }
-  if (!is.numeric(year)) {
-    cli::cli_abort("{.var year} should be a number for the year or end year of the survey.")
-  }
-  if (year < 2015) {
-    cli::cli_warn("This function was designed for DCWS crosstabs starting with 2015. Other years might have unexpected results.")
-  }
-  year
+    if (year < 2015) {
+        cli::cli_warn("This function was designed for DCWS crosstabs starting with 2015. Other years might have unexpected results.")
+    }
+    year
 }
 
 # port from camiller
 filter_after <- function(data, ..., .streak = TRUE) {
-  q <- rlang::quos(...)
-  matches <- data
-  # matches <- dplyr::mutate(matches, .match = purrr::pmap_lgl(list(!!!q), all))
-  # matches <- dplyr::mutate(matches, .occur = cumsum(.match) > 0)
-  matches <- dplyr::mutate(matches, .match = purrr::pmap_lgl(list(!!!q), all))
-  matches[[".occur"]] <- cumsum(matches$.match) > 0
+    q <- rlang::quos(...)
+    matches <- data
+    # matches <- dplyr::mutate(matches, .match = purrr::pmap_lgl(list(!!!q), all))
+    # matches <- dplyr::mutate(matches, .occur = cumsum(.match) > 0)
+    matches <- dplyr::mutate(matches, .match = purrr::pmap_lgl(list(!!!q), all))
+    matches[[".occur"]] <- cumsum(matches$.match) > 0
 
-  if (.streak) {
-    out <- matches[matches$.occur & streak(matches$.match) > 1, ]
-  } else {
-    out <- matches[matches$.occur & dplyr::lag(matches$.occur), ]
-  }
-  out$.match <- NULL
-  out$.occur <- NULL
-  out
+    if (.streak) {
+        out <- matches[matches$.occur & streak(matches$.match) > 1, ]
+    } else {
+        out <- matches[matches$.occur & dplyr::lag(matches$.occur), ]
+    }
+    out$.match <- NULL
+    out$.occur <- NULL
+    out
 }
 
 filter_until <- function(data, ...) {
-  q <- rlang::quos(...)
-  dplyr::filter(data, cumsum(!!!q) == 0)
+    q <- rlang::quos(...)
+    dplyr::filter(data, cumsum(!!!q) == 0)
 }

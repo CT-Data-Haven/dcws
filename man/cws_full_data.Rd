@@ -5,11 +5,12 @@
 \alias{cws_full_data}
 \title{Contents of DataHaven Community Wellbeing Crosstabs}
 \format{
-A data frame of 298 rows and 3 columns.
+A data frame of 385 rows and 4 columns.
 \subsection{Outer structure:}{
 
 \describe{
 \item{year}{Numeric, year of survey}
+\item{span}{Character, span of years of the survey (e.g. "2015_2024")}
 \item{name}{Text of location}
 \item{survey}{List-column of data frames of survey response data. The number of rows varies based on the questions and participant groups available, but the 3 columns are the same.}
 }
@@ -19,7 +20,6 @@ A data frame of 298 rows and 3 columns.
 
 \describe{
 \item{code}{Question code, e.g. "Q2", "Q4E", "RENTEVICT"}
-\item{question}{Full text of survey question}
 \item{data}{List-column of more data frames, providing the actual response values per question. Again, number of rows varies, but the 4 columns are the same.}
 }
 }
@@ -41,41 +41,35 @@ Compiled DCWS crosstabs
 cws_full_data
 }
 \description{
-This is a nested data frame where each row corresponds to a year and location of the survey. The \code{data} column contains the full set of data extracted from the respective crosstabs; this, in turn, is nested by question and question code. This is a bit of a strange format, but it balances ease of subsetting by year and location with saving space and avoiding repeated values (e.g. listing out full question text dozens of times).
+This is a nested data frame where each row corresponds to a year / set of years and location of the survey. The \code{data} column contains the full set of data extracted from the respective crosstabs; this, in turn, is nested by question code. This is a bit of a strange format, but it balances ease of subsetting by year and location with saving space and avoiding repeated values (e.g. listing out full question text dozens of times). Previously this data frame also included full text of every question, but as the size of the data has ballooned, these are now in the \code{cws_codebook} data frame, which can be joined to this by year and code.
 }
 \details{
 On its own, the structure is probably annoying. Easier extraction is available using \code{fetch_cws}.
 }
 \examples{
-# bunch of different ways to work with this
-# specific question for one location and one year
-cws_full_data \%>\%
-  dplyr::filter(year == 2018, name == "Greater New Haven") \%>\%
-  tidyr::unnest(survey) \%>\%
-  dplyr::filter(grepl("suitable employment", question)) \%>\%
-  tidyr::unnest(data)
+# get specific question based on code
+cws_full_data |>
+    dplyr::filter(span == "2015_2024", name == "Greater New Haven") |>
+    tidyr::unnest(survey) |>
+    dplyr::filter(code == "Q64") |>
+    tidyr::unnest(data)
 
-# simpler but a bit slower--has to unnest to full 600k rows
-cws_full_data \%>\%
-  tidyr::unnest(survey) \%>\%
-  tidyr::unnest(data) \%>\%
-  dplyr::filter(year == 2018,
-                name == "Greater New Haven",
-                grepl("suitable employment", question))
-
-# specific question, one location, multiple years
-cws_full_data \%>\%
-  dplyr::mutate(survey = purrr::map(survey, dplyr::filter, question == "Diabetes")) \%>\%
-  dplyr::filter(name == "New Haven") \%>\%
-  tidyr::unnest(survey) \%>\%
-  tidyr::unnest(data)
+# join first with codebook to find question by text
+cws_full_data |>
+    dplyr::filter(span == "2015_2024", name == "Greater New Haven") |>
+    tidyr::unnest(survey) |>
+    dplyr::left_join(cws_codebook, by = c("year", "code")) |>
+    dplyr::filter(grepl("adequate shelter", question)) |>
+    tidyr::unnest(data)
 
 # make things easier with fetch_cws: flexibly grab by location, year, and/or
 # filter conditions
-fetch_cws(grepl("Have there been times .+ food", question), .year = 2018,
-          .name = c("Connecticut", "Greater New Haven", "New Haven"))
+fetch_cws(grepl("adequate shelter", question),
+    .year = "2015_2024",
+    .name = c("Connecticut", "Greater New Haven", "New Haven")
+)
 }
 \seealso{
-\code{\link[=fetch_cws]{fetch_cws()}}
+\code{\link[=fetch_cws]{fetch_cws()}}, \link{cws_codebook}
 }
 \keyword{datasets}

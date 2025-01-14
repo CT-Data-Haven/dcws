@@ -4,7 +4,7 @@
 \alias{xtab2df}
 \title{Extract survey data and descriptions from crosstabs into a tidy data frame}
 \usage{
-xtab2df(data, year, col = x1, code_pattern = NULL)
+xtab2df(data, year, col = x1, code_pattern = NULL, verbose = TRUE)
 }
 \arguments{
 \item{data}{A data frame as returned from \code{read_xtab}.}
@@ -24,6 +24,8 @@ split codes and question text within the same cell. This is
 pretty finicky, so you probably don't want to change it.
 If \code{NULL} (the default), the function will fill in \code{"^[A-Z\\\\d_]{2,20}$"} for
 years before 2024, or \code{"^[A-Z\\\\d_]+(?=\\\\. )"} for 2024 onward.}
+
+\item{verbose}{Boolean: whether to print helpful information to the console. Defaults \code{TRUE}.}
 }
 \value{
 A data frame with the following columns:
@@ -51,11 +53,11 @@ don't have categories included in headings in excel, but this function will
 add them.
 }
 \examples{
-if(interactive()){
-  xt <- system.file("extdata/test_xtab2018.xlsx", package = "dcws")
-  xtab <- read_xtabs(xt, year = 2018)
-  xtab2df(xtab, year = 2018)
- }
+if (interactive()) {
+    xt <- system.file("extdata/test_xtab2018.xlsx", package = "dcws")
+    xtab <- read_xtabs(xt, year = 2018)
+    xtab2df(xtab, year = 2018)
+}
 }
 \seealso{
 \code{\link[=read_xtabs]{read_xtabs()}}

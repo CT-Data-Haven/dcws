@@ -35,194 +35,187 @@
 #' * response
 #' * value
 #' @examples
-#' if(interactive()){
-#'   xt <- system.file("extdata/test_xtab2018.xlsx", package = "dcws")
-#'   xtab <- read_xtabs(xt, year = 2018)
-#'   xtab2df(xtab, year = 2018)
-#'  }
+#' if (interactive()) {
+#'     xt <- system.file("extdata/test_xtab2018.xlsx", package = "dcws")
+#'     xtab <- read_xtabs(xt, year = 2018)
+#'     xtab2df(xtab, year = 2018)
+#' }
 #' @export
 #' @rdname xtab2df
 #' @seealso [read_xtabs()]
 xtab2df <- function(data, year, col = x1, code_pattern = NULL, verbose = TRUE) {
-  year <- cws_check_yr(path = NULL, year = year, verbose = verbose)
+    year <- cws_check_yr(path = NULL, year = year, verbose = verbose)
 
-  if (is.null(code_pattern)) {
-    code_pattern <- default_code_patt(year)
-  }
-  if (year < 2024) {
-    out <- xtab2df_spss_(data, {{ col }}, code_pattern)
-  } else {
-    out <- xtab2df_r_(data, {{ col }}, code_pattern)
-  }
-  # small areas might not have group column if no demographics
-  if (!"group" %in% names(out)) {
-    out[["group"]] <- "Total"
-  }
-  out[["category"]] <- clean_cws_lvls(out[["category"]], is_category = TRUE)
-  out[["group"]] <- clean_cws_lvls(out[["group"]], is_category = FALSE)
-  # fix misspellings in categories
-  if ("category" %in% names(out)) {
-    # out[["category"]] <- stringr::str_remove(out[["category"]], "\\*$")
-    # out[["category"]] <- stringr::str_replace(out[["category"]], "Etnicity", "Ethnicity")
-  }
-  out
+    if (is.null(code_pattern)) {
+        code_pattern <- default_code_patt(year)
+    }
+    if (year < 2024) {
+        out <- xtab2df_spss_(data, {{ col }}, code_pattern)
+    } else {
+        out <- xtab2df_r_(data, {{ col }}, code_pattern)
+    }
+    # small areas might not have group column if no demographics
+    if (!"group" %in% names(out)) {
+        out[["group"]] <- "Total"
+    }
+    out[["category"]] <- clean_cws_lvls(out[["category"]], is_category = TRUE)
+    out[["group"]] <- clean_cws_lvls(out[["group"]], is_category = FALSE)
+    out
 }
 
 default_code_patt <- function(year) {
-  if (!is.numeric(year)) {
-    cli::cli_abort("{.var year} should be a number for the year or end year of the survey.")
-  }
-  if (year == 2020) {
-    "^$"
-  } else if (year < 2024) {
-    "^[A-Z\\d_]{2,20}$"
-  } else {
-    "^[A-Z\\d_]+(?=\\. )"
-  }
+    if (!is.numeric(year)) {
+        cli::cli_abort("{.var year} should be a number for the year or end year of the survey.")
+    }
+    if (year == 2020) {
+        "^$"
+    } else if (year < 2024) {
+        "^[A-Z\\d_]{2,20}$"
+    } else {
+        "^[A-Z\\d_]+(?=\\. )"
+    }
 }
 
 xtab2df_spss_ <- function(data, col, code_pattern) {
-  # generally only includes first 2 hierarchy levels
-  hier <- c("category", "group", "subgroup")
+    # generally only includes first 2 hierarchy levels
+    hier <- c("category", "group", "subgroup")
 
-  marked <- mark_questions_spss_(data, col = {{ col }}, pattern = code_pattern)
-  headings <- make_headings(marked, {{ col }})
+    marked <- mark_questions_spss_(data, col = {{ col }}, pattern = code_pattern)
+    headings <- make_headings(marked, {{ col }})
 
-  # get just data rows, attach headings (gender, age, etc)
-  out <- dplyr::filter(marked, !is.na({{ col }}))
-  out <- tidyr::pivot_longer(out, cols = -c(code, q_number, question, {{ col }}), names_to = "column")
-  out <- dplyr::left_join(out, headings, by = "column")
-  out <- dplyr::select(out, code, q_number, question, dplyr::matches("^h\\d+"), response = {{ col }}, value)
-  out <- dplyr::rename_with(out, \(x) hier[seq_along(x)], dplyr::matches("^h\\d+"))
-  if (rlang::is_installed("readr")) {
-    out <- dplyr::mutate(out, value = readr::parse_number(value))
-  } else {
-    out <- dplyr::mutate(out, value = as.numeric(value))
-  }
-  out <- dplyr::filter(out, !is.na(value))
+    # get just data rows, attach headings (gender, age, etc)
+    out <- dplyr::filter(marked, !is.na({{ col }}))
+    out <- tidyr::pivot_longer(out, cols = -c(code, q_number, question, {{ col }}), names_to = "column")
+    out <- dplyr::left_join(out, headings, by = "column")
+    out <- dplyr::select(out, code, q_number, question, dplyr::matches("^h\\d+"), response = {{ col }}, value)
+    out <- dplyr::rename_with(out, \(x) hier[seq_along(x)], dplyr::matches("^h\\d+"))
+    if (rlang::is_installed("readr")) {
+        out <- dplyr::mutate(out, value = readr::parse_number(value))
+    } else {
+        out <- dplyr::mutate(out, value = as.numeric(value))
+    }
+    out <- dplyr::filter(out, !is.na(value))
 
-  if (any(nchar(out$code) > 0)) {
-    dplyr::select(out, -q_number)
-  } else {
-    dplyr::select(out, -code)
-  }
+    if (any(nchar(out$code) > 0)) {
+        dplyr::select(out, -q_number)
+    } else {
+        dplyr::select(out, -code)
+    }
 }
 
 xtab2df_r_ <- function(data, col, code_pattern) {
-  # don't have categories---add separately
-  marked <- mark_questions_r_(data, {{ col }}, code_pattern)
-  marked <- dplyr::mutate(marked, code = forcats::as_factor(code))
-  # in case questions have different groups, split by question and pivot separately
-  mark_split <- split(marked, marked[["code"]])
-  mark_split <- lapply(mark_split, reshape_single_xt_)
-  out <- dplyr::bind_rows(mark_split)
-  out[["value"]] <- readr::parse_number(out[["value"]])
+    # don't have categories---add separately
+    marked <- mark_questions_r_(data, {{ col }}, code_pattern)
+    marked <- dplyr::mutate(marked, code = forcats::as_factor(code))
+    # in case questions have different groups, split by question and pivot separately
+    mark_split <- split(marked, marked[["code"]])
+    mark_split <- lapply(mark_split, reshape_single_xt_)
+    out <- dplyr::bind_rows(mark_split)
+    out[["value"]] <- readr::parse_number(out[["value"]])
 
-  # r-format excel files don't have categories
-  out <- dplyr::mutate(out, category = add_cats(group, return_table = FALSE))
-  # out <- dplyr::left_join(out, cws_cats24, by = "group")
-  # out <- dplyr::mutate(out, category = dplyr::if_else(grepl(" total$", group) & is.na(category), "Total", category))
-  #
-  out <- dplyr::select(out, code, question, category, group, response = Response, value)
-  out
+    # r-format excel files don't have categories
+    out <- dplyr::mutate(out, category = add_cats(group, return_table = FALSE))
+    # out <- dplyr::left_join(out, cws_cats24, by = "group")
+    # out <- dplyr::mutate(out, category = dplyr::if_else(grepl(" total$", group) & is.na(category), "Total", category))
+    #
+    out <- dplyr::select(out, code, question, category, group, response = Response, value)
+    out
 }
 
 #################### HELPERS ##########################################
 short_patt <- function(pattern) paste0(stringr::str_remove(pattern, "\\$"), "\\b")
 
 count_valid_cols <- function(data) {
-  # count number of non-NAs per row
-  dplyr::mutate(data, count_valid = rowSums(!is.na(data)))
+    # count number of non-NAs per row
+    dplyr::mutate(data, count_valid = rowSums(!is.na(data)))
 }
 
 reshape_single_xt_ <- function(data) {
-  # top row minus first 2 columns
-  hdr <- unlist(unname(as.data.frame(data)[1, -1:-2, drop = TRUE]))
-  names(data)[-1:-2] <- hdr
-  out <- dplyr::filter(data, !stringr::str_detect(Response, "Response") & !stringr::str_detect(Response, "^Weight"))
-  out <- tidyr::pivot_longer(out, cols = c(-code, -question, -Response), names_to = "group", values_to = "value")
-  out
+    # top row minus first 2 columns
+    hdr <- unlist(unname(as.data.frame(data)[1, -1:-2, drop = TRUE]))
+    names(data)[-1:-2] <- hdr
+    out <- dplyr::filter(data, !stringr::str_detect(Response, "Response") & !stringr::str_detect(Response, "^Weight"))
+    out <- tidyr::pivot_longer(out, cols = c(-code, -question, -Response), names_to = "group", values_to = "value")
+    out
 }
 
 mark_questions_spss_ <- function(data, col, pattern) {
-  # mark which rows only contain question text
-  # if x1 is a question & lead(x1) is also a question, extract code & collapse--deals with lead-in lines that have code attached
-  # this is so ugly
-  marked <- count_valid_cols(data)
-  marked <- dplyr::mutate(marked, is_question = !is.na({{ col }}) & !stringr::str_detect({{ col }}, pattern) & count_valid == 1)
-  marked <- dplyr::mutate(marked, is_code     = !is.na({{ col }}) &  stringr::str_detect({{ col }}, pattern) & count_valid == 1)
-  marked <- dplyr::mutate(marked, is_leadin   = is_question & dplyr::lead(is_question, default = FALSE))
-  marked <- dplyr::mutate(marked, q = dplyr::case_when(
-                            is_leadin   ~ stringr::str_extract({{ col }}, short_patt(pattern)),
-                            is_question ~ {{ col }},
-                            TRUE        ~ NA_character_
-                          ))
-  marked <- dplyr::mutate(marked, rl = rleid(is_question))
+    # mark which rows only contain question text
+    # if x1 is a question & lead(x1) is also a question, extract code & collapse--deals with lead-in lines that have code attached
+    # this is so ugly
+    marked <- count_valid_cols(data)
+    marked <- dplyr::mutate(marked, is_question = !is.na({{ col }}) & !stringr::str_detect({{ col }}, pattern) & count_valid == 1)
+    marked <- dplyr::mutate(marked, is_code = !is.na({{ col }}) & stringr::str_detect({{ col }}, pattern) & count_valid == 1)
+    marked <- dplyr::mutate(marked, is_leadin = is_question & dplyr::lead(is_question, default = FALSE))
+    marked <- dplyr::mutate(marked, q = dplyr::case_when(
+        is_leadin ~ stringr::str_extract({{ col }}, short_patt(pattern)),
+        is_question ~ {{ col }},
+        TRUE ~ NA_character_
+    ))
+    marked <- dplyr::mutate(marked, rl = rleid(is_question))
 
-  marked <- dplyr::group_by(marked, rl)
-  marked <- dplyr::mutate(marked, q = dplyr::if_else(is_question, paste(stats::na.omit(q), collapse = ". "), q))
-  marked <- dplyr::filter(marked, !is_leadin)
-  marked <- dplyr::ungroup(marked)
-  marked <- tidyr::fill(marked, q, .direction = "down")
-  marked <- dplyr::mutate(marked, q_number = cumsum(is_question))
+    marked <- dplyr::group_by(marked, rl)
+    marked <- dplyr::mutate(marked, q = dplyr::if_else(is_question, paste(stats::na.omit(q), collapse = ". "), q))
+    marked <- dplyr::filter(marked, !is_leadin)
+    marked <- dplyr::ungroup(marked)
+    marked <- tidyr::fill(marked, q, .direction = "down")
+    marked <- dplyr::mutate(marked, q_number = cumsum(is_question))
 
-  codes <- question_codes(marked, col = {{ col }}, pattern = pattern)
-  marked <- dplyr::filter(marked, !is_question & !is_code)
-  marked <- dplyr::select(marked, -q)
-  marked <- dplyr::left_join(marked, codes, by = "q_number")
-  marked <- dplyr::select(marked, code, q_number, question = q, tidyselect::everything(), -count_valid, -is_question, -is_code, -is_leadin, -rl)
-  marked
+    codes <- question_codes(marked, col = {{ col }}, pattern = pattern)
+    marked <- dplyr::filter(marked, !is_question & !is_code)
+    marked <- dplyr::select(marked, -q)
+    marked <- dplyr::left_join(marked, codes, by = "q_number")
+    marked <- dplyr::select(marked, code, q_number, question = q, tidyselect::everything(), -count_valid, -is_question, -is_code, -is_leadin, -rl)
+    marked
 }
 
 mark_questions_r_ <- function(data, col, pattern) {
-  marked <- count_valid_cols(data)
-  # fill questions downward, then drop question-only rows
-  marked <- tidyr::fill(marked, {{ col }}, .direction = "down")
-  marked <- dplyr::filter(marked, !(stringr::str_detect({{ col }}, pattern) & count_valid == 1))
-  # separate by period & space
-  marked <- tidyr::separate_wider_delim(marked, {{ col }}, delim = ". ", names = c("code", "question"), too_many = "merge")
-  marked <- dplyr::select(marked, -count_valid)
-  marked
+    marked <- count_valid_cols(data)
+    # fill questions downward, then drop question-only rows
+    marked <- tidyr::fill(marked, {{ col }}, .direction = "down")
+    marked <- dplyr::filter(marked, !(stringr::str_detect({{ col }}, pattern) & count_valid == 1))
+    # separate by period & space
+    marked <- tidyr::separate_wider_delim(marked, {{ col }}, delim = ". ", names = c("code", "question"), too_many = "merge")
+    marked <- dplyr::select(marked, -count_valid)
+    marked
 }
 
 
 question_codes <- function(.data, col, pattern) {
-  # split out question numbers, e.g. Q4A
-  # major difference is 2015 has qcode, question text in same cell. 2018 has qcode several rows below question text
-  # 2020 follows same pattern as 2018
-  # if no true values in is_code, both qcode & qtext are in same cell
-  if (!any(.data[["is_code"]])) {
-    # no separate codes --> split codes & questions by pattern
-    split_patt <- short_patt(pattern)
-    codes <- dplyr::mutate(.data, q = stringr::str_remove_all(q, "\\."))
-    codes <- tidyr::extract(codes, q, into = c("code", "q"), regex = sprintf("(%s)?(.+$)", split_patt))
-    codes <- dplyr::mutate(codes, dplyr::across(c(code, q), stringr::str_squish))
-    codes <- dplyr::filter(codes, !is.na(code))
-    codes <- dplyr::select(codes, q_number, code, q)
-    codes <- dplyr::distinct(codes)
-  } else {
-    # standalone codes --> reshape into 2 columns of code & question
-    codes <- dplyr::filter(.data, is_question | is_code)
-    codes <- tidyr::pivot_longer(codes, cols = c(is_question, is_code))
-    codes <- dplyr::filter(codes, value)
-    codes <- tidyr::pivot_wider(codes, id_cols = q_number, values_from = {{ col }})
-    codes <- dplyr::filter(codes, !is.na(is_code))
-    codes <- dplyr::select(codes, q_number, code = is_code, q = is_question)
-  }
-  codes
+    # split out question numbers, e.g. Q4A
+    # major difference is 2015 has qcode, question text in same cell. 2018 has qcode several rows below question text
+    # 2020 follows same pattern as 2018
+    # if no true values in is_code, both qcode & qtext are in same cell
+    if (!any(.data[["is_code"]])) {
+        # no separate codes --> split codes & questions by pattern
+        split_patt <- short_patt(pattern)
+        codes <- dplyr::mutate(.data, q = stringr::str_remove_all(q, "\\."))
+        codes <- tidyr::extract(codes, q, into = c("code", "q"), regex = sprintf("(%s)?(.+$)", split_patt))
+        codes <- dplyr::mutate(codes, dplyr::across(c(code, q), stringr::str_squish))
+        codes <- dplyr::filter(codes, !is.na(code))
+        codes <- dplyr::select(codes, q_number, code, q)
+        codes <- dplyr::distinct(codes)
+    } else {
+        # standalone codes --> reshape into 2 columns of code & question
+        codes <- dplyr::filter(.data, is_question | is_code)
+        codes <- tidyr::pivot_longer(codes, cols = c(is_question, is_code))
+        codes <- dplyr::filter(codes, value)
+        codes <- tidyr::pivot_wider(codes, id_cols = q_number, values_from = {{ col }})
+        codes <- dplyr::filter(codes, !is.na(is_code))
+        codes <- dplyr::select(codes, q_number, code = is_code, q = is_question)
+    }
+    codes
 }
 
 make_headings <- function(.data, col) {
-  # takes data after mark_questions, makes tiered headings e.g. h1 = age, h2 = 18-34
-  hdrs <- dplyr::filter(.data, is.na({{ col }}))
-  hdrs <- janitor::remove_empty(hdrs, which = "cols")
-  hdrs <- utils::head(hdrs, 2)
-  hdrs <- dplyr::mutate(hdrs, h = paste0("h", dplyr::row_number()))
-  hdrs <- dplyr::select(hdrs, -code, -question, -q_number)
-  hdrs <- tidyr::pivot_longer(hdrs, cols = -h, names_to = "column")
-  hdrs <- tidyr::pivot_wider(hdrs, names_from = h)
-  hdrs <- tidyr::fill(hdrs, dplyr::matches("^h\\d+"), .direction = "down")
-  hdrs <- dplyr::mutate(hdrs, h1 = dplyr::coalesce(!!!dplyr::select(hdrs, dplyr::matches("^h\\d+"))))
+    # takes data after mark_questions, makes tiered headings e.g. h1 = age, h2 = 18-34
+    hdrs <- dplyr::filter(.data, is.na({{ col }}))
+    hdrs <- janitor::remove_empty(hdrs, which = "cols")
+    hdrs <- utils::head(hdrs, 2)
+    hdrs <- dplyr::mutate(hdrs, h = paste0("h", dplyr::row_number()))
+    hdrs <- dplyr::select(hdrs, -code, -question, -q_number)
+    hdrs <- tidyr::pivot_longer(hdrs, cols = -h, names_to = "column")
+    hdrs <- tidyr::pivot_wider(hdrs, names_from = h)
+    hdrs <- tidyr::fill(hdrs, dplyr::matches("^h\\d+"), .direction = "down")
+    hdrs <- dplyr::mutate(hdrs, h1 = dplyr::coalesce(!!!dplyr::select(hdrs, dplyr::matches("^h\\d+"))))
 }
-
-

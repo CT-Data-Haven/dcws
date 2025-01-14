@@ -6,6 +6,7 @@
 #' @param incl_year Boolean: whether to extract year(s)
 #' @param incl_tag Boolean: whether to extract tag
 #' @return Data frame
+#' @noRd
 parse_cws_paths <- function(paths, incl_year = TRUE, incl_tag = TRUE) {
     name <- xfun::sans_ext(basename(paths))
     # decide which function to use based on 2024 flags
@@ -47,10 +48,10 @@ path_regex_ <- function(x) {
 }
 
 extract_tag_ <- function(x, patt = "\\-v(\\d\\.){3,4}") {
-  x <- stringr::str_extract(x, patt)
-  # drop leading / trailing punct
-  x <- stringr::str_remove_all(x, "(^[[:punct:]]|[[:punct:]]$)")
-  x
+    x <- stringr::str_extract(x, patt)
+    # drop leading / trailing punct
+    x <- stringr::str_remove_all(x, "(^[[:punct:]]|[[:punct:]]$)")
+    x
 }
 
 extract_name_spss_ <- function(x) {

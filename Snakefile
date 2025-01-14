@@ -7,6 +7,32 @@ import os
 
 load_dotenv()
 
+def flatten(xss):
+    return [x for xs in xss for x in xs]
+
+def switch_ext(path, ext):
+    path = Path(path)
+    return path.with_suffix(ext).name
+
+def read_roxygen(path):
+    with open(path, 'r') as file:
+        return [line.strip() for line in file if line.startswith('#\'')]
+
+def get_rd(path):
+    path = Path(path)
+    # read roxygen
+    roxy = read_roxygen(path)
+    # if has "@rdname" tag, use it
+    # else use path stem
+    rd = list(set([line for line in roxy if '@rdname' in line]))
+    if len(rd) > 0:
+        # return rd[0].split(' ')[2]
+        return [r.split(' ')[2] for r in rd]
+    else:
+        return [path.stem]
+
+
+
 def data_path(dataset, type = 'external'):
     if type == 'internal':
         return 'R/sysdata.rda'
@@ -36,7 +62,11 @@ repo24 = 'dcws24_crosstabs'
 tag24 = get_latest_tag(repo24)
 
 # scripts of functions that need tests
-funcs = ['clean_cws_lvls', 'parse_cws_paths', 'fetch_cws', 'read_cws', 'xtab2df']
+# funcs = ['clean_cws_lvls', 'parse_cws_paths', 'fetch_cws', 'read_cws', 'xtab2df']
+funcs = [f.stem for f in Path('R').glob('*.R') if f.stem not in ['data', 'dcws-package']]
+data_scripts = [f.name for f in Path('data-raw').glob('*.R')]
+vignettes = [f.name for f in Path('vignettes').glob('*.Rmd')] + \
+    [f.name for f in Path('vignettes').glob('*.qmd')]
 
 
 rule download_2024:
@@ -56,20 +86,12 @@ rule download_2024:
         for f in {output}; do unzip -j -o "$f" *.xlsx -d data-raw/crosstabs; done
         '''
 
-rule cws20:
-    input:
-        xtab = 'data-raw/crosstabs/DataHaven2020 Connecticut Crosstabs.xlsx',
-        doc = 'data-raw/misc_input/DataHaven0720_Prn2.docx',
-    output:
-        lookup = 'data/cws20_lookup.rda',
-    script:
-        'data-raw/cws20_lookup.R'
-
 rule main_data:
     input:  
         xlsx = Path('data-raw/crosstabs').glob('*.xlsx'),
         scripts = ['R/parse_cws_paths.R', 'R/read_cws.R', 'R/clean_cws_lvls.R'],
-        lookup20 = rules.cws20.output.lookup,
+        download = rules.download_2024.output,
+        desc = 'DESCRIPTION',
     output:
         # protected(datasets['path'].unique()),
         datasets['path'].unique(),
@@ -78,6 +100,8 @@ rule main_data:
 
 
 rule definitions:
+    input:
+        desc = 'DESCRIPTION',
     output:
         # protected('data/cws_defs.rda'),
         'data/cws_defs.rda',
@@ -88,7 +112,6 @@ rule data_raw:
     input:
         rules.main_data.output,
         rules.definitions.output,
-        rules.cws20.output,
 
 rule tests:
     input:
@@ -100,23 +123,42 @@ rule tests:
         Rscript -e "devtools::test()"
         '''
     
+doc_funcs = [f for f in funcs if f not in ['utils-misc', 'parse_cws_paths']]
+func_rds = flatten([get_rd(f'R/{func}.R') for func in doc_funcs])
+rule document:
+    input:
+        desc = 'DESCRIPTION',
+        r = expand('R/{func}.R', func = doc_funcs),
+        data_doc = 'R/data.R',
+        pkg_doc = 'R/dcws-package.R',
+        vignettes = expand('vignettes/{v}', v = vignettes),
+        readme = 'README.md',
+    output:
+        expand('man/{func}.Rd', func = func_rds),
+        expand('man/{dataset}.Rd', 
+            dataset = flatten([['cws_defs'], datasets.loc['external', 'id'].tolist()])),
+        'man/dcws-package.Rd',
+        'NAMESPACE',
+    shell:
+        'Rscript -e "devtools::document()"'
 
 
 rule check:
     input:
         rules.data_raw.input,
+        desc = 'DESCRIPTION',
     output:
         flag = touch('.flags/pkg-check.txt'),
     shell:
         '''
-        Rscript -e "devtools::build()"
-        # Rscript -e "devtools::check(document = TRUE, cran = FALSE)"
+        Rscript -e "devtools::check(document = TRUE, cran = FALSE)"
         '''
     
 rule install:
     input:
         data = rules.data_raw.input,
         check_flag = rules.check.output.flag,
+        desc = 'DESCRIPTION',
     shell:
         'Rscript -e "devtools::install()"'
 

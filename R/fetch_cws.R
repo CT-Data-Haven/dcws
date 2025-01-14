@@ -8,18 +8,12 @@
 #' @param .add_wts Boolean: should groups' survey weights be attached, via a left-join with `dcws::cws_full_wts`? This is useful if you need to collapse groups later; otherwise you might get stuck in annoying `tidyr::unnest` messes.
 #' @param .drop_ct Boolean: should statewide totals be included for each crosstab extract? This can be useful for a single location in order to have Connecticut values to compare against, but becomes redundant with multiple locations. The default `TRUE` means statewide averages will not be included.
 #' @param .incl_questions Boolean: should the full text of each question be included? If `FALSE`, questions will be demarcated by just their codes, which take up less space but can change year to year. Defaults `TRUE`.
-#' @return A data frame, with between 5 and 9 columns, depending on arguments. Columns `year`, `name`, `code`, and `question` are always included. Additional columns:
-#'
-#' |arguments                 |columns                                                          |
-#' |:-------------------------|:----------------------------------------------------------------|
-#' |.unnest = F, .add_wts = F |data (nested df of category, group, response, and value)         |
-#' |.unnest = F, .add_wts = T |data (nested df of category, group, response, value, and weight) |
-#' |.unnest = T, .add_wts = F |category, group, response, value                                 |
-#' |.unnest = T, .add_wts = T |category, group, response, value, weight                         |
-#'
+#' @return A data frame, with between 5 and 10 columns, depending on arguments. Columns `year`, `span`, `name`, and, `code` are always included; `question` is included for `.incl_questions = TRUE`. If `.unnest = TRUE`, the crosstab data will be in columns `category`, `group`, `response`, and `value`; if `.add_wts = TRUE`, then `weight` will be there as well. If `.unnest = FALSE`, then those columns (category through weight) will be in a nested data frame, in a column called `data`. Note that the `span` column, a new addition, is a string giving the span of years included in that set of survey data. For single years, this will be the same as `year`; in the case of a pooled dataset 2015-2024, `year` will be `2024` and `span` will be `"2015_2024"`.
 #' @examples
 #' # no filtering
+#' \dontrun{
 #' fetch_cws()
+#' }
 #'
 #' # filter by year, name, and/or category
 #' fetch_cws(.name = c("Greater New Haven", "New Haven")) # all years
@@ -46,8 +40,7 @@
 #'     .year = 2021, .name = "New Haven", .category = c("Total", "Age", "Income"),
 #'     .add_wts = TRUE, .unnest = TRUE
 #' )
-#' @seealso cws_full_data, cws_full_wts
-#' @import tidyselect
+#' @seealso [fetch_wts()] [cws_full_data]
 #' @export
 fetch_cws <- function(...,
                       .year = NULL,
@@ -127,7 +120,7 @@ fetch_cws <- function(...,
 #' ) |>
 #'     dplyr::left_join(fetch_wts(.unnest = TRUE), by = c("year", "name", "group"))
 #' @export
-#' @seealso fetch_cws
+#' @seealso [fetch_cws()] [cws_full_wts]
 fetch_wts <- function(..., .year = NULL, .name = NULL, .unnest = FALSE) {
     out <- dplyr::filter(dcws::cws_full_wts, !!!rlang::quos(...))
     out <- filter_cws_(out, .year = .year, .name = .name, .category = NULL)
@@ -162,4 +155,3 @@ filter_cws_ <- function(df, .year, .name, .category) {
     }
     df
 }
-

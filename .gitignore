@@ -11,4 +11,5 @@ logs
 .env
 data-raw/crosstabs/dcws_*-v*.xlsx
 data-raw/crosstabs/downloads
+**/*.duckdbrevise
 **/*.duckdb

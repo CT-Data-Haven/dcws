@@ -5,9 +5,10 @@
 \alias{cws_group_meta}
 \title{DCWS group metadata}
 \format{
-A data frame with 298 rows and 3 variables:
+A data frame with 385 rows and 4 variables:
 \describe{
 \item{\code{year}}{Numeric, year of survey}
+\item{\code{span}}{Character, span of years of the survey (e.g. "2015_2024")}
 \item{\code{name}}{Text of location}
 \item{\code{groups}}{A list of nested data frames, each of which has 2 columns for category and group.}
 }
@@ -26,14 +27,14 @@ This is a reference dataset listing what categories and groups are available for
 cws_group_meta
 
 cws_group_meta |>
-  dplyr::filter(name == "Greater New Haven") |>
-  tidyr::unnest(groups)
+    dplyr::filter(name == "Greater New Haven") |>
+    tidyr::unnest(groups)
 
 # this is useful if you want to know what locations have data for a certain
 # set of conditions, e.g. 2021 values by income
 cws_group_meta |>
-  tidyr::unnest(groups) |>
-  dplyr::filter(year == 2021, category == "Income")
+    tidyr::unnest(groups) |>
+    dplyr::filter(year == 2021, category == "Income")
 
 }
 \keyword{datasets}

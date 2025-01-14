@@ -5,9 +5,10 @@
 \alias{cws_max_moe}
 \title{DCWS maximum margins of error}
 \format{
-A data frame with 298 rows and 3 variables:
+A data frame with 385 rows and 4 variables:
 \describe{
 \item{\code{year}}{Numeric, year of survey}
+\item{\code{span}}{Character, span of years of the survey (e.g. "2015_2024")}
 \item{\code{name}}{Text of location}
 \item{\code{moe}}{Numeric, value of maximum MOE}
 }

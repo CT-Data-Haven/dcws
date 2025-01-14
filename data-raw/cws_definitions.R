@@ -69,22 +69,25 @@ file <- "gloss.duckdb"
 path <- file.path("data-raw", file)
 
 latest <- gh::gh("/repos/{owner}/{repo}/releases/latest",
-                 owner = owner, repo = repo)
+    owner = owner, repo = repo
+)
 release_id <- latest[["id"]]
 
 assets <- gh::gh("/repos/{owner}/{repo}/releases/{release_id}/assets",
-                 owner = owner, repo = repo, release_id = release_id, .per_page = 100) |>
-  purrr::map(\(x) x[c("name", "id")]) |>
-  purrr::map(tibble::as_tibble) |>
-  dplyr::bind_rows()
+    owner = owner, repo = repo, release_id = release_id, .per_page = 100
+) |>
+    purrr::map(\(x) x[c("name", "id")]) |>
+    purrr::map(tibble::as_tibble) |>
+    dplyr::bind_rows()
 asset_id <- assets$id[assets$name == file]
 
 # download, give mime type
 db <- gh::gh("/repos/{owner}/{repo}/releases/assets/{asset_id}",
-             owner = owner, repo = repo, asset_id = asset_id,
-             .accept = "application/octet-stream",
-             .destfile = path,
-             .overwrite = TRUE)
+    owner = owner, repo = repo, asset_id = asset_id,
+    .accept = "application/octet-stream",
+    .destfile = path,
+    .overwrite = TRUE
+)
 
 con <- DBI::dbConnect(duckdb::duckdb(path))
 cws_defs <- DBI::dbGetQuery(con, "

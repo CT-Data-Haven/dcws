@@ -29,19 +29,22 @@
 #' `xtab2df` be printed? Defaults to `TRUE` to encourage you to double check that
 #' you're passing arguments intentionally.
 #' @param ... Additional arguments passed on to `xtab2df` if `process = TRUE`.
-#' @return A data frame. For `read_xtabs`, there will be one column per
-#' demographic/geographic group included, plus one for the questions & answers.
+#' @return A data frame. For `read_xtabs` with `process = FALSE`, there will be one column per
+#' demographic/geographic group included, plus one or two for the questions &
+#' answers (in some years these were in a single column; others have two). If
+#' `process = TRUE`, the output follows what is returned by `xtab2df`.
+#'
 #' For `read_weights`, only 2 columns, one for demographic groups and one for
 #' their associated weights.
 #' @examples
-#' if(interactive()) {
-#'   xt <- system.file("extdata/test_xtab2018.xlsx", package = "dcws")
-#'   read_weights(xt, year = 2018)
+#' if (interactive()) {
+#'     xt <- system.file("extdata/test_xtab2018.xlsx", package = "dcws")
+#'     read_weights(xt, year = 2018)
 #'
-#'   # returns a not-very-pretty data frame of the crosstabs to be processed
-#'   read_xtabs(xt, year = 2018)
-#'   # returns a pretty data frame ready for analysis
-#'   read_xtabs(xt, year = 2018, process = TRUE)
+#'     # returns a not-very-pretty data frame of the crosstabs to be processed
+#'     read_xtabs(xt, year = 2018)
+#'     # returns a pretty data frame ready for analysis
+#'     read_xtabs(xt, year = 2018, process = TRUE)
 #' }
 #' @export
 #' @rdname read_xtabs
@@ -53,56 +56,56 @@ read_xtabs <- function(path,
                        process = FALSE,
                        verbose = TRUE,
                        ...) {
-  # return columns code, question, category, group, response, value
-  year <- cws_check_yr(path, year, verbose)
+    # return columns code, question, category, group, response, value
+    year <- cws_check_yr(path, year, verbose)
 
-  data <- read_xtabs_(path, year = year, name_prefix = name_prefix)
+    data <- read_xtabs_(path, year = year, name_prefix = name_prefix)
 
-  first_col <- rlang::sym(names(data)[1])
-  # can skip with 2024 formatting
-  if (year < 2024) {
-    if (year == 2015) {
-      data <- filter_after(data, grepl("Samp[le]+ Size", {{ first_col }}))
+    first_col <- rlang::sym(names(data)[1])
+    # can skip with 2024 formatting
+    if (year < 2024) {
+        if (year == 2015) {
+            data <- filter_after(data, grepl("Samp[le]+ Size", {{ first_col }}))
+        }
+        data <- dplyr::filter(data, !stringr::str_detect({{ first_col }}, total_patt()) | is.na({{ first_col }}))
+        if (!is.null(marker)) {
+            data <- filter_until(data, grepl(marker, {{ first_col }}))
+        }
     }
-    data <- dplyr::filter(data, !stringr::str_detect({{ first_col }}, total_patt()) | is.na({{ first_col }}))
-    if (!is.null(marker)) {
-      data <- filter_until(data, grepl(marker, {{ first_col }}))
+    if (process) {
+        if (verbose) {
+            xt_params(list(col = first_col, year = year, ...))
+        }
+        xtab2df(data, year = year, col = {{ first_col }}, ...)
+    } else {
+        data
     }
-  }
-  if (process) {
-    if (verbose) {
-      xt_params(list(col = first_col, year = year, ...))
-    }
-    xtab2df(data, year = year, col = {{ first_col }}, ...)
-  } else {
-    data
-  }
 }
 
 
 #' @export
 #' @rdname read_xtabs
 read_weights <- function(path, year = NULL, marker = "Nature of the [Ss]ample", verbose = TRUE) {
-  # return columns group & weight
-  year <- cws_check_yr(path, year, verbose)
+    # return columns group & weight
+    year <- cws_check_yr(path, year, verbose)
 
-  if (year < 2024) {
-    wts <- read_wts_spss_(path, year, marker)
-  } else {
-    wts <- read_wts_r_(path)
-  }
+    if (year < 2024) {
+        wts <- read_wts_spss_(path, year, marker)
+    } else {
+        wts <- read_wts_r_(path)
+    }
 
-  wts$group <- clean_cws_lvls(wts$group)
-  wts
+    wts$group <- clean_cws_lvls(wts$group)
+    wts
 }
 
 #################### HELPERS ##########################################
 total_patt <- function() {
-  "(Weighted [Tt]otal|^Total\\:$|Samp[le]+ Size)"
+    "(Weighted [Tt]otal|^Total\\:$|Samp[le]+ Size)"
 }
 
 prefix_names <- function(x, prefix) {
-  rlang::set_names(x, function(n) paste0(prefix, 1:length(x)))
+    rlang::set_names(x, function(n) paste0(prefix, 1:length(x)))
 }
 
 
@@ -112,87 +115,87 @@ prefix_names <- function(x, prefix) {
 # both: drop empty rows
 # spss versions need clean names, filtering til marker
 read_xtabs_ <- function(path, year, name_prefix) {
-  if (year < 2024) {
-    sheet <- 1
-    drop_title <- FALSE
-  } else {
-    sheet <- 2
-    drop_title <- TRUE
-  }
-  out <- readxl::read_excel(path, sheet = sheet, col_names = FALSE, .name_repair = make.names)
-  out <- prefix_names(out, name_prefix)
-  out <- janitor::remove_empty(out, which = "rows")
-  if (drop_title) {
-    out <- dplyr::slice(out, -1)
-  }
-  out
+    if (year < 2024) {
+        sheet <- 1
+        drop_title <- FALSE
+    } else {
+        sheet <- 2
+        drop_title <- TRUE
+    }
+    out <- readxl::read_excel(path, sheet = sheet, col_names = FALSE, .name_repair = make.names)
+    out <- prefix_names(out, name_prefix)
+    out <- janitor::remove_empty(out, which = "rows")
+    if (drop_title) {
+        out <- dplyr::slice(out, -1)
+    }
+    out
 }
 
 
 # legacy crosstabs---spss exports
 read_wts_spss_ <- function(path, year, marker) {
-  data <- read_xtabs_(path, year = year, name_prefix = "x")
+    data <- read_xtabs_(path, year = year, name_prefix = "x")
 
-  # is marker in col1? yes --> wt_tbl; no --> wt_hdr
-  has_wt_tbl <- !is.null(marker) & any(grepl(marker, data[[1]]))
+    # is marker in col1? yes --> wt_tbl; no --> wt_hdr
+    has_wt_tbl <- !is.null(marker) & any(grepl(marker, data[[1]]))
 
-  if (has_wt_tbl) {
-    data <- filter_after(data, grepl(marker, data[[1]]))
-    wts <- read_wt_tbl(data)
-  } else {
-    data <- filter_until(data, grepl(total_patt(), dplyr::lag(data[[1]])))
-    data <- dplyr::select(data, -1)
-    data <- janitor::remove_empty(data, which = "rows")
-    wts <- read_wt_hdr(data, scale = TRUE)
-  }
-  wts
+    if (has_wt_tbl) {
+        data <- filter_after(data, grepl(marker, data[[1]]))
+        wts <- read_wt_tbl(data)
+    } else {
+        data <- filter_until(data, grepl(total_patt(), dplyr::lag(data[[1]])))
+        data <- dplyr::select(data, -1)
+        data <- janitor::remove_empty(data, which = "rows")
+        wts <- read_wt_hdr(data, scale = TRUE)
+    }
+    wts
 }
 
 # new crosstabs---with r
 read_wts_r_ <- function(path) {
-  wts <- readxl::read_excel(path, sheet = 3, skip = 1)
-  wts <- dplyr::select(wts, group = Group, weight = `Weighted share`)
-  wts
+    wts <- readxl::read_excel(path, sheet = 3, skip = 1)
+    wts <- dplyr::select(wts, group = Group, weight = `Weighted share`)
+    wts
 }
 
 read_wt_tbl <- function(data) {
-  out <- janitor::remove_empty(data, which = "cols")
-  out <- dplyr::select(out, group = 1, weight = 2)
-  out <- dplyr::filter(out, !is.na(weight))
-  out <- dplyr::mutate(out, weight = round(as.numeric(weight), digits = 3))
-  out
+    out <- janitor::remove_empty(data, which = "cols")
+    out <- dplyr::select(out, group = 1, weight = 2)
+    out <- dplyr::filter(out, !is.na(weight))
+    out <- dplyr::mutate(out, weight = round(as.numeric(weight), digits = 3))
+    out
 }
 
 read_wt_hdr <- function(data, scale) {
-  out <- t(data)
-  out <- as.data.frame(out)
-  names(out) <- c("category", "group", "weight")
-  out <- tidyr::fill(out, category, .direction = "down")
-  out <- dplyr::filter(out, !is.na(category))
-  out$weight <- as.numeric(out$weight)
-  out <- dplyr::group_by(out, category)
+    out <- t(data)
+    out <- as.data.frame(out)
+    names(out) <- c("category", "group", "weight")
+    out <- tidyr::fill(out, category, .direction = "down")
+    out <- dplyr::filter(out, !is.na(category))
+    out$weight <- as.numeric(out$weight)
+    out <- dplyr::group_by(out, category)
 
-  if (scale) out <- dplyr::mutate(out, weight = round(weight / sum(weight), digits = 3))
+    if (scale) out <- dplyr::mutate(out, weight = round(weight / sum(weight), digits = 3))
 
-  out <- dplyr::ungroup(out)
-  out <- dplyr::select(out, -category)
-  out
+    out <- dplyr::ungroup(out)
+    out <- dplyr::select(out, -category)
+    out
 }
 
 xt_params <- function(args) {
-  defaults <- formals(xtab2df)
-  # don't need to include .data
-  from_def <- defaults[!names(defaults) %in% names(args)][-1]
-  params <- c(from_def, args)
-  params <- params[names(defaults)[-1]]
-  if (is.null(params[["code_pattern"]])) {
-    params[["code_pattern"]] <- "`NULL` (filling in default pattern)"
-  } else {
-    params[["code_pattern"]] <- gsub("\\{", "{{", params[["code_pattern"]])
-    params[["code_pattern"]] <- gsub("\\}", "}}", params[["code_pattern"]])
-  }
-  param_str <- paste(names(params), params, sep = " = ")
-  # param_str <- stats::setNames(param_str, rep_len("*", length(param_str)))
-  cli::cli_alert_info("xtab2df is being called on the data with the following parameters:")
-  purrr::walk(param_str, cli::cli_alert)
+    defaults <- formals(xtab2df)
+    # don't need to include .data
+    from_def <- defaults[!names(defaults) %in% names(args)][-1]
+    params <- c(from_def, args)
+    params <- params[names(defaults)[-1]]
+    if (is.null(params[["code_pattern"]])) {
+        params[["code_pattern"]] <- "`NULL` (filling in default pattern)"
+    } else {
+        params[["code_pattern"]] <- gsub("\\{", "{{", params[["code_pattern"]])
+        params[["code_pattern"]] <- gsub("\\}", "}}", params[["code_pattern"]])
+    }
+    param_str <- paste(names(params), params, sep = " = ")
+    # param_str <- stats::setNames(param_str, rep_len("*", length(param_str)))
+    cli::cli_alert_info("xtab2df is being called on the data with the following parameters:")
+    purrr::walk(param_str, cli::cli_alert)
 }

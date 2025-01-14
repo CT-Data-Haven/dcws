@@ -9,11 +9,11 @@ fetch_wts(..., .year = NULL, .name = NULL, .unnest = FALSE)
 \arguments{
 \item{...}{Any number of conditions to filter by, which will be passed to \code{dplyr::filter}. These don't override the named options, so if you filter by \code{year > 2020} but then set \code{.year = 2015} you're not going to get any data.}
 
-\item{.year}{A vector of one or more numbers giving the year(s) to subset by. If \code{NULL}, no filtering is done by year.}
+\item{.year}{A vector of one or more year(s) to subset by. If this is a character that contains a separator (\code{"_"}, \code{"-"}, or a space character), it will be assumed to be a span of years, such as for multi-year pooled crosstabs (e.g. \code{"2015_2024"}). Otherwise it's assumed this is a single year of the survey. If \code{NULL}, no filtering is done by year.}
 
 \item{.name}{A vector of one or more strings giving the name(s) to subset by. If \code{NULL}, no filtering is done by name.}
 
-\item{.unnest}{Logical: should the \code{data} column be unnested? This just saves a step of calling \code{tidyr::unnest} but defaults to false.}
+\item{.unnest}{Boolean: should the \code{data} column be unnested? This just saves a step of calling \code{tidyr::unnest} but defaults to false.}
 }
 \value{
 A data frame, with either 3 columns (if \code{.unnest = FALSE}) or 4 columns (if \code{.unnest = TRUE}).
@@ -31,10 +31,12 @@ fetch_wts()
 
 # weights are generally useful in combination with actual data
 # but unless you unnest in advance, this is messy
-fetch_cws(code == "Q4E", .year = 2021,
-          .name = c("Greater New Haven", "New Haven"), .unnest = TRUE) \%>\%
-  dplyr::left_join(fetch_wts(.unnest = TRUE), by = c("year", "name", "group"))
+fetch_cws(code == "Q4E",
+    .year = 2021,
+    .name = c("Greater New Haven", "New Haven"), .unnest = TRUE
+) |>
+    dplyr::left_join(fetch_wts(.unnest = TRUE), by = c("year", "name", "group"))
 }
 \seealso{
-fetch_cws
+\code{\link[=fetch_cws]{fetch_cws()}} \link{cws_full_wts}
 }

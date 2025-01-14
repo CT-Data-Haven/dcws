@@ -1,14 +1,15 @@
 devtools::load_all()
+source("data-raw/cws20_lookup.R")
 # METADATA ----
 # spss-based xtabs come from excel sheets but r-based can come from single csv + codebook
 paths <- list.files("data-raw/crosstabs", pattern = "\\.xlsx?", full.names = TRUE) |>
     parse_cws_paths(incl_year = TRUE, incl_tag = TRUE) |>
     dplyr::mutate(name = dplyr::recode(name, Valley = "Lower Naugatuck Valley"))
 # for tagged releases, check that only using most recent tag
-dupes <- paths |>
+dupe_paths <- paths |>
     dplyr::count(name, span) |>
     dplyr::filter(n > 1)
-if (nrow(dupes) > 0) {
+if (nrow(dupe_paths) > 0) {
     cli::cli_abort("duplicate crosstabs found--check in prep_cws.R")
 }
 
@@ -19,7 +20,9 @@ full_meta <- paths |>
     dplyr::mutate(data = purrr::pmap(list(name, span, year, path), function(name, span, year, path) {
         safe_read_xtabs(path, year = year, process = TRUE, verbose = FALSE)
     }))
-full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate, dplyr::across(c(category, group), clean_cws_lvls)))
+# full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate, dplyr::across(c(category, group), clean_cws_lvls)))
+full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate, group = clean_cws_lvls(group, is_category = FALSE)))
+full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate, category = clean_cws_lvls(category, is_category = TRUE)))
 full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate, category = dplyr::case_when(
     group %in% ct5 ~ "Five Connecticuts",
     category %in% c("Connecticut", "HIC", name) ~ "Total",
@@ -33,9 +36,9 @@ full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate,
 ))
 full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate,
     question = question |>
-      stringr::str_replace_all("\\´", "'") |>
-      stringr::str_replace_all("…", "...") |>
-      enc2utf8()
+        stringr::str_replace_all("\\´", "'") |>
+        stringr::str_replace_all("…", "...") |>
+        enc2utf8()
 ))
 full_meta <- dplyr::arrange(full_meta, year, name)
 # full_meta <- dplyr::select(full_meta, -code_patt)
@@ -72,17 +75,23 @@ full_meta <- full_meta |>
 
 cws_group_meta <- full_meta |>
     dplyr::mutate(groups = purrr::map(data, dplyr::distinct, category, group)) |>
-    dplyr::select(year, name, groups)
+    dplyr::select(year, span, name, groups)
 
-response_meta <- full_meta |>
+cws_codebook <- full_meta |>
     dplyr::filter(name == "Connecticut") |>
     tidyr::unnest(data) |>
-    dplyr::distinct(year, code, response) |>
+    dplyr::select(year, code, question, response) |>
+    # don't get caught with dupes from slightly different question text
+    dplyr::distinct(year, code, response, .keep_all = TRUE) |>
     dplyr::filter(code != "") |> # only landline vs cell question
-    dplyr::group_by(year, code) |>
+    # keep original ordering
+    dplyr::group_by(year, code = forcats::as_factor(code), question) |>
     dplyr::summarise(responses = list(response)) |>
-    dplyr::ungroup()
+    dplyr::ungroup() |>
+    dplyr::mutate(code = as.character(code))
 
+response_meta <- cws_codebook |>
+    dplyr::select(-question)
 
 
 
@@ -94,12 +103,14 @@ cws_full_data <- full_meta |>
     tidyr::unnest(data) |>
     tidyr::nest(data = category:value) |>
     # add full set of available responses per code-year
-    dplyr::left_join(response_meta, by = c("year", "code")) |>
+    dplyr::left_join(response_meta, by = c("year", "code"), relationship = "many-to-one") |>
     dplyr::mutate(data = purrr::map2(data, responses, function(df, resp_lvls) {
         df |>
-          dplyr::mutate(response = forcats::as_factor(response) |> forcats::fct_expand(resp_lvls)) |>
-          tidyr::complete(tidyr::nesting(category, group), response)
+            dplyr::mutate(response = forcats::as_factor(response) |> forcats::fct_expand(resp_lvls)) |>
+            tidyr::complete(tidyr::nesting(category, group), response)
     })) |>
+    # changed my mind again---drop responses & question text
+    dplyr::select(-responses, -question) |>
     tidyr::nest(survey = c(-year, -span, -name))
 
 
@@ -198,16 +209,22 @@ cws_max_moe <- paths |>
     })) |>
     dplyr::select(year, span, name, moe)
 
+# latest tags--internal
+tags <- dplyr::select(paths, span, tag) |>
+    dplyr::distinct() |>
+    dplyr::filter(!is.na(tag)) |>
+    tibble::deframe()
+
 # OUTPUT ----
 ################## CHECK ABOVE BEFORE SAVING ###################################
 usethis::use_data(cws_group_meta, overwrite = TRUE)
 # is response_meta really that useful?
 # usethis::use_data(response_meta, overwrite = TRUE)
-usethis::use_data(cws_full_data, overwrite = TRUE)
+usethis::use_data(cws_codebook, overwrite = TRUE)
+usethis::use_data(cws_full_data, overwrite = TRUE, compress = "xz")
 
 usethis::use_data(cws_full_wts, overwrite = TRUE)
 usethis::use_data(cws_max_moe, overwrite = TRUE)
 
 # internal datasets--need to do all together
-
-# usethis::use_data(full_meta, internal = TRUE, overwrite = TRUE)
+usethis::use_data(tags, internal = TRUE, overwrite = TRUE)
