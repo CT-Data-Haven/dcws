@@ -2,7 +2,9 @@ test_that("read_xtabs: test the test setup", {
     yrs <- as.character(c(2015, 2018, 2020, 2021, 2024))
 
     expect_equal(names(all_xt(read_xtabs)), yrs)
-    expect_equal(names(all_xt(read_weights)), yrs)
+    xts <- all_xt(read_xtabs, process = TRUE)
+    cols <- purrr::map_dbl(xts, ncol)
+    expect_all_value(cols, 6)
 })
 
 # all_xt is a non-exported wrapper I wrote for the purposes of testing, see R/test_utils.R
@@ -22,7 +24,7 @@ test_that("read_weights handles both weight tables and weight headers", {
 })
 
 test_that("read_xtabs allows custom name prefixes", {
-    xts <- all_xt(read_xtabs, list(name_prefix = "vv"))
+    xts <- all_xt(read_xtabs, name_prefix = "vv")
     hdrs <- purrr::map(xts, function(x) sprintf("vv%d", seq_along(x)))
     expect_mapequal(purrr::map(xts, names), hdrs)
 })
@@ -31,12 +33,12 @@ test_that("read_xtabs successfully passes to xtab2df", {
     yrs <- as.character(c(2015, 2018, 2020, 2021, 2024))
     xts_no_process <- all_xt(read_xtabs) |>
         purrr::map2(yrs, function(xt, yr) xtab2df(xt, year = yr))
-    xts_process <- all_xt(read_xtabs, list(process = TRUE))
+    xts_process <- all_xt(read_xtabs, process = TRUE)
     expect_mapequal(xts_no_process, xts_process)
 
-    xts_no_process_args <- all_xt(read_xtabs, list(name_prefix = "v")) |>
+    xts_no_process_args <- all_xt(read_xtabs, name_prefix = "v") |>
         purrr::map2(yrs, function(xt, yr) xtab2df(xt, yr, col = v1))
-    xts_process_args <- all_xt(read_xtabs, list(name_prefix = "v", process = TRUE))
+    xts_process_args <- all_xt(read_xtabs, name_prefix = "v", process = TRUE)
     expect_mapequal(xts_no_process_args, xts_process_args)
 })
 

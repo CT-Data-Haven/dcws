@@ -50,7 +50,7 @@ cws_lvl_patts_ <- function(is_category) {
         "Greater Hartford" = "CRCOG",
         "Port Chester NY" = "Port Chester",
         # "5CT" = "Five Connecticuts",
-        "Connecticut" = "Connecticut Cities/Towns",
+        "Five Connecticuts" = "Connecticut Cities/Towns",
         "Connecticut" = "CT",
         "With children" = "Children in HH",
         "Male" = "M",
