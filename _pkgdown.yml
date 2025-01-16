@@ -6,10 +6,12 @@ template:
     pkgdown-nav-height: 60px
 
 reference:
-- title: Functions
-  contents:
-  - starts_with("fetch_")
-  - starts_with("clean_")
-- title: Datasets
-  contents:
-  - has_keyword("datasets")
+  - title: Functions
+    contents:
+      - starts_with("fetch_")
+      - starts_with("clean_")
+      - read_dcws
+      - xtab2df
+  - title: Datasets
+    contents:
+      - has_keyword("datasets")
