@@ -5,60 +5,50 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="This is a collection of data from all past years of the DCWS, plus a bit of metadata and a few functions for extracting subsets of data.">
 <title>Data from the DataHaven Community Wellbeing Survey • dcws</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Data from the DataHaven Community Wellbeing Survey">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Data from the DataHaven Community Wellbeing Survey">
+<meta name="description" content="This is a collection of data from all past years of the DCWS, plus a bit of metadata and a few functions for extracting subsets of data.">
 <meta property="og:description" content="This is a collection of data from all past years of the DCWS, plus a bit of metadata and a few functions for extracting subsets of data.">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-dark navbar-expand-lg bg-primary"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="index.html">dcws</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.5.9000</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="reference/index.html">Reference</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="articles/definitions.html">Indicator definitions</a>
-    <a class="dropdown-item" href="articles/extra-regions.html">Extra regions</a>
-    <a class="dropdown-item" href="articles/fetching-dcws-data.html">Fetching DCWS data</a>
-    <a class="dropdown-item" href="articles/groups.html">Group reference</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="articles/fetching-dcws-data.html">Fetching DCWS data</a></li>
+    <li><a class="dropdown-item" href="articles/groups.html">Group reference</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav"></ul>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
+</form></li>
+      </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-home">
 <div class="row">
@@ -67,7 +57,7 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>This is a small data-focused package to make easier use of the DataHaven Community Wellbeing Survey. It contains the data extracted from crosstabs from the 2015, 2018, 2020, 2021, and 2022 survey waves. 2020 and 2022 are statewide only.</p>
+<p>This is a small data-focused package to make easier use of the DataHaven Community Wellbeing Survey. It contains the data extracted from crosstabs from the 2015, 2018, 2020, 2021, 2022, and 2024 survey waves. 2020 and 2022 are statewide only.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -79,8 +69,17 @@
 <div class="section level2">
 <h2 id="included-data">Included data<a class="anchor" aria-label="anchor" href="#included-data"></a>
 </h2>
-<p>As of 2022-09-08, the data included here are:</p>
-<table class="table">
+<p>As of 2025-01-14, the data included here are:</p>
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+</colgroup>
 <thead><tr class="header">
 <th align="left">name</th>
 <th align="center">2015</th>
@@ -88,6 +87,7 @@
 <th align="center">2020</th>
 <th align="center">2021</th>
 <th align="center">2022</th>
+<th align="left">2024</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -97,6 +97,61 @@
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">6 Wealthiest Fairfield County</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Ansonia</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Aspetuck Health District</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Backus Hospital</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Bloomfield</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Branford</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="even">
 <td align="left">Bridgeport</td>
@@ -105,30 +160,160 @@
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="odd">
+<td align="left">Bridgeport Hospital</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
 <td align="left">Bristol</td>
 <td align="center">x</td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Bristol Burlington Health District</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="even">
+<td align="left">Bristol Health</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">CCHD</td>
+<td align="center"></td>
+<td align="center">x</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">Capitol COG</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Central Connecticut Health District</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Charlotte Hungerford Hospital</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Chatham Health District</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Cheshire</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Chesprocott</td>
+<td align="center"></td>
+<td align="center">x</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">Chesprocott Health District</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
 <td align="left">Connecticut</td>
 <td align="center">x</td>
 <td align="center">x</td>
 <td align="center">x</td>
 <td align="center">x</td>
 <td align="center">x</td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Connecticut Children’s</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="odd">
+<td align="left">Connecticut River Area Health District</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
 <td align="left">Danbury</td>
 <td align="center">x</td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Danbury Hospital</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="even">
 <td align="left">Darien</td>
@@ -137,6 +322,79 @@
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Day Kimball Healthcare</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Derby</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Dmhas Region 1</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Dmhas Region 2</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Dmhas Region 3</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Dmhas Region 4</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Dmhas Region 5</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">EHHD</td>
+<td align="center"></td>
+<td align="center">x</td>
+<td align="center"></td>
+<td align="center">x</td>
+<td align="center"></td>
+<td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">East Hartford</td>
@@ -145,6 +403,7 @@
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="even">
 <td align="left">East Haven</td>
@@ -153,22 +412,79 @@
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="odd">
+<td align="left">East Lyme</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">East Shore District Health Department</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Eastern Highlands Health District</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Easton</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">FCHT</td>
+<td align="center"></td>
+<td align="center">x</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
 <td align="left">Fairfield</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Fairfield County</td>
 <td align="center">x</td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Farmington Valley Health District</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="odd">
 <td align="left">Greater Bridgeport</td>
@@ -177,62 +493,106 @@
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="even">
+<td align="left">Greater Bridgeport COG</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
 <td align="left">Greater Greenwich</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
+<td align="left"></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Greater Hartford</td>
 <td align="center">x</td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Greater New Haven</td>
 <td align="center">x</td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Greater New London</td>
 <td align="center">x</td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
+<td align="left"></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Greater Waterbury</td>
 <td align="center">x</td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Greenwich</td>
 <td align="center">x</td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Greenwich Hospital</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="even">
+<td align="left">Griffin Health</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
 <td align="left">Groton</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">HIA Area</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">x</td>
+<td align="center"></td>
+<td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">Hamden</td>
@@ -241,6 +601,7 @@
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="even">
 <td align="left">Hartford</td>
@@ -249,38 +610,151 @@
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="odd">
+<td align="left">Hartford County</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Hartford Healthcare</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Hartford Hospital</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
 <td align="left">Hartford Inner Ring</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
+<td align="left">x</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Hartford Outer Ring</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Hospital of Central Connecticut</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="odd">
+<td align="left">Housatonic Valley Health District</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Johnson Memorial Hospital</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Lawrence + Memorial Hospital</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Ledge Light Health District</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Ledyard</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Litchfield County</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Lower Connecticut River Valley COG</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
 <td align="left">Lower Naugatuck Valley</td>
 <td align="center">x</td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left"></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Manchester</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Manchester Memorial Rockville General Hospital</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="odd">
 <td align="left">Meriden</td>
@@ -289,54 +763,151 @@
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="even">
+<td align="left">Mid State Medical Center</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
 <td align="left">Middlesex County</td>
 <td align="center">x</td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Middlesex Health</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="odd">
+<td align="left">Middlesex United Way</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
 <td align="left">Middletown</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
+<td align="left">x</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Milford</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Monroe</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">NCDHD</td>
+<td align="center"></td>
+<td align="center">x</td>
+<td align="center"></td>
+<td align="center">x</td>
+<td align="center"></td>
+<td align="left"></td>
 </tr>
 <tr class="even">
+<td align="left">NDDH</td>
+<td align="center"></td>
+<td align="center">x</td>
+<td align="center"></td>
+<td align="center">x</td>
+<td align="center"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">NY Border Towns</td>
+<td align="center"></td>
+<td align="center">x</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">Naugatuck</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Naugatuck Valley COG</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Naugatuck Valley Health District</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
 <td align="left">New Britain</td>
 <td align="center">x</td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
+<td align="left">x</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">New Haven</td>
 <td align="center">x</td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">New Haven County</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="even">
 <td align="left">New Haven Inner Ring</td>
@@ -345,6 +916,7 @@
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="odd">
 <td align="left">New Haven Outer Ring</td>
@@ -353,6 +925,7 @@
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="even">
 <td align="left">New London</td>
@@ -361,30 +934,286 @@
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="odd">
+<td align="left">New London County</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
 <td align="left">New Milford</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Newtown</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Newtown Health District</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="odd">
+<td align="left">North Central District Health Department</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">North Haven</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Northeast District Department of Health</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Northeastern Connecticut COG</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Northwest Hills COG</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
 <td align="left">Norwalk</td>
 <td align="center">x</td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Norwalk Hospital</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Norwich</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Nuvance Health</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Oxford</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Plainville</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Pomperaug</td>
+<td align="center"></td>
+<td align="center">x</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Port Chester NY</td>
+<td align="center"></td>
+<td align="center">x</td>
+<td align="center"></td>
+<td align="center">x</td>
+<td align="center"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">Prospect ECHN</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Prospect Hospitals</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Quinnipiack Valley Health District</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Saint Francis Hospital</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Saint Mary’s Hospital</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Seymour</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Sharon Hospital</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Shelton</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">South Central Connecticut COG</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">South Central Health District</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Southeastern CTHIC Area</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">x</td>
+<td align="center"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Southeastern Connecticut COG</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Southington</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">St Vincent’s Medical Center</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="even">
 <td align="left">Stamford</td>
@@ -393,14 +1222,34 @@
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="odd">
+<td align="left">Stamford Health</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
 <td align="left">Stratford</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Tolland County</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="even">
 <td align="left">Torrington</td>
@@ -409,6 +1258,25 @@
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Torrington Area Health District</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Trinity Health of New England</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="odd">
 <td align="left">Trumbull</td>
@@ -417,22 +1285,187 @@
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="even">
+<td align="left">UConn John Dempsey Hospital</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Uncas Health District</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">United Way of Central and Northeastern Connecticut</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">United Way of Coastal and Western Connecticut</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">United Way of Greater New Haven</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">United Way of Greater Waterbury</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">United Way of Greenwich</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">United Way of Meriden Wallingford</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">United Way of Milford</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">United Way of Naugatuck Beacon Falls</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">United Way of Northwest Connecticut</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">United Way of Southeastern Connecticut</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">United Way of Southington</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">United Way of West Central Connecticut</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Valley United Way</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
 <td align="left">Wallingford</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
+<td align="left">x</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Waterbury</td>
 <td align="center">x</td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Waterbury Health</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Waterford</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Watertown</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="even">
 <td align="left">West Hartford</td>
@@ -441,14 +1474,70 @@
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="odd">
+<td align="left">West Hartford Bloomfield Health District</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
 <td align="left">West Haven</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Western Connecticut COG</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Winchester</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Windham</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Windham County</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">Windham Hospital</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="even">
 <td align="left">Windsor</td>
@@ -457,14 +1546,43 @@
 <td align="center"></td>
 <td align="center">x</td>
 <td align="center"></td>
+<td align="left">x</td>
 </tr>
 <tr class="odd">
+<td align="left">Yale New Haven Health</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Yale New Haven Hospital</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">ZIP 10573</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
 <td align="left"><strong>TOTAL</strong></td>
 <td align="center"><strong>23</strong></td>
-<td align="center"><strong>43</strong></td>
+<td align="center"><strong>52</strong></td>
 <td align="center"><strong>1</strong></td>
-<td align="center"><strong>29</strong></td>
+<td align="center"><strong>35</strong></td>
 <td align="center"><strong>1</strong></td>
+<td align="left"><strong>150</strong></td>
 </tr>
 </tbody>
 </table>
@@ -507,21 +1625,19 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by Camille Seaberry.</p>
+  <p>Developed by Camille Seaberry.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>

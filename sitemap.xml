@@ -1,69 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://ct-data-haven.github.io/dcws/404.html</loc>
-  </url>
-  <url>
-    <loc>https://ct-data-haven.github.io/dcws/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://ct-data-haven.github.io/dcws/articles/definitions.html</loc>
-  </url>
-  <url>
-    <loc>https://ct-data-haven.github.io/dcws/articles/extra-regions.html</loc>
-  </url>
-  <url>
-    <loc>https://ct-data-haven.github.io/dcws/articles/fetching-dcws-data.html</loc>
-  </url>
-  <url>
-    <loc>https://ct-data-haven.github.io/dcws/articles/groups.html</loc>
-  </url>
-  <url>
-    <loc>https://ct-data-haven.github.io/dcws/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://ct-data-haven.github.io/dcws/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://ct-data-haven.github.io/dcws/index.html</loc>
-  </url>
-  <url>
-    <loc>https://ct-data-haven.github.io/dcws/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://ct-data-haven.github.io/dcws/reference/clean_lvls.html</loc>
-  </url>
-  <url>
-    <loc>https://ct-data-haven.github.io/dcws/reference/cws_defs.html</loc>
-  </url>
-  <url>
-    <loc>https://ct-data-haven.github.io/dcws/reference/cws_full_data.html</loc>
-  </url>
-  <url>
-    <loc>https://ct-data-haven.github.io/dcws/reference/cws_full_wts.html</loc>
-  </url>
-  <url>
-    <loc>https://ct-data-haven.github.io/dcws/reference/cws_group_meta.html</loc>
-  </url>
-  <url>
-    <loc>https://ct-data-haven.github.io/dcws/reference/cws_max_moe.html</loc>
-  </url>
-  <url>
-    <loc>https://ct-data-haven.github.io/dcws/reference/dcws-package.html</loc>
-  </url>
-  <url>
-    <loc>https://ct-data-haven.github.io/dcws/reference/fetch_cws.html</loc>
-  </url>
-  <url>
-    <loc>https://ct-data-haven.github.io/dcws/reference/fetch_wts.html</loc>
-  </url>
-  <url>
-    <loc>https://ct-data-haven.github.io/dcws/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://ct-data-haven.github.io/dcws/reference/pipe.html</loc>
-  </url>
-  <url>
-    <loc>https://ct-data-haven.github.io/dcws/reference/tidyeval.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://ct-data-haven.github.io/dcws/404.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/LICENSE.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/articles/fetching-dcws-data.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/articles/groups.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/articles/index.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/authors.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/index.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/news/index.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/reference/clean_cws_lvls.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/reference/cws_codebook.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/reference/cws_defs.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/reference/cws_full_data.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/reference/cws_full_wts.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/reference/cws_group_meta.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/reference/cws_max_moe.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/reference/dcws-package.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/reference/fetch_cws.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/reference/fetch_wts.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/reference/index.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/reference/read_xtabs.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/reference/xtab2df.html</loc></url>
 </urlset>
+
