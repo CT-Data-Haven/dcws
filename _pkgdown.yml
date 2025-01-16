@@ -10,7 +10,7 @@ reference:
     contents:
       - starts_with("fetch_")
       - starts_with("clean_")
-      - read_dcws
+      - read_xtabs
       - xtab2df
   - title: Datasets
     contents:
