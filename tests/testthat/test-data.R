@@ -19,4 +19,5 @@ test_that("full dataset has correct categories & groups", {
   expect_false(any(grepl("[Cc]hildren", grp_lvls)))
   expect_false(any(grepl(" total$", grp_lvls)))
   expect_false(any(grepl("^Income ", grp_lvls)))
+  expect_false(any(grp_lvls == "No kids in home"))
 })

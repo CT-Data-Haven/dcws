@@ -65,7 +65,7 @@ cws_lvl_patts_ <- function(is_category) {
     if (is_category) {
         to_recode <- c(to_recode, list("With children" = "Children in home"))
     } else {
-
+        to_recode <- c(to_recode, list("No kids" = "No kids in home"))
     }
 
     # full strings
