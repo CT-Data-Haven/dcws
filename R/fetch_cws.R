@@ -118,7 +118,7 @@ fetch_cws <- function(...,
 #'     .year = 2021,
 #'     .name = c("Greater New Haven", "New Haven"), .unnest = TRUE
 #' ) |>
-#'     dplyr::left_join(fetch_wts(.unnest = TRUE), by = c("year", "name", "group"))
+#'     dplyr::left_join(fetch_wts(.unnest = TRUE), by = c("year", "span", "name", "group"))
 #' @export
 #' @seealso [fetch_cws()] [cws_full_wts]
 fetch_wts <- function(..., .year = NULL, .name = NULL, .unnest = FALSE) {

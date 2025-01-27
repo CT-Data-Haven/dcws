@@ -34,11 +34,13 @@ full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate,
 full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate,
     group = suppressWarnings(forcats::fct_recode(group, Connecticut = "Total"))
 ))
+# clean up stray unicode characters from excel files
 full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate,
     question = question |>
         stringr::str_replace_all("\\´", "'") |>
         stringr::str_replace_all("…", "...") |>
-        enc2utf8()
+        stringr::str_replace_all("Â", "-") |>
+        stringr::str_conv("ISO-8859-1")
 ))
 full_meta <- dplyr::arrange(full_meta, year, name)
 # full_meta <- dplyr::select(full_meta, -code_patt)

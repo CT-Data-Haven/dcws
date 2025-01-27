@@ -162,6 +162,15 @@ rule install:
     shell:
         'Rscript -e "devtools::install()"'
 
+rule pkgdown:
+    input:
+        '_pkgdown.yml',
+        'DESCRIPTION',
+        rules.data_raw.input,
+        rules.check.output.flag
+    shell:
+        'Rscript -e "pkgdown::build_site()"'
+
 # use constraint with regex to match readme in base of directory
 rule render_quarto:
     input:

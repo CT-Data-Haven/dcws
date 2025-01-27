@@ -25,10 +25,10 @@ cws_lvl_patts_ <- function(is_category) {
     if (is_category) {
 
     } else {
-        # to_replace <- c(to_replace, c(
-        #   Children = "Kids",
-        #   children = "kids"
-        # ))
+        to_replace <- c(to_replace, c(
+          Children = "Kids",
+          children = "kids"
+        ))
     }
 
     # regex

@@ -35,7 +35,7 @@ fetch_cws(code == "Q4E",
     .year = 2021,
     .name = c("Greater New Haven", "New Haven"), .unnest = TRUE
 ) |>
-    dplyr::left_join(fetch_wts(.unnest = TRUE), by = c("year", "name", "group"))
+    dplyr::left_join(fetch_wts(.unnest = TRUE), by = c("year", "span", "name", "group"))
 }
 \seealso{
 \code{\link[=fetch_cws]{fetch_cws()}} \link{cws_full_wts}
