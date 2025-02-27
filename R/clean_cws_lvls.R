@@ -14,7 +14,7 @@ cws_lvl_patts_ <- function(is_category) {
         " (\\-|to) " = "-",
         "Less than (?=\\$)" = "<",
         "(?<=,000) or more" = "+",
-        "^\\b(\\d+)" = "Ages \\1",
+        "^\\b(\\d{2,})" = "Ages \\1",
         "hich school" = "high school",
         ",000" = "K",
         "Age\\b(?=.)" = "Ages",
@@ -34,7 +34,7 @@ cws_lvl_patts_ <- function(is_category) {
     # regex
     to_remove <- paste(c(
         "\\s((?<!Border )Towns|Statewide|Region)",
-        "(\\sTotal|Total\\s)",
+        "(\\s[Tt]otal|[Tt]otal\\s)",
         "(?<=(/|\\<))\\s",
         "(?<=Associate's)( degree)",
         "(?<=Bachelor's)( degree)",
