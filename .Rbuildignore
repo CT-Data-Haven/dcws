@@ -13,3 +13,8 @@
 ^logs$
 ^\.flags$
 ^\.env$
+.cz.toml
+^Snakefile$
+^report$
+^.flags$
+^vignettes/.quarto

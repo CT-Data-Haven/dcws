@@ -13,3 +13,9 @@ data-raw/crosstabs/dcws_*-v*.xlsx
 data-raw/crosstabs/downloads
 **/*.duckdbrevise
 **/*.duckdb
+dag.png
+TODO.md
+.cz.toml
+CHANGELOG.md.j2
+vignettes/*_files
+vignettes/*.html

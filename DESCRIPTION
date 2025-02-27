@@ -1,6 +1,6 @@
 Package: dcws
 Title: Data from the DataHaven Community Wellbeing Survey
-Version: 0.1.5.9000
+Version: 0.1.5
 Authors@R: 
     person("Camille", "Seaberry", , "camille@ctdatahaven.org", role = c("aut", "cre"))
 Description: This is a collection of data from all past years of the DCWS, plus a bit of metadata and a few functions for extracting subsets of data.
@@ -35,7 +35,8 @@ Suggests:
     snakecase,
     gh,
     duckdb,
-    readr
+    readr,
+    quarto
 Remotes: 
     ct-data-haven/cwi,
     davidgohel/officer
@@ -44,6 +45,10 @@ Depends:
 LazyData: true
 LazyDataCompression: xz
 Config/testthat/edition: 3
-Config/Needs/website: pkgdown, 
-    knitr
-VignetteBuilder: knitr
+Config/Needs/website: 
+    pkgdown, 
+    knitr,
+    quarto
+VignetteBuilder: 
+    knitr,
+    quarto
