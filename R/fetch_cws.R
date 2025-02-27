@@ -57,8 +57,8 @@ fetch_cws <- function(...,
     }
 
     # add question text here to have it available for filtering, then drop if not needed
-    out <- tidyr::unnest(dcws::cws_full_data, survey)
-    codebook <- dcws::cws_codebook[, c("year", "code", "question")]
+    out <- tidyr::unnest(cws_full_data, survey)
+    codebook <- cws_codebook[, c("year", "code", "question")]
     out <- dplyr::left_join(out, codebook, by = c("year", "code"))
     out <- dplyr::relocate(out, question, .after = code)
     out <- dplyr::filter(out, !!!rlang::quos(...))
@@ -82,7 +82,7 @@ fetch_cws <- function(...,
 
     if (.add_wts) {
         out <- dplyr::left_join(out,
-            tidyr::unnest(dcws::cws_full_wts, weights),
+            tidyr::unnest(cws_full_wts, weights),
             by = c("year", "span", "name", "group")
         )
     }
@@ -122,7 +122,7 @@ fetch_cws <- function(...,
 #' @export
 #' @seealso [fetch_cws()] [cws_full_wts]
 fetch_wts <- function(..., .year = NULL, .name = NULL, .unnest = FALSE) {
-    out <- dplyr::filter(dcws::cws_full_wts, !!!rlang::quos(...))
+    out <- dplyr::filter(cws_full_wts, !!!rlang::quos(...))
     out <- filter_cws_(out, .year = .year, .name = .name, .category = NULL)
 
     if (nrow(out) == 0) {

@@ -91,7 +91,7 @@ db <- gh::gh("/repos/{owner}/{repo}/releases/assets/{asset_id}",
 
 con <- DBI::dbConnect(duckdb::duckdb(path))
 cws_defs <- DBI::dbGetQuery(con, "
-                SELECT variable, question
+                SELECT variable as indicator, question
                 FROM variables
                 WHERE dataset = 'cws';
                 ")

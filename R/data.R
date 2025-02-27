@@ -126,7 +126,7 @@
 #'
 #' @format A data frame with `r nrow(cws_defs)` rows and `r ncol(cws_defs)` variables:
 #' \describe{
-#'   \item{\code{variable}}{Text of abbreviated indicator name, e.g. "safe biking"}
+#'   \item{\code{indicator}}{Text of abbreviated indicator name, e.g. "safe biking"}
 #'   \item{\code{question}}{Text of question as given on the survey with punctuation and capital letters removed, e.g. "there are places to bicycle in or near my neighborhood that are safe from traffic such as on the street or on special lanes separate paths or trails"}
 #'   \item{\code{collapsed_responses}}{Comma-separated text of responses that are collapsed into the indicator, e.g. "Strongly agree, Somewhat agree".}
 #' }

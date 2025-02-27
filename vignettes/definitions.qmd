@@ -1,0 +1,52 @@
+---
+title: "Indicator definitions"
+description: Overview of common indicator definitions
+vignette: >
+  %\VignetteIndexEntry{Indicator definitions}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+knitr:
+  opts_chunk:
+    comment: '#>'
+    collapse: true
+execute:
+  warning: false
+  message: false
+  echo: true
+---
+
+
+This is an overview of standardized definitions of many of the indicators we use. For example, the question about the condition of local parks is a Likert-style question with answers of strongly agree, somewhat agree, somewhat disagree, strongly disagree. When we report this indicator, however, we do it as the percentage that says either strongly or somewhat agree. The data frame `cws_defs` has definitions of each indicator of this type, how the question was phrased, and the definition of what responses get collapsed into the summary indicator. The data frame is part of a larger [data dictionary project](https://github.com/CT-Data-Haven/dictionary-build) still in progress.
+
+```{r }
+#| label: setup
+#| message: false
+library(dcws)
+library(dplyr)
+```
+
+Here's how one of these Likert questions is defined. It doesn't have anything special to it, so the universe and calculation columns are blank:
+
+```{r}
+#| label: lik1
+cws_defs |>
+  filter(indicator == "safe_biking") |>
+  knitr::kable()
+```
+
+A few questions are more complicated, and have different universes to use. For example, current smoking rate is calculated based on the percentage of people who say they've smoked 100 cigarettes in their life; that becomes the universe for the share of people who say they currently smoke every day or some days:
+
+```{r}
+#| label: lik2
+cws_defs |>
+  filter(grepl("smok", indicator)) |>
+  knitr::kable()
+```
+
+Here's the whole data frame as reference:
+
+```{r}
+#| label: full-table
+knitr::kable(cws_defs)
+```
+

@@ -197,7 +197,7 @@ rule pkgdown:
     output:
         flag=touch(".flags/pkgdown"),
     shell:
-        'Rscript -e "pkgdown::build_site(run_dont_run = TRUE)"'
+        'Rscript -e "pkgdown::build_site()"'
 
 
 # use constraint with regex to match readme in base of directory

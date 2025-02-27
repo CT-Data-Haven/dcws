@@ -39,6 +39,7 @@ devtools::install_github("CT-Data-Haven/dcws")
 As of `r Sys.Date()`, the data included here are:
 
 ```{r}
+#| label: data
 xt_tbl <- cws_full_data |>
     dplyr::distinct(year, name) |>
     dplyr::arrange(name) |>

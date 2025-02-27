@@ -1,0 +1,56 @@
+---
+title: "Group reference"
+description: Available groups per survey
+vignette: >
+  %\VignetteIndexEntry{Group reference}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+knitr:
+  opts_chunk:
+    comment: '#>'
+    collapse: true
+execute:
+  warning: false
+  message: false
+  echo: false
+---
+
+
+Use this as a very ugly reference for availability of categories and groups by year. Partly this is so we have a git-trackable list.
+
+```{r}
+#| label: libs
+#| message: false
+library(dcws)
+library(dplyr)
+library(tidyr)
+```
+
+```{r}
+#| label: groups-tbl
+#| results: asis
+grps <- cws_full_data |>
+    unnest(survey) |>
+    unnest(data) |>
+    distinct(name, span, category, group) |>
+    filter(
+      category != "Total", 
+      as.character(category) != as.character(group)) |>
+    mutate(value = "x") |>
+    mutate(across(where(is.factor), forcats::fct_drop))
+
+grps |>
+    split(~category, drop = TRUE) |>
+    purrr::map(pivot_wider, id_cols = c(name), 
+        names_from = group, values_from = span, 
+        values_fn = list(span = toString), names_sort = TRUE, 
+        values_fill = "") |>
+    purrr::map(arrange, name) |>
+    purrr::iwalk(function(df, category) {
+        cat(paste("##", category))
+        print(knitr::kable(df))
+    })
+```
+
+
+

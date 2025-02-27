@@ -33,7 +33,7 @@ codes <- officer::read_docx("data-raw/misc_input/DataHaven0720_Prn2.docx") |>
     ) |>
     dplyr::filter(!is.na(label))
 
-cws20 <- dcws:::read_xtabs(
+cws20 <- read_xtabs(
     "data-raw/crosstabs/DataHaven2020 Connecticut Crosstabs.xlsx",
     year = 2020,
     process = TRUE,

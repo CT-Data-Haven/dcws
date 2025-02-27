@@ -1,8 +1,9 @@
 url: https://ct-data-haven.github.io/dcws
 template:
   bootstrap: 5
-  bootswatch: "flatly"
+  bootswatch: "yeti"
   bslib:
+    primary: green
     pkgdown-nav-height: 60px
 
 reference:

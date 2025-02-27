@@ -2,7 +2,7 @@ sample_paths <- function() {
     # fill in tag from package internal
     base_dir <- file.path("..", "..", "data-raw", "crosstabs")
     paths <- tibble::tibble(
-        path = readLines(testthat::test_path("test_paths.txt")),
+        path = readLines(testthat::test_path("test_data/test_paths.txt")),
         span = stringr::str_extract(path, "(?<=\\D)\\d{4}([\\-_]\\d{4})?")
     ) |>
         dplyr::mutate(tag = tags[span]) |>

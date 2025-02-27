@@ -4,6 +4,7 @@ test_that("full dataset has correct categories & groups", {
     tidyr::unnest(survey) |>
     tidyr::unnest(data) |>
     dplyr::filter(category != "Total") |>
+    dplyr::filter(as.character(category) != as.character(group)) |>
     dplyr::distinct(category, group) |>
     dplyr::mutate(dplyr::across(dplyr::where(is.factor), forcats::fct_drop))
 
