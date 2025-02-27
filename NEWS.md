@@ -31,3 +31,16 @@
 # dcws 0.0.0.9000
 
 * Added a `NEWS.md` file to track changes to the package.
+
+# dcws v0.1.6 (2025-02-26)
+
+## Fix
+
+- **clean_cws_lvls**: yet another set of regex changes for cleaning levels
+- clean_cws_lvls still missing a pattern
+
+# dcws v0.1.5.9000 (2025-01-27)
+
+## Fix
+
+- better pattern matching for clean_cws_lvls
