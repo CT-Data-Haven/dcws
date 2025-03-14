@@ -37,7 +37,7 @@ collapse_patt_ <- function(patt) {
 }
 
 path_regex_ <- function(x) {
-    abbrevs <- collapse_patt_(c("\\bCog\\b", "Echn", "\\bZip\\b", "5ct"))
+    abbrevs <- collapse_patt_(c("\\bCog\\b", "Echn", "\\bZip\\b", "5ct", "Dmhas"))
     apost <- sprintf("\\b%s(s)\\b", collapse_patt_(c("Children", "Vincent", "Mary")))
     replace <- c("Uconn" = "UConn", "Lawrence Memorial" = "Lawrence + Memorial")
 

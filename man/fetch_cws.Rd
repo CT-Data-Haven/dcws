@@ -24,7 +24,7 @@ fetch_cws(
 
 \item{.category}{A vector of one or more strings giving the category(ies) to subset by. If \code{NULL}, no filtering is done by category.}
 
-\item{.unnest}{Boolean: should the \code{data} column be unnested? This just saves a step of calling \code{tidyr::unnest} but defaults to false.}
+\item{.unnest}{Boolean: should data be returned nested into a column called \code{data}? Defaults to \code{FALSE}.}
 
 \item{.add_wts}{Boolean: should groups' survey weights be attached, via a left-join with \code{dcws::cws_full_wts}? This is useful if you need to collapse groups later; otherwise you might get stuck in annoying \code{tidyr::unnest} messes.}
 
@@ -33,21 +33,27 @@ fetch_cws(
 \item{.incl_questions}{Boolean: should the full text of each question be included? If \code{FALSE}, questions will be demarcated by just their codes, which take up less space but can change year to year. Defaults \code{TRUE}.}
 }
 \value{
-A data frame, with between 5 and 10 columns, depending on arguments. Columns \code{year}, \code{span}, \code{name}, and, \code{code} are always included; \code{question} is included for \code{.incl_questions = TRUE}. If \code{.unnest = TRUE}, the crosstab data will be in columns \code{category}, \code{group}, \code{response}, and \code{value}; if \code{.add_wts = TRUE}, then \code{weight} will be there as well. If \code{.unnest = FALSE}, then those columns (category through weight) will be in a nested data frame, in a column called \code{data}. Note that the \code{span} column, a new addition, is a string giving the span of years included in that set of survey data. For single years, this will be the same as \code{year}; in the case of a pooled dataset 2015-2024, \code{year} will be \code{2024} and \code{span} will be \code{"2015_2024"}.
+A data frame, with between 5 and 10 columns, depending on arguments:
+\itemize{
+\item Columns \code{year}, \code{span}, \code{name}, and \code{code} are always included
+\item If \code{.incl_questions = TRUE}, column \code{question} is included
+\item If \code{.unnest = TRUE}, the crosstab data will be in columns \code{category}, \code{group}, \code{response}, and \code{value}
+\item If \code{.unnest = FALSE}, crosstab data columns will be nested in a list-column called \code{data}
+\item If \code{.add_wts = TRUE}, column \code{weight} is included
+Note that the \code{span} column, a new addition, is a string giving the span of years included in that set of survey data. For single years, this will be the same as \code{year}; in the case of a pooled dataset 2015-2024, \code{year} will be \code{2024} and \code{span} will be \code{"2015_2024"}.
+}
 }
 \description{
-This function returns the doubly-nested data from \code{cws_full_data} in a nicer format, with options for subsetting. Filtering by year, location name, and category are named options, any of which take a vector of one or more values, but any valid conditions can be passed to \code{...} for more flexible filtering. For any named options, \code{NULL}, the default, will mean no filtering is done by that column.
+This function returns the split data from \code{cws_full_data} in a nicer format, with options for subsetting. Filtering by year, location name, and category are named options, any of which take a vector of one or more values, but any valid conditions can be passed to \code{...} for more flexible filtering. For any named options, \code{NULL}, the default, will mean no filtering is done by that column.
 }
 \examples{
 # no filtering
-\dontrun{
 fetch_cws()
-}
 
 # filter by year, name, and/or category
 fetch_cws(.name = c("Greater New Haven", "New Haven")) # all years
-fetch_cws(.year = 2018, .name = c("Greater New Haven", "New Haven"))
-fetch_cws(.year = 2021, .name = "New Haven", .category = c("Total", "Age", "Gender"))
+fetch_cws(.year = 2024, .name = c("Greater New Haven", "New Haven"))
+fetch_cws(.year = "2015_2024", .name = "New Haven", .category = c("Total", "Age", "Gender"))
 
 # filter by conditions
 fetch_cws(code == "Q4E", .year = 2018, .name = c("Greater New Haven", "New Haven"), .unnest = TRUE)

@@ -3,8 +3,9 @@ template:
   bootstrap: 5
   bootswatch: "yeti"
   bslib:
-    primary: green
+    primary: indigo
     pkgdown-nav-height: 60px
+    nav-link-font-weight: 400
 
 reference:
   - title: Functions
@@ -16,3 +17,11 @@ reference:
   - title: Datasets
     contents:
       - has_keyword("datasets")
+
+articles:
+  - title: DCWS
+    navbar: ~
+    contents:
+    - fetching-dcws-data
+    - definitions
+    - groups

@@ -30,8 +30,8 @@ Here's how one of these Likert questions is defined. It doesn't have anything sp
 ```{r}
 #| label: lik1
 cws_defs |>
-  filter(indicator == "safe_biking") |>
-  knitr::kable()
+    filter(indicator == "safe_biking") |>
+    knitr::kable()
 ```
 
 A few questions are more complicated, and have different universes to use. For example, current smoking rate is calculated based on the percentage of people who say they've smoked 100 cigarettes in their life; that becomes the universe for the share of people who say they currently smoke every day or some days:
@@ -39,8 +39,8 @@ A few questions are more complicated, and have different universes to use. For e
 ```{r}
 #| label: lik2
 cws_defs |>
-  filter(grepl("smok", indicator)) |>
-  knitr::kable()
+    filter(grepl("smok", indicator)) |>
+    knitr::kable()
 ```
 
 Here's the whole data frame as reference:

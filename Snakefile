@@ -215,9 +215,13 @@ rule render_quarto:
 
 rule readme:
     input:
+        data = 'data/cws_full_data.rda',
         check=rules.check.output.flag,
-        # qmd = 'README.qmd',
+        qmd = 'README.qmd',
+    output:
         md="README.md",
+    shell:
+        "quarto render {input.qmd}"
 
 
 rule dag:

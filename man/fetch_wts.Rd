@@ -13,7 +13,7 @@ fetch_wts(..., .year = NULL, .name = NULL, .unnest = FALSE)
 
 \item{.name}{A vector of one or more strings giving the name(s) to subset by. If \code{NULL}, no filtering is done by name.}
 
-\item{.unnest}{Boolean: should the \code{data} column be unnested? This just saves a step of calling \code{tidyr::unnest} but defaults to false.}
+\item{.unnest}{Boolean: should data be returned nested into a column called \code{data}? Defaults to \code{FALSE}.}
 }
 \value{
 A data frame, with either 3 columns (if \code{.unnest = FALSE}) or 4 columns (if \code{.unnest = TRUE}).
@@ -36,6 +36,13 @@ fetch_cws(code == "Q4E",
     .name = c("Greater New Haven", "New Haven"), .unnest = TRUE
 ) |>
     dplyr::left_join(fetch_wts(.unnest = TRUE), by = c("year", "span", "name", "group"))
+
+# instead, use fetch_cws with .add_wts = TRUE to get these weights joined for you
+fetch_cws(code == "Q4E",
+    .year = 2021,
+    .name = c("Greater New Haven", "New Haven"),
+    .add_wts = TRUE
+)
 }
 \seealso{
 \code{\link[=fetch_cws]{fetch_cws()}} \link{cws_full_wts}

@@ -45,7 +45,7 @@ calc_food <- function(data) {
             group != "Other race",
             response == "Yes"
         ) |> # other race is only available in 2015
-        select(year, name, category, group, value) |>
+        select(span, name, category, group, value) |>
         mutate(value = round(value, digits = 2))
 }
 ```
@@ -201,11 +201,12 @@ satisfied_area |>
     distinct(year, name, group) |>
     mutate(value = "x", id = paste(name, year)) |>
     tidyr::pivot_wider(
-        id_cols = group, 
-        names_from = id, 
-        values_from = value, 
-        names_sort = TRUE, 
-        values_fill = "") |>
+        id_cols = group,
+        names_from = id,
+        values_from = value,
+        names_sort = TRUE,
+        values_fill = ""
+    ) |>
     arrange(group) |>
     knitr::kable()
 ```
@@ -243,11 +244,11 @@ Usually your argument for `year` will be a single number, the year the survey wa
 ```{r}
 #| label: pool1
 fetch_cws(
-    code == "Q1", 
-    .year = "2015_2024", 
-    .name = "New Haven", 
+    code == "Q1",
+    .year = "2015_2024",
+    .name = "New Haven",
     .category = "Age"
-) 
+)
 ```
 
 If you want both single and pooled data (you probably don't), you can utilize the filtering done in the `...` argument instead, as they'll both have an endyear of 2024:
@@ -255,9 +256,9 @@ If you want both single and pooled data (you probably don't), you can utilize th
 ```{r}
 #| label: pool2
 fetch_cws(
-    year == 2024, 
-    code == "Q1", 
-    .name = "New Haven", 
+    year == 2024,
+    code == "Q1",
+    .name = "New Haven",
     .category = "Age"
 )
 ```
