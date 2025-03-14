@@ -40,17 +40,20 @@ As of `r Sys.Date()`, the data included here are:
 
 ```{r}
 #| label: data
-xt_tbl <- cws_full_data |>
-    dplyr::distinct(year, name) |>
-    dplyr::arrange(name) |>
+xt_tbl <- fetch_cws() |>
+    dplyr::distinct(year, span, name) |>
+    dplyr::arrange(year, span) |>
     dplyr::mutate(value = "x")
 
 xt_total <- xt_tbl |>
-    dplyr::group_by(year, name = "**TOTAL**") |>
+    dplyr::group_by(year, span, name = "**TOTAL**") |>
     dplyr::summarise(value = sprintf("**%d**", dplyr::n()))
 
+n_yrs <- length(unique(xt_tbl$span))
+align <- paste0("l", paste0(rep_len("c", n_yrs), collapse = ""))
 rbind(xt_tbl, xt_total) |>
-    tidyr::pivot_wider(id_cols = name, names_from = year, values_fill = list(value = ""), names_sort = TRUE) |>
-    knitr::kable(align = "lccccc")
+    tidyr::pivot_wider(id_cols = name, names_from = span, values_fill = list(value = "")) |>
+    dplyr::arrange(name) |>
+    knitr::kable(align = align)
 ```
 

@@ -186,6 +186,8 @@ rule install:
         data=rules.data_raw.input,
         check_flag=rules.check.output.flag,
         desc="DESCRIPTION",
+    output:
+        flag=touch(".flags/install"),
     shell:
         'Rscript -e "devtools::install()"'
 
@@ -217,6 +219,7 @@ rule readme:
     input:
         data = 'data/cws_full_data.rda',
         check=rules.check.output.flag,
+        install = rules.install.output.flag,
         qmd = 'README.qmd',
     output:
         md="README.md",
