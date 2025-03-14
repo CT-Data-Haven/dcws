@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">dcws</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,8 +35,8 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/definitions.html">Indicator definitions</a></li>
-    <li><a class="dropdown-item" href="../articles/fetching-dcws-data.html">Fetching DCWS data</a></li>
+<li><a class="dropdown-item" href="../articles/fetching-dcws-data.html">Fetching DCWS data</a></li>
+    <li><a class="dropdown-item" href="../articles/definitions.html">Indicator definitions</a></li>
     <li><a class="dropdown-item" href="../articles/groups.html">Group reference</a></li>
   </ul>
 </li>
@@ -69,7 +69,7 @@
 
 
 
-    <p>This package has a dataset of all the data extracted from all (or at least most) the crosstabs for every DataHaven Community Wellbeing Survey wave, a total of 385 files. It’s all been cleaned up so that names, categories, and groups should be standardized to match across every location and year, and should be the same in the weights as in the data tables themselves. Every data point has its corresponding question text and code.</p>
+    <p>This package has a dataset of all the data extracted from all (or at least most) the crosstabs for every DataHaven Community Wellbeing Survey wave, a total of files. It’s all been cleaned up so that names, categories, and groups should be standardized to match across every location and year, and should be the same in the weights as in the data tables themselves. Every data point has its corresponding question text and code.</p>
 <p>When it’s all combined and unnested, there are a few million rows of data, and no one needs all of that. Instead, use the function <code>fetch_cws</code> to pull out just the data you need, whether that’s just one location across multiple years, multiple locations, a single question, or whatever.</p>
 <p>Here are some pretty common examples of how we might work with DCWS data using this package, <code>cwi</code>, and some tidyverse. I’ll mostly use some of the more straightforward questions that we ask every year, with Greater New Haven as an example because I know most of our demographic groups are available.</p>
 <div class="cell">
@@ -90,7 +90,7 @@
 <span>            <span class="va">group</span> <span class="op">!=</span> <span class="st">"Other race"</span>,</span>
 <span>            <span class="va">response</span> <span class="op">==</span> <span class="st">"Yes"</span></span>
 <span>        <span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># other race is only available in 2015</span></span>
-<span>        <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">name</span>, <span class="va">category</span>, <span class="va">group</span>, <span class="va">value</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>        <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">span</span>, <span class="va">name</span>, <span class="va">category</span>, <span class="va">group</span>, <span class="va">value</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>        <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">value</span>, digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
@@ -110,7 +110,7 @@
 <div class="cell-output-display">
 <table class="table caption-top">
 <thead><tr class="header">
-<th style="text-align: right;">year</th>
+<th style="text-align: left;">span</th>
 <th style="text-align: left;">name</th>
 <th style="text-align: left;">category</th>
 <th style="text-align: left;">group</th>
@@ -118,42 +118,42 @@
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">2021</td>
+<td style="text-align: left;">2021</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Total</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: right;">0.13</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2021</td>
+<td style="text-align: left;">2021</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Gender</td>
 <td style="text-align: left;">Male</td>
 <td style="text-align: right;">0.11</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2021</td>
+<td style="text-align: left;">2021</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Gender</td>
 <td style="text-align: left;">Female</td>
 <td style="text-align: right;">0.15</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2021</td>
+<td style="text-align: left;">2021</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">White</td>
 <td style="text-align: right;">0.08</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2021</td>
+<td style="text-align: left;">2021</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">Black</td>
 <td style="text-align: right;">0.20</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2021</td>
+<td style="text-align: left;">2021</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">Latino</td>
@@ -176,8 +176,15 @@
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">food_trend</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <table class="table caption-top">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 26%">
+<col style="width: 22%">
+<col style="width: 26%">
+<col style="width: 8%">
+</colgroup>
 <thead><tr class="header">
-<th style="text-align: right;">year</th>
+<th style="text-align: left;">span</th>
 <th style="text-align: left;">name</th>
 <th style="text-align: left;">category</th>
 <th style="text-align: left;">group</th>
@@ -185,294 +192,294 @@
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">2015</td>
+<td style="text-align: left;">2015</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Total</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: right;">0.14</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2015</td>
+<td style="text-align: left;">2015</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Gender</td>
 <td style="text-align: left;">Male</td>
 <td style="text-align: right;">0.11</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2015</td>
+<td style="text-align: left;">2015</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Gender</td>
 <td style="text-align: left;">Female</td>
 <td style="text-align: right;">0.16</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2015</td>
+<td style="text-align: left;">2015</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">White</td>
 <td style="text-align: right;">0.11</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2015</td>
+<td style="text-align: left;">2015</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">Black</td>
 <td style="text-align: right;">0.25</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2015</td>
+<td style="text-align: left;">2015</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">Latino</td>
 <td style="text-align: right;">0.24</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2018</td>
+<td style="text-align: left;">2018</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Total</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: right;">0.13</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2018</td>
+<td style="text-align: left;">2018</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Gender</td>
 <td style="text-align: left;">Male</td>
 <td style="text-align: right;">0.12</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2018</td>
+<td style="text-align: left;">2018</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Gender</td>
 <td style="text-align: left;">Female</td>
 <td style="text-align: right;">0.14</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2018</td>
+<td style="text-align: left;">2018</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">White</td>
 <td style="text-align: right;">0.09</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2018</td>
+<td style="text-align: left;">2018</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">Black</td>
 <td style="text-align: right;">0.20</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2018</td>
+<td style="text-align: left;">2018</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">Latino</td>
 <td style="text-align: right;">0.38</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2021</td>
+<td style="text-align: left;">2021</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Total</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: right;">0.13</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2021</td>
+<td style="text-align: left;">2021</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Gender</td>
 <td style="text-align: left;">Male</td>
 <td style="text-align: right;">0.11</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2021</td>
+<td style="text-align: left;">2021</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Gender</td>
 <td style="text-align: left;">Female</td>
 <td style="text-align: right;">0.15</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2021</td>
+<td style="text-align: left;">2021</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">White</td>
 <td style="text-align: right;">0.08</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2021</td>
+<td style="text-align: left;">2021</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">Black</td>
 <td style="text-align: right;">0.20</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2021</td>
+<td style="text-align: left;">2021</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">Latino</td>
 <td style="text-align: right;">0.28</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2015_2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Total</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: right;">0.17</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2015_2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Gender</td>
 <td style="text-align: left;">Male</td>
 <td style="text-align: right;">0.14</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2015_2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Gender</td>
 <td style="text-align: left;">Female</td>
 <td style="text-align: right;">0.20</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2015_2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">White</td>
 <td style="text-align: right;">0.12</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2015_2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">Black</td>
 <td style="text-align: right;">0.26</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2015_2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">Latino</td>
 <td style="text-align: right;">0.31</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2015_2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Total</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: right;">NA</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2015_2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Gender</td>
 <td style="text-align: left;">Male</td>
 <td style="text-align: right;">NA</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2015_2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Gender</td>
 <td style="text-align: left;">Female</td>
 <td style="text-align: right;">NA</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2015_2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">White</td>
 <td style="text-align: right;">NA</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2015_2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">Black</td>
 <td style="text-align: right;">NA</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2015_2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">Latino</td>
 <td style="text-align: right;">NA</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Total</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: right;">0.21</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Gender</td>
 <td style="text-align: left;">Male</td>
 <td style="text-align: right;">0.18</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Gender</td>
 <td style="text-align: left;">Female</td>
 <td style="text-align: right;">0.23</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">White</td>
 <td style="text-align: right;">0.16</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">Black</td>
 <td style="text-align: right;">0.31</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">Latino</td>
 <td style="text-align: right;">0.33</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Total</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: right;">NA</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Gender</td>
 <td style="text-align: left;">Male</td>
 <td style="text-align: right;">NA</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Gender</td>
 <td style="text-align: left;">Female</td>
 <td style="text-align: right;">NA</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">White</td>
 <td style="text-align: right;">NA</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">Black</td>
 <td style="text-align: right;">NA</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">Latino</td>
@@ -503,7 +510,7 @@
 <div class="cell-output-display">
 <table class="table caption-top">
 <thead><tr class="header">
-<th style="text-align: right;">year</th>
+<th style="text-align: left;">span</th>
 <th style="text-align: left;">name</th>
 <th style="text-align: left;">category</th>
 <th style="text-align: left;">group</th>
@@ -511,56 +518,56 @@
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">2021</td>
+<td style="text-align: left;">2021</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Total</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: right;">0.13</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2021</td>
+<td style="text-align: left;">2021</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">White</td>
 <td style="text-align: right;">0.08</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2021</td>
+<td style="text-align: left;">2021</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">Black</td>
 <td style="text-align: right;">0.20</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2021</td>
+<td style="text-align: left;">2021</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Race/Ethnicity</td>
 <td style="text-align: left;">Latino</td>
 <td style="text-align: right;">0.28</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2021</td>
+<td style="text-align: left;">2021</td>
 <td style="text-align: left;">Hamden</td>
 <td style="text-align: left;">By town</td>
 <td style="text-align: left;">Hamden</td>
 <td style="text-align: right;">0.14</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2021</td>
+<td style="text-align: left;">2021</td>
 <td style="text-align: left;">Milford</td>
 <td style="text-align: left;">By town</td>
 <td style="text-align: left;">Milford</td>
 <td style="text-align: right;">0.11</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2021</td>
+<td style="text-align: left;">2021</td>
 <td style="text-align: left;">New Haven</td>
 <td style="text-align: left;">By town</td>
 <td style="text-align: left;">New Haven</td>
 <td style="text-align: right;">0.15</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2021</td>
+<td style="text-align: left;">2021</td>
 <td style="text-align: left;">West Haven</td>
 <td style="text-align: left;">By town</td>
 <td style="text-align: left;">West Haven</td>
@@ -743,11 +750,12 @@
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">name</span>, <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>value <span class="op">=</span> <span class="st">"x"</span>, id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">name</span>, <span class="va">year</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span></span>
-<span>        id_cols <span class="op">=</span> <span class="va">group</span>, </span>
-<span>        names_from <span class="op">=</span> <span class="va">id</span>, </span>
-<span>        values_from <span class="op">=</span> <span class="va">value</span>, </span>
-<span>        names_sort <span class="op">=</span> <span class="cn">TRUE</span>, </span>
-<span>        values_fill <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>        id_cols <span class="op">=</span> <span class="va">group</span>,</span>
+<span>        names_from <span class="op">=</span> <span class="va">id</span>,</span>
+<span>        values_from <span class="op">=</span> <span class="va">value</span>,</span>
+<span>        names_sort <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>        values_fill <span class="op">=</span> <span class="st">""</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
@@ -941,23 +949,6 @@
 <td style="text-align: left;"></td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">&lt;$100K</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">x</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">x</td>
-</tr>
-<tr class="odd">
 <td style="text-align: left;">$100K-$200K</td>
 <td style="text-align: left;">x</td>
 <td style="text-align: left;">x</td>
@@ -974,23 +965,6 @@
 <td style="text-align: left;"></td>
 <td style="text-align: left;"></td>
 </tr>
-<tr class="even">
-<td style="text-align: left;">&gt;$100K</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">x</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">x</td>
-</tr>
 <tr class="odd">
 <td style="text-align: left;">$100K+</td>
 <td style="text-align: left;"></td>
@@ -1002,37 +976,20 @@
 <td style="text-align: left;"></td>
 <td style="text-align: left;"></td>
 <td style="text-align: left;">x</td>
-<td style="text-align: left;"></td>
+<td style="text-align: left;">x</td>
 <td style="text-align: left;"></td>
 <td style="text-align: left;"></td>
 <td style="text-align: left;">x</td>
-<td style="text-align: left;"></td>
+<td style="text-align: left;">x</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">&gt;$200K</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">x</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="odd">
 <td style="text-align: left;">$200K+</td>
 <td style="text-align: left;">x</td>
 <td style="text-align: left;">x</td>
 <td style="text-align: left;">x</td>
 <td style="text-align: left;"></td>
 <td style="text-align: left;">x</td>
-<td style="text-align: left;"></td>
+<td style="text-align: left;">x</td>
 <td style="text-align: left;">x</td>
 <td style="text-align: left;">x</td>
 <td style="text-align: left;"></td>
@@ -1179,11 +1136,11 @@
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/fetch_cws.html">fetch_cws</a></span><span class="op">(</span></span>
-<span>    <span class="va">code</span> <span class="op">==</span> <span class="st">"Q1"</span>, </span>
-<span>    .year <span class="op">=</span> <span class="st">"2015_2024"</span>, </span>
-<span>    .name <span class="op">=</span> <span class="st">"New Haven"</span>, </span>
+<span>    <span class="va">code</span> <span class="op">==</span> <span class="st">"Q1"</span>,</span>
+<span>    .year <span class="op">=</span> <span class="st">"2015_2024"</span>,</span>
+<span>    .name <span class="op">=</span> <span class="st">"New Haven"</span>,</span>
 <span>    .category <span class="op">=</span> <span class="st">"Age"</span></span>
-<span><span class="op">)</span> </span>
+<span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 6</span></span>
 <span><span class="co">#&gt;    year span      name      code  question                              data    </span></span>
 <span><span class="co">#&gt;   &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;                                 &lt;list&gt;  </span></span>
@@ -1193,9 +1150,9 @@
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/fetch_cws.html">fetch_cws</a></span><span class="op">(</span></span>
-<span>    <span class="va">year</span> <span class="op">==</span> <span class="fl">2024</span>, </span>
-<span>    <span class="va">code</span> <span class="op">==</span> <span class="st">"Q1"</span>, </span>
-<span>    .name <span class="op">=</span> <span class="st">"New Haven"</span>, </span>
+<span>    <span class="va">year</span> <span class="op">==</span> <span class="fl">2024</span>,</span>
+<span>    <span class="va">code</span> <span class="op">==</span> <span class="st">"Q1"</span>,</span>
+<span>    .name <span class="op">=</span> <span class="st">"New Haven"</span>,</span>
 <span>    .category <span class="op">=</span> <span class="st">"Age"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 2 × 6</span></span>

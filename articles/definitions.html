@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">dcws</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,8 +35,8 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/definitions.html">Indicator definitions</a></li>
-    <li><a class="dropdown-item" href="../articles/fetching-dcws-data.html">Fetching DCWS data</a></li>
+<li><a class="dropdown-item" href="../articles/fetching-dcws-data.html">Fetching DCWS data</a></li>
+    <li><a class="dropdown-item" href="../articles/definitions.html">Indicator definitions</a></li>
     <li><a class="dropdown-item" href="../articles/groups.html">Group reference</a></li>
   </ul>
 </li>
@@ -79,8 +79,8 @@
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cws_defs</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">indicator</span> <span class="op">==</span> <span class="st">"safe_biking"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">indicator</span> <span class="op">==</span> <span class="st">"safe_biking"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <table class="table caption-top" style="width:100%;">
 <colgroup>
@@ -105,8 +105,8 @@
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cws_defs</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"smok"</span>, <span class="va">indicator</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"smok"</span>, <span class="va">indicator</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <table class="table caption-top">
 <colgroup>
@@ -159,17 +159,17 @@
 <tr class="even">
 <td style="text-align: left;">food_insecurity</td>
 <td style="text-align: left;">Have there been times in the past 12 months when you did not have enough money to buy food that you or your family needed?</td>
-<td style="text-align: left;">NA</td>
+<td style="text-align: left;">yes / no</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">housing_insecurity</td>
 <td style="text-align: left;">In the last 12 months, have you not had enough money to provide adequate shelter or housing for you or your family?</td>
-<td style="text-align: left;">NA</td>
+<td style="text-align: left;">yes / no</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">transport_insecurity</td>
 <td style="text-align: left;">In the past 12 months, did you stay home when you needed or wanted to go someplace because you had no access to reliable transportation?</td>
-<td style="text-align: left;">NA</td>
+<td style="text-align: left;">yes / no</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">car_access</td>
@@ -239,7 +239,7 @@
 <tr class="even">
 <td style="text-align: left;">satisfied_with_area</td>
 <td style="text-align: left;">Are you satisfied with the city or area where you live?</td>
-<td style="text-align: left;">NA</td>
+<td style="text-align: left;">yes / no</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">local_govt_is_responsive</td>
