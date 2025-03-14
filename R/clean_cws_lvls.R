@@ -20,14 +20,15 @@ cws_lvl_patts_ <- function(is_category) {
         "Age\\b(?=.)" = "Ages",
         # "Kids" = "Children",
         # "kids" = "children",
-        "\\bHH" = "home"
+        "\\bHH" = "home",
+        "^\\>(\\$[\\d\\w]+$)" = "\\1+"
     )
     if (is_category) {
 
     } else {
         to_replace <- c(to_replace, c(
-          Children = "Kids",
-          children = "kids"
+            Children = "Kids",
+            children = "kids"
         ))
     }
 
