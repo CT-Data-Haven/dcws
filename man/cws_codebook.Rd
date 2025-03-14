@@ -24,6 +24,9 @@ This is a data frame of all the codes and questions, and corresponding possible 
 }
 \examples{
 cws_codebook |>
+    dplyr::filter(grepl("adequate shelter", question))
+
+cws_codebook |>
     dplyr::filter(grepl("adequate shelter", question), year == 2024) |>
     tidyr::unnest(responses)
 

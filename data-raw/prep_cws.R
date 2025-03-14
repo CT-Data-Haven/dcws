@@ -1,4 +1,11 @@
-devtools::load_all()
+# after profiling & checking memory & file sizes, seems like most efficient method is keeping full data as a list of data frames, rather than nested with tibble columns
+# so switching this up to work with full data in long format, then split at end and drop extra factor levels
+# devtools::load_all()
+source("R/parse_cws_paths.R")
+source("R/read_cws.R")
+source("R/clean_cws_lvls.R")
+source("R/utils-misc.R")
+source("R/xtab2df.R")
 source("data-raw/cws20_lookup.R")
 # METADATA ----
 # spss-based xtabs come from excel sheets but r-based can come from single csv + codebook
@@ -20,7 +27,7 @@ full_meta <- paths |>
     dplyr::mutate(data = purrr::pmap(list(name, span, year, path), function(name, span, year, path) {
         safe_read_xtabs(path, year = year, process = TRUE, verbose = FALSE)
     }))
-# full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate, dplyr::across(c(category, group), clean_cws_lvls)))
+
 full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate, group = clean_cws_lvls(group, is_category = FALSE)))
 full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate, category = clean_cws_lvls(category, is_category = TRUE)))
 full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate, category = dplyr::case_when(
@@ -67,11 +74,14 @@ lvls[["Income"]] <- order_lvls(lvls[["Income"]])
 lvls[["Education"]] <- forcats::fct_relevel(lvls[["Education"]], "Less than high school", "High school or less", "High school", "Some college or less", "Some college or Associate's", "Some college or higher", "Less than Bachelor's", "Bachelor's or higher")
 
 # assign levels back into full_meta to carry over to other datasets
+# fix weird set of responses--2024 exercise question has "one to two" for single year, "two or less" for pooled
+# one to two is correct since none is also a response
 full_meta <- full_meta |>
     tidyr::unnest(data) |>
     dplyr::mutate(group = forcats::fct_relevel(group, levels(purrr::reduce(lvls, c)))) |>
     dplyr::mutate(group = forcats::fct_relevel(group, "Connecticut")) |>
     dplyr::mutate(category = forcats::fct_relevel(category, "Total", "Five Connecticuts")) |>
+    dplyr::mutate(response = ifelse(grepl("exercise", question) & response == "Two or less", "One to two", response)) |>
     tidyr::nest(data = code:value)
 
 
@@ -99,21 +109,31 @@ response_meta <- cws_codebook |>
 
 
 # SURVEY DATA ----
-# drop NY, health dists with abbreviated names
+# final version to export: split instead of nest
+# tricky thing to manage is having right set of levels, responses per year-location-question combo
 cws_full_data <- full_meta |>
     dplyr::select(year, span, name, data) |>
     tidyr::unnest(data) |>
-    tidyr::nest(data = category:value) |>
-    # add full set of available responses per code-year
-    dplyr::left_join(response_meta, by = c("year", "code"), relationship = "many-to-one") |>
-    dplyr::mutate(data = purrr::map2(data, responses, function(df, resp_lvls) {
-        df |>
-            dplyr::mutate(response = forcats::as_factor(response) |> forcats::fct_expand(resp_lvls)) |>
-            tidyr::complete(tidyr::nesting(category, group), response)
-    })) |>
-    # changed my mind again---drop responses & question text
-    dplyr::select(-responses, -question) |>
-    tidyr::nest(survey = c(-year, -span, -name))
+    dplyr::select(-question) |>
+    # drop group levels per question to avoid blanks where locations have inconsistent age groups
+    dplyr::group_by(year, span, name, code, category, group) |>
+    dplyr::filter(sum(!is.na(value)) > 0) |>
+    dplyr::ungroup() |>
+    # dplyr::left_join(response_meta, by = c("year", "code"), relationship = "many-to-one") |>
+    split(~ year + span + name, drop = TRUE) |>
+    purrr::map(function(svy_df) {
+        svy_df$code <- forcats::as_factor(svy_df$code)
+        by_code <- split(svy_df, ~code) |>
+            purrr::imap(function(q_df, code) {
+                year <- unique(q_df$year)
+                resp_lvls <- unlist(response_meta$responses[response_meta$year == year & response_meta$code == code])
+                q_df$response <- forcats::as_factor(q_df$response) |> forcats::fct_expand(resp_lvls)
+                tidyr::complete(q_df, tidyr::nesting(year, span, name, code, category, group), response)
+            })
+        dplyr::bind_rows(by_code) |>
+            # not sure why they go out of order
+            dplyr::select(year, span, name, code, category, group, response, value)
+    })
 
 
 
@@ -138,8 +158,9 @@ cws_full_wts <- paths |>
         purrr::map(safe_wts, verbose = FALSE) |>
         purrr::map(dplyr::mutate, group = clean_cws_lvls(group)) |>
         purrr::map2(name, add_wt1)) |>
-    dplyr::select(year, span, name, weights) |>
-    dplyr::semi_join(cws_full_data, by = c("year", "span", "name"))
+    dplyr::mutate(id = paste(year, span, name, sep = ".")) |>
+    dplyr::filter(id %in% names(cws_full_data)) |>
+    dplyr::select(year, span, name, weights)
 
 
 
@@ -223,6 +244,8 @@ usethis::use_data(cws_group_meta, overwrite = TRUE)
 # is response_meta really that useful?
 # usethis::use_data(response_meta, overwrite = TRUE)
 usethis::use_data(cws_codebook, overwrite = TRUE)
+
+# labeled as year.span.name
 usethis::use_data(cws_full_data, overwrite = TRUE, compress = "xz")
 
 usethis::use_data(cws_full_wts, overwrite = TRUE)

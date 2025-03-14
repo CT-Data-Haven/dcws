@@ -1,4 +1,15 @@
 ## FETCH_CWS ----
+test_that("make_cws_id gets correct combinations", {
+    expect_equal(make_cws_id(span = "2015_2024", name = "New Haven"), "2024.2015_2024.New Haven")
+    expect_equal(make_cws_id(span = "2024", name = "New Haven"), "2024.2024.New Haven")
+    yrs2_loc1 <- make_cws_id(span = c(2021, 2024), name = "New Haven")
+    yrs2_loc3 <- make_cws_id(span = c(2021, 2024), name = c("Bridgeport", "New Haven", "Hartford"))
+    yrs1_loc3 <- make_cws_id(span = 2021, name = c("Bridgeport", "New Haven", "Hartford"))
+    expect_length(yrs2_loc1, 2 * 1)
+    expect_length(yrs2_loc3, 2 * 3)
+    expect_length(yrs1_loc3, 1 * 3)
+})
+
 test_that("fetch_cws returns correct dimensions", {
     cws_full <- fetch_cws()
     cws_unnest <- fetch_cws(.unnest = TRUE)
@@ -91,10 +102,15 @@ test_that("fetch_cws adds weights properly", {
 })
 
 test_that("fetch_cws handles pooled data", {
-    single <- fetch_cws(.year = 2024)
-    pooled <- fetch_cws(.year = "2015_2024")
-    expect_s3_class(single, "data.frame")
-    expect_s3_class(pooled, "data.frame")
+    # pooled data should require explicit span argument
+    single <- fetch_cws(.year = "2024")
+    pooled <- fetch_cws(.year = "2015_2024") # should be 2015-2024 only
+    both <- fetch_cws(.year = c("2015_2024", "2024"))
+    expect_setequal(unique(single$year), 2024)
+    expect_setequal(unique(single$span), "2024")
+    expect_setequal(unique(pooled$year), 2024)
+    expect_setequal(unique(pooled$span), "2015_2024")
+    expect_setequal(unique(both$span), c("2015_2024", "2024"))
 })
 
 ## FETCH_WTS ----

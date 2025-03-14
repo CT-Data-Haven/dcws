@@ -98,6 +98,8 @@ cws_defs <- DBI::dbGetQuery(con, "
 cws_defs$collapsed_responses <- stringr::str_extract(cws_defs$question, "(?<=\\()(.+)(?=\\))")
 cws_defs$question <- stringr::str_remove(cws_defs$question, "\\((.+)\\)$")
 cws_defs <- dplyr::mutate(cws_defs, dplyr::across(c(question, collapsed_responses), stringr::str_squish))
+# if NA, responses are yes/no
+cws_defs$collapsed_responses <- ifelse(is.na(cws_defs$collapsed_responses), "yes / no", cws_defs$collapsed_responses)
 cws_defs <- dplyr::as_tibble(cws_defs)
 
 DBI::dbDisconnect(con)

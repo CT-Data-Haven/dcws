@@ -1,49 +1,32 @@
 #' Contents of DataHaven Community Wellbeing Crosstabs
 #'
-#' This is a nested data frame where each row corresponds to a year / set of years and location of the survey. The `data` column contains the full set of data extracted from the respective crosstabs; this, in turn, is nested by question code. This is a bit of a strange format, but it balances ease of subsetting by year and location with saving space and avoiding repeated values (e.g. listing out full question text dozens of times). Previously this data frame also included full text of every question, but as the size of the data has ballooned, these are now in the `cws_codebook` data frame, which can be joined to this by year and code.
+#' This is a list of data frames; previously it was one data frame with 2 levels of nesting. Each data frame in the list represents a combination of survey endyear, timespan, and location, delimited with periods. For example, `cws_full_data[["2024.2015_2024.Greater New Haven"]]` holds the 2015-2024 pooled data for Greater New Haven. The switch from a nested data frame to a list of data frames was needed to speed things up as the extent of the survey and number of crosstabs has ballooned. This also used to include full text of every question, but those are now in the `cws_codebook` data frame.
 #'
-#' On its own, the structure is probably annoying. Easier extraction is available using `fetch_cws`.
+#' The recommended way of accessing this data is using `fetch_cws`, which filters and combines it for you.
 #'
-#' @format A data frame of `r nrow(cws_full_data)` rows and `r ncol(cws_full_data)` columns.
-#'
-#' ### Outer structure:
+#' @format A list of `r length(cws_full_data)` data frames, each with `r ncol(cws_full_data[[1]])` columns and varying numbers of rows:
 #' \describe{
-#'   \item{year}{Numeric, year of survey}
+#'   \item{year}{Numeric, endyear of survey (e.g. 2024)}
 #'   \item{span}{Character, span of years of the survey (e.g. "2015_2024")}
 #'   \item{name}{Text of location}
 #'   \item{survey}{List-column of data frames of survey response data. The number of rows varies based on the questions and participant groups available, but the 3 columns are the same.}
-#' }
-#'
-#' ### For the `survey` list-column:
-#' \describe{
 #'   \item{code}{Question code, e.g. "Q2", "Q4E", "RENTEVICT"}
-#'   \item{data}{List-column of more data frames, providing the actual response values per question. Again, number of rows varies, but the 4 columns are the same.}
-#' }
-#'
-#' ### For the `data` list-column:
-#' \describe{
 #'   \item{category}{Factor: participant group categories, e.g. "Gender", "Age"}
 #'   \item{group}{Factor: participant group, e.g. "Male", "Ages 65+"}
-#'   \item{response}{Text of responses, depending on question}
+#'   \item{response}{Factor: text of responses, depending on question}
 #'   \item{value}{Share of participants giving each response}
 #' }
 #' @source Compiled DCWS crosstabs
 #' @seealso [fetch_cws()], [cws_codebook]
 #' @examples
 #' # get specific question based on code
-#' cws_full_data |>
-#'     dplyr::filter(span == "2015_2024", name == "Greater New Haven") |>
-#'     tidyr::unnest(survey) |>
-#'     dplyr::filter(code == "Q64") |>
-#'     tidyr::unnest(data)
+#' cws_full_data[["2024.2015_2024.Greater New Haven"]] |>
+#'     dplyr::filter(code == "Q64")
 #'
-#' # join first with codebook to find question by text
-#' cws_full_data |>
-#'     dplyr::filter(span == "2015_2024", name == "Greater New Haven") |>
-#'     tidyr::unnest(survey) |>
+#' # bind, then join with codebook to find question by text
+#' cws_full_data[["2024.2015_2024.Greater New Haven"]] |>
 #'     dplyr::left_join(cws_codebook, by = c("year", "code")) |>
-#'     dplyr::filter(grepl("adequate shelter", question)) |>
-#'     tidyr::unnest(data)
+#'     dplyr::filter(grepl("adequate shelter", question))
 #'
 #' # make things easier with fetch_cws: flexibly grab by location, year, and/or
 #' # filter conditions
@@ -149,6 +132,9 @@
 #' }
 #' @source Compiled DCWS crosstabs
 #' @examples
+#' cws_codebook |>
+#'     dplyr::filter(grepl("adequate shelter", question))
+#'
 #' cws_codebook |>
 #'     dplyr::filter(grepl("adequate shelter", question), year == 2024) |>
 #'     tidyr::unnest(responses)
