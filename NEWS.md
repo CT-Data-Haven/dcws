@@ -32,6 +32,20 @@
 
 * Added a `NEWS.md` file to track changes to the package.
 
+# dcws v1.0.0 (2025-03-14)
+
+## Feat
+
+- cleanup before version bump
+
+## Fix
+
+- **clean_cws_lvls**: fix "greater than" signs in clean_cws_lvls; closes #2
+
+## Refactor
+
+- switch cws_full_data from nested data frame to list of data frames
+
 # dcws v0.1.6 (2025-02-26)
 
 ## Fix
