@@ -38,7 +38,40 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="dcws-development-version">dcws (development version)<a class="anchor" aria-label="anchor" href="#dcws-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.0.0" id="dcws-v100-2025-03-14">dcws v1.0.0 (2025-03-14)<a class="anchor" aria-label="anchor" href="#dcws-v100-2025-03-14"></a></h2>
+<ul><li>
+<strong>BREAKING CHANGE</strong> (potentially): in order to handle the number and complexity of the crosstab tables with all the 2024 additions, I switched the object <code>cws_full_data</code> that <code>fetch_cws</code> relies on from a data frame with deeply nested list-columns of more data frames, to a list of individual data frames. Each crosstab now has an ID that can be used to directly subset, such as “2021.2021.New Haven” for New Haven’s 2021 data, or “2024.2015_2024.Capitol Region COG” for the Capitol Region COG’s 2015-2024 pooled data. For the most part, this is a behind-the-scenes change handled by <code>fetch_cws</code>, but this method is <em>much</em> faster.</li>
+<li>Formatting fixes should all be done, with respect to category &amp; group labels, region names, etc.</li>
+<li>First round of crosstab-related functions from {cwi} have been moved here, and are documented and tested. Those are in the process of being deprecated from {cwi}.</li>
+</ul><div class="section level3">
+<h3 id="feat-1-0-0">Feat<a class="anchor" aria-label="anchor" href="#feat-1-0-0"></a></h3>
+<ul><li>cleanup before version bump</li>
+</ul></div>
+<div class="section level3">
+<h3 id="fix-1-0-0">Fix<a class="anchor" aria-label="anchor" href="#fix-1-0-0"></a></h3>
+<ul><li>
+<strong>clean_cws_lvls</strong>: fix “greater than” signs in clean_cws_lvls; closes #2</li>
+</ul></div>
+<div class="section level3">
+<h3 id="refactor-1-0-0">Refactor<a class="anchor" aria-label="anchor" href="#refactor-1-0-0"></a></h3>
+<ul><li>switch cws_full_data from nested data frame to list of data frames</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.6" id="dcws-v016-2025-02-26">dcws v0.1.6 (2025-02-26)<a class="anchor" aria-label="anchor" href="#dcws-v016-2025-02-26"></a></h2>
+<div class="section level3">
+<h3 id="fix-0-1-6">Fix<a class="anchor" aria-label="anchor" href="#fix-0-1-6"></a></h3>
+<ul><li>
+<strong>clean_cws_lvls</strong>: yet another set of regex changes for cleaning levels</li>
+<li>clean_cws_lvls still missing a pattern</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.5.9000" id="dcws-v0159000-2025-01-27">dcws v0.1.5.9000 (2025-01-27)<a class="anchor" aria-label="anchor" href="#dcws-v0159000-2025-01-27"></a></h2>
+<div class="section level3">
+<h3 id="fix-0-1-5-9000">Fix<a class="anchor" aria-label="anchor" href="#fix-0-1-5-9000"></a></h3>
+<ul><li>better pattern matching for clean_cws_lvls</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.5" id="dcws-015">dcws 0.1.5<a class="anchor" aria-label="anchor" href="#dcws-015"></a></h2>
@@ -76,38 +109,6 @@
 <h2 class="pkg-version" data-toc-text="0.0.0.9000" id="dcws-0009000">dcws 0.0.0.9000<a class="anchor" aria-label="anchor" href="#dcws-0009000"></a></h2>
 <ul><li>Added a <code>NEWS.md</code> file to track changes to the package.</li>
 </ul></div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.0.0" id="dcws-v100-2025-03-14">dcws v1.0.0 (2025-03-14)<a class="anchor" aria-label="anchor" href="#dcws-v100-2025-03-14"></a></h2>
-<div class="section level3">
-<h3 id="feat-1-0-0">Feat<a class="anchor" aria-label="anchor" href="#feat-1-0-0"></a></h3>
-<ul><li>cleanup before version bump</li>
-</ul></div>
-<div class="section level3">
-<h3 id="fix-1-0-0">Fix<a class="anchor" aria-label="anchor" href="#fix-1-0-0"></a></h3>
-<ul><li>
-<strong>clean_cws_lvls</strong>: fix “greater than” signs in clean_cws_lvls; closes #2</li>
-</ul></div>
-<div class="section level3">
-<h3 id="refactor-1-0-0">Refactor<a class="anchor" aria-label="anchor" href="#refactor-1-0-0"></a></h3>
-<ul><li>switch cws_full_data from nested data frame to list of data frames</li>
-</ul></div>
-</div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.1.6" id="dcws-v016-2025-02-26">dcws v0.1.6 (2025-02-26)<a class="anchor" aria-label="anchor" href="#dcws-v016-2025-02-26"></a></h2>
-<div class="section level3">
-<h3 id="fix-0-1-6">Fix<a class="anchor" aria-label="anchor" href="#fix-0-1-6"></a></h3>
-<ul><li>
-<strong>clean_cws_lvls</strong>: yet another set of regex changes for cleaning levels</li>
-<li>clean_cws_lvls still missing a pattern</li>
-</ul></div>
-</div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.1.5.9000" id="dcws-v0159000-2025-01-27">dcws v0.1.5.9000 (2025-01-27)<a class="anchor" aria-label="anchor" href="#dcws-v0159000-2025-01-27"></a></h2>
-<div class="section level3">
-<h3 id="fix-0-1-5-9000">Fix<a class="anchor" aria-label="anchor" href="#fix-0-1-5-9000"></a></h3>
-<ul><li>better pattern matching for clean_cws_lvls</li>
-</ul></div>
-</div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 
