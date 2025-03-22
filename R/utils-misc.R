@@ -1,10 +1,5 @@
-rleid <- function(x) {
-    if (is.factor(x)) x <- as.character(x)
-    durations <- rle(x)$lengths
-    unlist(purrr::imap(durations, function(d, i) rep(i, times = d)))
-}
-
 streak <- function(x) {
+    if (is.factor(x)) x <- as.character(x)
     durations <- rle(x)$lengths
     rep(seq_along(durations), times = durations)
 }
@@ -47,9 +42,6 @@ cws_check_yr <- function(path, year, verbose) {
     } else {
         guessing <- FALSE
     }
-    if (!is.numeric(year)) {
-        cli::cli_abort("{.var year} should be a number for the year or end year of the survey.")
-    }
     if (year < 2015) {
         cli::cli_warn("This function was designed for DCWS crosstabs starting with 2015. Other years might have unexpected results.")
     }
@@ -59,16 +51,15 @@ cws_check_yr <- function(path, year, verbose) {
 # port from camiller
 filter_after <- function(data, ..., .streak = TRUE) {
     q <- rlang::quos(...)
-    matches <- data
-    # matches <- dplyr::mutate(matches, .match = purrr::pmap_lgl(list(!!!q), all))
-    # matches <- dplyr::mutate(matches, .occur = cumsum(.match) > 0)
-    matches <- dplyr::mutate(matches, .match = purrr::pmap_lgl(list(!!!q), all))
-    matches[[".occur"]] <- cumsum(matches$.match) > 0
+    out <- dplyr::mutate(data, .match = purrr::pmap_lgl(list(!!!q), all))
+    out[[".occur"]] <- cumsum(out$.match) > 0
 
     if (.streak) {
-        out <- matches[matches$.occur & streak(matches$.match) > 1, ]
+        # streak needs to be calculated *after* filtering for occurrences
+        out <- out[out$.occur, ]
+        out <- out[streak(out$.match) > 1, ]
     } else {
-        out <- matches[matches$.occur & dplyr::lag(matches$.occur), ]
+        out <- out[out$.occur & dplyr::lag(out$.occur), ]
     }
     out$.match <- NULL
     out$.occur <- NULL

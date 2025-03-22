@@ -152,7 +152,7 @@ mark_questions_spss_ <- function(data, col, pattern) {
         is_question ~ {{ col }},
         TRUE ~ NA_character_
     ))
-    marked <- dplyr::mutate(marked, rl = rleid(is_question))
+    marked <- dplyr::mutate(marked, rl = streak(is_question))
 
     marked <- dplyr::group_by(marked, rl)
     marked <- dplyr::mutate(marked, q = dplyr::if_else(is_question, paste(stats::na.omit(q), collapse = ". "), q))
