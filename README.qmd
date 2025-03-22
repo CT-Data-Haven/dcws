@@ -20,7 +20,6 @@ library(dcws)
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/CT-Data-Haven/dcws/actions/workflows/check-release.yaml/badge.svg)](https://github.com/CT-Data-Haven/dcws/actions/workflows/check-release.yaml)
 [![pkgdown](https://github.com/CT-Data-Haven/dcws/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/CT-Data-Haven/dcws/actions/workflows/pkgdown.yaml)
-[![Codecov test coverage](https://codecov.io/gh/CT-Data-Haven/dcws/branch/main/graph/badge.svg)](https://app.codecov.io/gh/CT-Data-Haven/dcws?branch=main)
 <!-- badges: end -->
 
 This is a small data-focused package to make easier use of the DataHaven Community Wellbeing Survey. It contains the data extracted from crosstabs from the `r knitr::combine_words(unique(cws_full_data$year))` survey waves. 2020 and 2022 are statewide only.

@@ -168,6 +168,7 @@ rule document:
 rule check:
     input:
         rules.data_raw.input,
+        rules.tests.input.test,
         desc="DESCRIPTION",
     output:
         flag=touch(".flags/pkg-check.txt"),
