@@ -141,9 +141,9 @@
 "cws_codebook"
 
 #' DCWS demo data
-#' 
+#'
 #' This is a small sample of 2018 DataHaven Community Wellbeing Survey data for Greater New Haven with weights attached, saved here for use in examples and testing. It was created with the `fetch_cws` function.
-#' 
+#'
 #' @format A data frame with `r nrow(cws_demo)` rows and `r ncol(cws_demo)` variables:
 #' \describe{
 #'   \item{year}{Numeric, endyear of survey (e.g. 2024)}
@@ -157,7 +157,7 @@
 #'   \item{weight}{Weights per group for aggregating}
 #' }
 #' @source Sample of DCWS crosstabs
-#' @examples 
+#' @examples
 #' cws_demo
 #' @seealso [fetch_cws()]
 "cws_demo"

@@ -50,13 +50,8 @@ collapse_n_wt <- function(data,
                           .digits = NULL) {
     group_cols <- rlang::quos(...)
     # check dots + column args
-    check_cols(data, c(..., {{.group}}, {{.value}}, {{.weight}}))
-    # check for weight column
-    # wt_name <- rlang::as_name(rlang::enquo(.weight))
-    # if (!wt_name %in% names(data)) {
-    #     cli::cli_abort("Column {.var {wt_name}} is missing from your data frame")
-    # }
-    
+    check_cols(data, c(..., {{ .group }}, {{ .value }}, {{ .weight }}))
+
     to_wt <- dplyr::ungroup(data)
     to_wt <- dplyr::mutate(to_wt, dplyr::across({{ .group }}, \(x) forcats::fct_collapse(x, !!!.lvls)))
     to_wt <- dplyr::group_by(to_wt, dplyr::across(!!!group_cols))

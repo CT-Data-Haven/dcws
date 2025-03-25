@@ -34,7 +34,7 @@ A data frame with the following columns:
 \item q_number (if questions don't have codes in crosstabs, assigned in order they occur)
 \item question
 \item category (e.g. age, gender)
-\item group (e.g. 18–34, male)
+\item group (e.g. 18-34, male)
 \item response
 \item value
 }

@@ -4,12 +4,18 @@ test_that("streak handles factors", {
 })
 
 test_that("streak returns correct groupings", {
-    grps1 <- data.frame(grp = c("a", "a", "b", "c", "c"),
-                        num = c(1, 1, 2, 3, 3))
-    grps2 <- data.frame(grp = c("a", "a", "b", "a", "c"),
-                        num = c(1, 1, 2, 3, 4))
-    grps3 <- data.frame(grp = c(10, 10, 5, 5, 15),
-                        num = c(1, 1, 2, 2, 3))
+    grps1 <- data.frame(
+        grp = c("a", "a", "b", "c", "c"),
+        num = c(1, 1, 2, 3, 3)
+    )
+    grps2 <- data.frame(
+        grp = c("a", "a", "b", "a", "c"),
+        num = c(1, 1, 2, 3, 4)
+    )
+    grps3 <- data.frame(
+        grp = c(10, 10, 5, 5, 15),
+        num = c(1, 1, 2, 2, 3)
+    )
     ids1 <- streak(grps1$grp)
     ids2 <- streak(grps2$grp)
     ids3 <- streak(grps3$grp)
@@ -121,14 +127,14 @@ test_that("filter_down handles commas", {
 test_that("filter_after handles streaks", {
     messy_summary <- tibble::tribble(
         ~x1, ~x2,
-        "A",   1,
-        "B",   5,
-        "C",   9,
-        "Weights",  NA,
-        "Weighted norm",   0,
+        "A", 1,
+        "B", 5,
+        "C", 9,
+        "Weights", NA,
+        "Weighted norm", 0,
         "A", 0.2,
         "B", 0.5,
-        "Weights",   1
+        "Weights", 1
     )
     a1 <- filter_after(messy_summary, grepl("Weight", x1), .streak = TRUE)
     a2 <- filter_after(messy_summary, grepl("Weight", x1), .streak = FALSE)

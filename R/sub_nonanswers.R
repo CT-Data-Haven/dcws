@@ -30,7 +30,7 @@ sub_nonanswers <- function(data,
                            nons = c("Don't know", "Refused"),
                            factor_response = TRUE,
                            rescale = FALSE) {
-    check_cols(data, c({{response}}, {{value}}))
+    check_cols(data, c({{ response }}, {{ value }}))
     # warn if any nons aren't actually in the data
     response_vals <- unique(dplyr::pull(data, {{ response }}))
     xtra_nons <- setdiff(nons, response_vals)
