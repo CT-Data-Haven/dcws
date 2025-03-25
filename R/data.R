@@ -9,7 +9,6 @@
 #'   \item{year}{Numeric, endyear of survey (e.g. 2024)}
 #'   \item{span}{Character, span of years of the survey (e.g. "2015_2024")}
 #'   \item{name}{Text of location}
-#'   \item{survey}{List-column of data frames of survey response data. The number of rows varies based on the questions and participant groups available, but the 3 columns are the same.}
 #'   \item{code}{Question code, e.g. "Q2", "Q4E", "RENTEVICT"}
 #'   \item{category}{Factor: participant group categories, e.g. "Gender", "Age"}
 #'   \item{group}{Factor: participant group, e.g. "Male", "Ages 65+"}
@@ -42,10 +41,10 @@
 #'
 #' @format A data frame with `r nrow(cws_full_wts)` rows and `r ncol(cws_full_wts)` variables:
 #' \describe{
-#'   \item{\code{year}}{Numeric, year of survey}
-#'   \item{\code{span}}{Character, span of years of the survey (e.g. "2015_2024")}
-#'   \item{\code{name}}{Text of location}
-#'   \item{\code{weights}}{A list of nested data frames, each of which has 2 columns for group and weight.}
+#'   \item{year}{Numeric, year of survey}
+#'   \item{span}{Character, span of years of the survey (e.g. "2015_2024")}
+#'   \item{name}{Text of location}
+#'   \item{weights}{A list of nested data frames, each of which has 2 columns for group and weight.}
 #' }
 #' @source Compiled DCWS crosstabs
 #' @seealso [fetch_cws()], [fetch_wts()]
@@ -64,10 +63,10 @@
 #'
 #' @format A data frame with `r nrow(cws_group_meta)` rows and `r ncol(cws_group_meta)` variables:
 #' \describe{
-#'   \item{\code{year}}{Numeric, year of survey}
-#'   \item{\code{span}}{Character, span of years of the survey (e.g. "2015_2024")}
-#'   \item{\code{name}}{Text of location}
-#'   \item{\code{groups}}{A list of nested data frames, each of which has 2 columns for category and group.}
+#'   \item{year}{Numeric, year of survey}
+#'   \item{span}{Character, span of years of the survey (e.g. "2015_2024")}
+#'   \item{name}{Text of location}
+#'   \item{groups}{A list of nested data frames, each of which has 2 columns for category and group.}
 #' }
 #' @source Compiled DCWS crosstabs
 #' @examples
@@ -92,10 +91,10 @@
 #'
 #' @format A data frame with `r nrow(cws_max_moe)` rows and `r ncol(cws_max_moe)` variables:
 #' \describe{
-#'   \item{\code{year}}{Numeric, year of survey}
-#'   \item{\code{span}}{Character, span of years of the survey (e.g. "2015_2024")}
-#'   \item{\code{name}}{Text of location}
-#'   \item{\code{moe}}{Numeric, value of maximum MOE}
+#'   \item{year}{Numeric, year of survey}
+#'   \item{span}{Character, span of years of the survey (e.g. "2015_2024")}
+#'   \item{name}{Text of location}
+#'   \item{moe}{Numeric, value of maximum MOE}
 #' }
 #' @source Compiled DCWS crosstabs
 #' @examples
@@ -109,8 +108,8 @@
 #'
 #' @format A data frame with `r nrow(cws_defs)` rows and `r ncol(cws_defs)` variables:
 #' \describe{
-#'   \item{\code{indicator}}{Text of abbreviated indicator name, e.g. "safe biking"}
-#'   \item{\code{question}}{Text of question as given on the survey with punctuation and capital letters removed, e.g. "there are places to bicycle in or near my neighborhood that are safe from traffic such as on the street or on special lanes separate paths or trails"}
+#'   \item{indicator}{Text of abbreviated indicator name, e.g. "safe biking"}
+#'   \item{question}{Text of question as given on the survey with punctuation and capital letters removed, e.g. "there are places to bicycle in or near my neighborhood that are safe from traffic such as on the street or on special lanes separate paths or trails"}
 #'   \item{\code{collapsed_responses}}{Comma-separated text of responses that are collapsed into the indicator, e.g. "Strongly agree, Somewhat agree".}
 #' }
 #' @source Handwritten by Camille for the upcoming glossary project
@@ -125,10 +124,10 @@
 #'
 #' @format A data frame with `r nrow(cws_codebook)` rows and `r ncol(cws_codebook)` variables:
 #' \describe{
-#'   \item{\code{year}}{Numeric, year of survey}
-#'   \item{\code{code}}{Character, question code}
-#'   \item{\code{question}}{Character, full text of survey question}
-#'   \item{\code{responses}}{List of character vectors, of all possible responses for each question}
+#'   \item{year}{Numeric, year of survey}
+#'   \item{code}{Character, question code}
+#'   \item{question}{Character, full text of survey question}
+#'   \item{responses}{List of character vectors, of all possible responses for each question}
 #' }
 #' @source Compiled DCWS crosstabs
 #' @examples
@@ -140,3 +139,25 @@
 #'     tidyr::unnest(responses)
 #'
 "cws_codebook"
+
+#' DCWS demo data
+#' 
+#' This is a small sample of 2018 DataHaven Community Wellbeing Survey data for Greater New Haven with weights attached, saved here for use in examples and testing. It was created with the `fetch_cws` function.
+#' 
+#' @format A data frame with `r nrow(cws_demo)` rows and `r ncol(cws_demo)` variables:
+#' \describe{
+#'   \item{year}{Numeric, endyear of survey (e.g. 2024)}
+#'   \item{span}{Character, span of years of the survey (e.g. "2015_2024")}
+#'   \item{name}{Text of location}
+#'   \item{code}{Question code, e.g. "Q2", "Q4E", "RENTEVICT"}
+#'   \item{category}{Factor: participant group categories, e.g. "Gender", "Age"}
+#'   \item{group}{Factor: participant group, e.g. "Male", "Ages 65+"}
+#'   \item{response}{Factor: text of responses, depending on question}
+#'   \item{value}{Share of participants giving each response}
+#'   \item{weight}{Weights per group for aggregating}
+#' }
+#' @source Sample of DCWS crosstabs
+#' @examples 
+#' cws_demo
+#' @seealso [fetch_cws()]
+"cws_demo"
