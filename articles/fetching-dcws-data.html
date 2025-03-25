@@ -100,7 +100,7 @@
 </h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">food_21</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_cws.html">fetch_cws</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Have there been times .+ food"</span>, <span class="va">question</span><span class="op">)</span>,</span>
+<code class="sourceCode R"><span><span class="va">food_21</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_cws.html">fetch_cws</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^Have there been times .+ food"</span>, <span class="va">question</span><span class="op">)</span>,</span>
 <span>    .name <span class="op">=</span> <span class="st">"Greater New Haven"</span>, .category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Total"</span>, <span class="st">"Race/Ethnicity"</span>, <span class="st">"Gender"</span><span class="op">)</span>,</span>
 <span>    .year <span class="op">=</span> <span class="fl">2021</span>, .unnest <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -167,7 +167,7 @@
 </h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">food_trend</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_cws.html">fetch_cws</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Have there been times .+ food"</span>, <span class="va">question</span><span class="op">)</span>,</span>
+<code class="sourceCode R"><span><span class="va">food_trend</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_cws.html">fetch_cws</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^Have there been times .+ food"</span>, <span class="va">question</span><span class="op">)</span>,</span>
 <span>    .name <span class="op">=</span> <span class="st">"Greater New Haven"</span>, .category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Total"</span>, <span class="st">"Race/Ethnicity"</span>, <span class="st">"Gender"</span><span class="op">)</span>,</span>
 <span>    .unnest <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -360,48 +360,6 @@
 <td style="text-align: right;">0.31</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">2015_2024</td>
-<td style="text-align: left;">Greater New Haven</td>
-<td style="text-align: left;">Total</td>
-<td style="text-align: left;">Greater New Haven</td>
-<td style="text-align: right;">NA</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">2015_2024</td>
-<td style="text-align: left;">Greater New Haven</td>
-<td style="text-align: left;">Gender</td>
-<td style="text-align: left;">Male</td>
-<td style="text-align: right;">NA</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">2015_2024</td>
-<td style="text-align: left;">Greater New Haven</td>
-<td style="text-align: left;">Gender</td>
-<td style="text-align: left;">Female</td>
-<td style="text-align: right;">NA</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">2015_2024</td>
-<td style="text-align: left;">Greater New Haven</td>
-<td style="text-align: left;">Race/Ethnicity</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">NA</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">2015_2024</td>
-<td style="text-align: left;">Greater New Haven</td>
-<td style="text-align: left;">Race/Ethnicity</td>
-<td style="text-align: left;">Black</td>
-<td style="text-align: right;">NA</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">2015_2024</td>
-<td style="text-align: left;">Greater New Haven</td>
-<td style="text-align: left;">Race/Ethnicity</td>
-<td style="text-align: left;">Latino</td>
-<td style="text-align: right;">NA</td>
-</tr>
-<tr class="odd">
 <td style="text-align: left;">2024</td>
 <td style="text-align: left;">Greater New Haven</td>
 <td style="text-align: left;">Total</td>
@@ -443,48 +401,6 @@
 <td style="text-align: left;">Latino</td>
 <td style="text-align: right;">0.33</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left;">2024</td>
-<td style="text-align: left;">Greater New Haven</td>
-<td style="text-align: left;">Total</td>
-<td style="text-align: left;">Greater New Haven</td>
-<td style="text-align: right;">NA</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">2024</td>
-<td style="text-align: left;">Greater New Haven</td>
-<td style="text-align: left;">Gender</td>
-<td style="text-align: left;">Male</td>
-<td style="text-align: right;">NA</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">2024</td>
-<td style="text-align: left;">Greater New Haven</td>
-<td style="text-align: left;">Gender</td>
-<td style="text-align: left;">Female</td>
-<td style="text-align: right;">NA</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">2024</td>
-<td style="text-align: left;">Greater New Haven</td>
-<td style="text-align: left;">Race/Ethnicity</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">NA</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">2024</td>
-<td style="text-align: left;">Greater New Haven</td>
-<td style="text-align: left;">Race/Ethnicity</td>
-<td style="text-align: left;">Black</td>
-<td style="text-align: right;">NA</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">2024</td>
-<td style="text-align: left;">Greater New Haven</td>
-<td style="text-align: left;">Race/Ethnicity</td>
-<td style="text-align: left;">Latino</td>
-<td style="text-align: right;">NA</td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -494,7 +410,7 @@
 <p>I want just the location-wide values for towns in Greater New Haven, or by race for Greater New Haven. I could do this filtering inside <code>fetch_cws</code> if I wanted to dig into the nested data with <code>purrr</code>, but I don’t, so I’ll just be a little redundant.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">food_towns</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_cws.html">fetch_cws</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Have there been times .+ food"</span>, <span class="va">question</span><span class="op">)</span>,</span>
+<code class="sourceCode R"><span><span class="va">food_towns</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_cws.html">fetch_cws</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^Have there been times .+ food"</span>, <span class="va">question</span><span class="op">)</span>,</span>
 <span>    .name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Greater New Haven"</span>, <span class="fu">cwi</span><span class="fu">::</span><span class="va"><a href="https://CT-Data-Haven.github.io/cwi/reference/regions.html" class="external-link">regions</a></span><span class="op">$</span><span class="va">`Greater New Haven`</span><span class="op">)</span>,</span>
 <span>    .year <span class="op">=</span> <span class="fl">2021</span>, .unnest <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -1160,6 +1076,23 @@
 <span><span class="co">#&gt;   &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;                                 &lt;list&gt;  </span></span>
 <span><span class="co">#&gt; 1  2024 2015_2024 New Haven Q1    Are you satisfied with the city or a… &lt;tibble&gt;</span></span>
 <span><span class="co">#&gt; 2  2024 2024      New Haven Q1    Are you satisfied with the city or a… &lt;tibble&gt;</span></span></code></pre></div>
+</div>
+<p>If you’re getting multiple years but <em>don’t</em> want any pooled data, you can instead use the filtering to only get surveys where year and span match:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/fetch_cws.html">fetch_cws</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">year</span><span class="op">)</span> <span class="op">==</span> <span class="va">span</span>,</span>
+<span>    <span class="va">code</span> <span class="op">==</span> <span class="st">"Q1"</span>,</span>
+<span>    .name <span class="op">=</span> <span class="st">"New Haven"</span>,</span>
+<span>    .category <span class="op">=</span> <span class="st">"Age"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 4 × 6</span></span>
+<span><span class="co">#&gt;    year span  name      code  question                                  data    </span></span>
+<span><span class="co">#&gt;   &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;                                     &lt;list&gt;  </span></span>
+<span><span class="co">#&gt; 1  2015 2015  New Haven Q1    Are you satisfied with the city or area … &lt;tibble&gt;</span></span>
+<span><span class="co">#&gt; 2  2018 2018  New Haven Q1    Are you satisfied with the city or area … &lt;tibble&gt;</span></span>
+<span><span class="co">#&gt; 3  2021 2021  New Haven Q1    Are you satisfied with the city or area … &lt;tibble&gt;</span></span>
+<span><span class="co">#&gt; 4  2024 2024  New Haven Q1    Are you satisfied with the city or area … &lt;tibble&gt;</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="output">Output<a class="anchor" aria-label="anchor" href="#output"></a>
 </h2>
