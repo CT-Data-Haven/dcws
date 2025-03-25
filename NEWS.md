@@ -1,3 +1,15 @@
+# dcws v1.1.0 (2025-03-24)
+
+## Feat
+
+- next set of migrations from {cwi}:
+  - **cws_demo**: sample dataset for examples and testing
+  - **collapse_n_wt** & **sub_nonanswers**: moved to {dcws} with testing
+
+## Fix
+
+- Functions that use default bare column names now use a helper utility to give informative error messages if any columns are missing
+
 # dcws v1.0.1 (2025-03-22)
 
 ## Fix
@@ -27,7 +39,6 @@
 ## Fix
 
 - **clean_cws_lvls**: yet another set of regex changes for cleaning levels
-- clean_cws_lvls still missing a pattern
 
 # dcws v0.1.5.9000 (2025-01-27)
 

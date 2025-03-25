@@ -1,6 +1,6 @@
 Package: dcws
 Title: Data from the DataHaven Community Wellbeing Survey
-Version: 1.0.1
+Version: 1.1.0
 Authors@R: 
     person(given = "Camille", family = "Seaberry", 
             email = "camille@ctdatahaven.org", 
