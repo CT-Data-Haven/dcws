@@ -9,8 +9,10 @@
 <url><loc>https://ct-data-haven.github.io/dcws/index.html</loc></url>
 <url><loc>https://ct-data-haven.github.io/dcws/news/index.html</loc></url>
 <url><loc>https://ct-data-haven.github.io/dcws/reference/clean_cws_lvls.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/reference/collapse_n_wt.html</loc></url>
 <url><loc>https://ct-data-haven.github.io/dcws/reference/cws_codebook.html</loc></url>
 <url><loc>https://ct-data-haven.github.io/dcws/reference/cws_defs.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/reference/cws_demo.html</loc></url>
 <url><loc>https://ct-data-haven.github.io/dcws/reference/cws_full_data.html</loc></url>
 <url><loc>https://ct-data-haven.github.io/dcws/reference/cws_full_wts.html</loc></url>
 <url><loc>https://ct-data-haven.github.io/dcws/reference/cws_group_meta.html</loc></url>
@@ -20,6 +22,7 @@
 <url><loc>https://ct-data-haven.github.io/dcws/reference/fetch_wts.html</loc></url>
 <url><loc>https://ct-data-haven.github.io/dcws/reference/index.html</loc></url>
 <url><loc>https://ct-data-haven.github.io/dcws/reference/read_xtabs.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/reference/sub_nonanswers.html</loc></url>
 <url><loc>https://ct-data-haven.github.io/dcws/reference/xtab2df.html</loc></url>
 </urlset>
 
