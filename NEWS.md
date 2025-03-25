@@ -1,3 +1,9 @@
+# dcws v1.1.0 (2025-03-24)
+
+## Feat
+
+- next set of migrations from cwi
+
 # dcws v1.0.1 (2025-03-22)
 
 ## Fix
@@ -27,7 +33,6 @@
 ## Fix
 
 - **clean_cws_lvls**: yet another set of regex changes for cleaning levels
-- clean_cws_lvls still missing a pattern
 
 # dcws v0.1.5.9000 (2025-01-27)
 
