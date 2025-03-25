@@ -56,7 +56,7 @@ calc_food <- function(data) {
 
 ```{r }
 #| label: food1
-food_21 <- fetch_cws(grepl("Have there been times .+ food", question),
+food_21 <- fetch_cws(grepl("^Have there been times .+ food", question),
     .name = "Greater New Haven", .category = c("Total", "Race/Ethnicity", "Gender"),
     .year = 2021, .unnest = TRUE
 ) |>
@@ -71,7 +71,7 @@ knitr::kable(food_21)
 
 ```{r }
 #| label: food2
-food_trend <- fetch_cws(grepl("Have there been times .+ food", question),
+food_trend <- fetch_cws(grepl("^Have there been times .+ food", question),
     .name = "Greater New Haven", .category = c("Total", "Race/Ethnicity", "Gender"),
     .unnest = TRUE
 ) |>
@@ -88,7 +88,7 @@ I want just the location-wide values for towns in Greater New Haven, or by race 
 
 ```{r }
 #| label: food3
-food_towns <- fetch_cws(grepl("Have there been times .+ food", question),
+food_towns <- fetch_cws(grepl("^Have there been times .+ food", question),
     .name = c("Greater New Haven", cwi::regions$`Greater New Haven`),
     .year = 2021, .unnest = TRUE
 ) |>
@@ -257,6 +257,20 @@ If you want both single and pooled data (you probably don't), you can utilize th
 #| label: pool2
 fetch_cws(
     year == 2024,
+    code == "Q1",
+    .name = "New Haven",
+    .category = "Age"
+)
+```
+
+If you're getting multiple years but _don't_ want any pooled data, you can instead use the filtering to only get surveys where year and span match:
+
+```{r}
+#| label: pool3
+#| warning: false
+#| message: false
+fetch_cws(
+    as.character(year) == span,
     code == "Q1",
     .name = "New Haven",
     .category = "Age"
