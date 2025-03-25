@@ -7,7 +7,9 @@ import os
 
 load_dotenv()
 
-
+######################################
+### FUNCTIONS                        ###
+######################################
 def flatten(xss):
     return [x for xs in xss for x in xs]
 
@@ -56,7 +58,11 @@ def get_latest_tag(repo, owner="ct-data-haven"):
     latest = repo.get_latest_release().tag_name
     return latest
 
+######################################
+### VARIABLES                        ###
+######################################
 
+# main datasets
 datasets = {
     "internal": ["tags"],
     "external": [
@@ -72,20 +78,31 @@ datasets = pd.concat(
 ).set_index("type")
 datasets["path"] = datasets.apply(lambda x: data_path(x["id"], x.name), axis=1)
 
+# repo & tags to pull from latest github release
 repo24 = "dcws24_crosstabs"
 tag24 = get_latest_tag(repo24)
 
 # scripts of functions that need tests
-# funcs = ['clean_cws_lvls', 'parse_cws_paths', 'fetch_cws', 'read_cws', 'xtab2df']
 funcs = [
     f.stem for f in Path("R").glob("*.R") if f.stem not in ["data", "dcws-package", "zzz"]
 ]
-data_scripts = [f.name for f in Path("data-raw").glob("*.R")]
-vignettes = [f.name for f in Path("vignettes").glob("*.Rmd")] + [
+# holdover from rmd vignettes
+vignettes = [
+    f.name for f in Path("vignettes").glob("*.Rmd")] + [
     f.name for f in Path("vignettes").glob("*.qmd")
 ]
 
+# scripts of functions that have docs
+doc_funcs = [f for f in funcs if f not in ["utils-misc", "parse_cws_paths"]]
+# Rd files corresponding to documented functions' scripts
+func_rds = flatten([get_rd(f"R/{func}.R") for func in doc_funcs])
 
+######################################
+### RULES                            ###
+######################################
+
+# rule comments idea from https://lachlandeer.github.io/snakemake-econ-r-tutorial/self-documenting-help.html
+## download_2024: Download 2024 crosstabs from its repo and release
 rule download_2024:
     output:
         f"data-raw/crosstabs/downloads/dcws15_24-{tag24}.zip",
@@ -103,7 +120,7 @@ rule download_2024:
         for f in {output}; do unzip -j -o "$f" *.xlsx -d data-raw/crosstabs; done
         """
 
-
+## main_data: Main internal/external datasets built from crosstab files
 rule main_data:
     input:
         xlsx=Path("data-raw/crosstabs").glob("*.xlsx"),
@@ -115,21 +132,23 @@ rule main_data:
     script:
         "data-raw/prep_cws.R"
 
-
-rule definitions:
+## addl_data: Assorted other data following make_** pattern
+rule addl_data:
+    input:
+        script = "data-raw/make_{dataset}.R",
     output:
-        # protected('data/cws_defs.rda'),
-        "data/cws_defs.rda",
-    script:
-        "data-raw/cws_definitions.R"
+        rda = "data/{dataset}.rda",
+    shell:
+        "Rscript {input.script}"
 
-
+## data_raw: All data-creation rules
 rule data_raw:
     input:
         rules.main_data.output,
-        rules.definitions.output,
+        "data/cws_defs.rda",
+        "data/cws_demo.rda",
 
-
+## tests: Run tests for all corresponding function scripts
 rule tests:
     input:
         rules.data_raw.input,
@@ -140,11 +159,7 @@ rule tests:
         Rscript -e "devtools::test()"
         """
 
-
-doc_funcs = [f for f in funcs if f not in ["utils-misc", "parse_cws_paths"]]
-func_rds = flatten([get_rd(f"R/{func}.R") for func in doc_funcs])
-
-
+## document: All documentation - package description, function docs, data docs, vignettes, readme
 rule document:
     input:
         desc="DESCRIPTION",
@@ -164,7 +179,7 @@ rule document:
     shell:
         'Rscript -e "devtools::document()"'
 
-
+## check: devtools check of data creation, tests, package description
 rule check:
     input:
         rules.data_raw.input,
@@ -181,7 +196,7 @@ rule check:
             )'
         """
 
-
+## install: Test that package can install
 rule install:
     input:
         data=rules.data_raw.input,
@@ -193,6 +208,7 @@ rule install:
         'Rscript -e "devtools::install()"'
 
 
+## pkgdown: Test that site can build
 rule pkgdown:
     input:
         "_pkgdown.yml",
@@ -202,7 +218,7 @@ rule pkgdown:
     shell:
         'Rscript -e "pkgdown::build_site()"'
 
-
+## render_quarto: Wildcard rule to render qmd files in any directory
 # use constraint with regex to match readme in base of directory
 rule render_quarto:
     input:
@@ -215,7 +231,7 @@ rule render_quarto:
     shell:
         "quarto render {input.qmd}"
 
-
+## readme: Render readme
 rule readme:
     input:
         data = 'data/cws_full_data.rda',
@@ -227,7 +243,7 @@ rule readme:
     shell:
         "quarto render {input.qmd}"
 
-
+## dag: Generate DAG
 rule dag:
     input:
         "Snakefile",
@@ -236,7 +252,7 @@ rule dag:
     shell:
         "snakemake --rulegraph | dot -T png > {output.png}"
 
-
+## coverage: Generate test coverage report with codecov
 rule coverage:
     shell:
         """
@@ -247,7 +263,7 @@ rule coverage:
         )"
         """
 
-
+## all: Default
 rule all:
     default_target: True
     input:
@@ -257,7 +273,7 @@ rule all:
         rules.pkgdown.output.flag,
         "README.md",
 
-
+## clean: Remove flags, manpages, data, and crosstab downloads
 rule clean:
     shell:
         """
@@ -268,3 +284,10 @@ rule clean:
             data-raw/crosstabs/downloads/*.zip \
             data-raw/crosstabs/dcws_*-v*.xlsx
         """
+
+## help: Print help, do nothing
+rule help:
+    input:
+        'Snakefile',
+    shell:
+        'sed -n "s/^## /* /p" {input}'
