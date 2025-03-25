@@ -8,12 +8,15 @@ template:
     nav-link-font-weight: 400
 
 reference:
-  - title: Functions
+  - title: Functions - accessing & cleaning survey data
     contents:
-      - starts_with("fetch_")
-      - starts_with("clean_")
-      - read_xtabs
-      - xtab2df
+      - has_concept("accessing")
+      - has_concept("cleaning")
+
+  - title: Functions - manipulating data
+    contents:
+      - has_concept("manipulating")
+      
   - title: Datasets
     contents:
       - has_keyword("datasets")

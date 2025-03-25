@@ -137,3 +137,31 @@ test_that("filter_after handles streaks", {
 })
 
 
+## check_cols ----
+test_that("check_cols asserts correct columns", {
+    # check when default isn't in df
+    demo_no_wt <- dplyr::select(cws_demo, -weight)
+    lvls <- list(
+        "<$30K" = c("<$15K", "$15K-$30K"),
+        "$30K-$100K" = c("$30K-$50K", "$50K-$75K", "$75K-$100K"),
+        "$100K+" = c("$100K-$200K", "$200K+")
+    )
+    expect_error(dummy <- collapse_n_wt(demo_no_wt, code:response, .lvls = lvls), "Can't select columns that don't exist")
+
+    # check when args given incorrectly
+    expect_error(dummy <- collapse_n_wt(cws_demo, code:response, .group = grrr))
+
+    # check using dots
+    expect_error(dummy <- collapse_n_wt(cws_demo, c(code, x), .lvls = lvls))
+    expect_error(dummy <- collapse_n_wt(cws_demo, code:x, .lvls = lvls))
+})
+
+test_that("check_cols identifies function that called it", {
+    lvls <- list(
+        "<$30K" = c("<$15K", "$15K-$30K"),
+        "$30K-$100K" = c("$30K-$50K", "$50K-$75K", "$75K-$100K"),
+        "$100K+" = c("$100K-$200K", "$200K+")
+    )
+    expect_error(dummy <- collapse_n_wt(cws_demo, code:response, .group = grrr))
+    expect_error(dummy <- sub_nonanswers(cws_demo, response = rrr))
+})

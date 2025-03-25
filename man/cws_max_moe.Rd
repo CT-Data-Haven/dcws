@@ -7,10 +7,10 @@
 \format{
 A data frame with 385 rows and 4 variables:
 \describe{
-\item{\code{year}}{Numeric, year of survey}
-\item{\code{span}}{Character, span of years of the survey (e.g. "2015_2024")}
-\item{\code{name}}{Text of location}
-\item{\code{moe}}{Numeric, value of maximum MOE}
+\item{year}{Numeric, year of survey}
+\item{span}{Character, span of years of the survey (e.g. "2015_2024")}
+\item{name}{Text of location}
+\item{moe}{Numeric, value of maximum MOE}
 }
 }
 \source{

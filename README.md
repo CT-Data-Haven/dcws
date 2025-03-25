@@ -26,7 +26,7 @@ devtools::install_github("CT-Data-Haven/dcws")
 
 ## Included data
 
-As of 2025-03-22, the data included here are:
+As of 2025-03-24, the data included here are:
 
 | name | 2015 | 2018 | 2020 | 2021 | 2022 | 2015_2024 | 2024 |
 |:---|:--:|:--:|:--:|:--:|:--:|:--:|:--:|

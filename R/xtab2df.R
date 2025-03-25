@@ -31,7 +31,7 @@
 #' * q_number (if questions don't have codes in crosstabs, assigned in order they occur)
 #' * question
 #' * category (e.g. age, gender)
-#' * group (e.g. 18–34, male)
+#' * group (e.g. 18-34, male)
 #' * response
 #' * value
 #' @examples
@@ -41,7 +41,7 @@
 #'     xtab2df(xtab, year = 2018)
 #' }
 #' @export
-#' @rdname xtab2df
+#' @family accessing
 #' @seealso [read_xtabs()]
 xtab2df <- function(data, year, col = x1, code_pattern = NULL, verbose = TRUE) {
     year <- cws_check_yr(path = NULL, year = year, verbose = verbose)

@@ -61,4 +61,10 @@ if (interactive()) {
 }
 \seealso{
 \code{\link[=read_xtabs]{read_xtabs()}}
+
+Other accessing: 
+\code{\link{fetch_cws}()},
+\code{\link{fetch_wts}()},
+\code{\link{read_xtabs}()}
 }
+\concept{accessing}

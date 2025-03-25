@@ -78,4 +78,10 @@ fetch_cws(
 }
 \seealso{
 \code{\link[=fetch_wts]{fetch_wts()}} \link{cws_full_data}
+
+Other accessing: 
+\code{\link{fetch_wts}()},
+\code{\link{read_xtabs}()},
+\code{\link{xtab2df}()}
 }
+\concept{accessing}

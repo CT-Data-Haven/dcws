@@ -45,6 +45,7 @@
 #'     .add_wts = TRUE, .unnest = TRUE
 #' )
 #' @seealso [fetch_wts()] [cws_full_data]
+#' @family accessing
 #' @export
 fetch_cws <- function(...,
                       .year = NULL,
@@ -142,6 +143,7 @@ fetch_cws <- function(...,
 #'     .add_wts = TRUE
 #' )
 #' @export
+#' @family accessing
 #' @seealso [fetch_cws()] [cws_full_wts]
 fetch_wts <- function(..., .year = NULL, .name = NULL, .unnest = FALSE) {
     out <- dplyr::filter(dcws::cws_full_wts, !!!rlang::quos(...))

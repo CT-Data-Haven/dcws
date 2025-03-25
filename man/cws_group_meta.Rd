@@ -7,10 +7,10 @@
 \format{
 A data frame with 385 rows and 4 variables:
 \describe{
-\item{\code{year}}{Numeric, year of survey}
-\item{\code{span}}{Character, span of years of the survey (e.g. "2015_2024")}
-\item{\code{name}}{Text of location}
-\item{\code{groups}}{A list of nested data frames, each of which has 2 columns for category and group.}
+\item{year}{Numeric, year of survey}
+\item{span}{Character, span of years of the survey (e.g. "2015_2024")}
+\item{name}{Text of location}
+\item{groups}{A list of nested data frames, each of which has 2 columns for category and group.}
 }
 }
 \source{

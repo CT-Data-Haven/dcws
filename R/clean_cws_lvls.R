@@ -103,6 +103,7 @@ cws_lvl_patts_ <- function(is_category) {
 #' )
 #' levels(clean_cws_lvls(groups))
 #' @return A factor of the same length as `x`
+#' @family cleaning
 #' @export
 clean_cws_lvls <- function(x, is_category = FALSE) {
     if (!class(x) %in% c("factor", "character")) {

@@ -10,7 +10,6 @@ A list of 385 data frames, each with 8 columns and varying numbers of rows:
 \item{year}{Numeric, endyear of survey (e.g. 2024)}
 \item{span}{Character, span of years of the survey (e.g. "2015_2024")}
 \item{name}{Text of location}
-\item{survey}{List-column of data frames of survey response data. The number of rows varies based on the questions and participant groups available, but the 3 columns are the same.}
 \item{code}{Question code, e.g. "Q2", "Q4E", "RENTEVICT"}
 \item{category}{Factor: participant group categories, e.g. "Gender", "Age"}
 \item{group}{Factor: participant group, e.g. "Male", "Ages 65+"}

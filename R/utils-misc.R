@@ -70,3 +70,17 @@ filter_until <- function(data, ...) {
     q <- rlang::quos(...)
     dplyr::filter(data, cumsum(!!!q) == 0)
 }
+
+#' Check that all bare column names, included diffused ones, are in a data frame
+#' If not, throws dplyr::select's error
+#' @param data Data frame
+#' @param ... Vector, etc giving tidyeval columns
+#' @noRd
+check_cols <- function(data, ...) {
+    selected_cols <- tidyselect::eval_select(
+        rlang::expr(c(...)),
+        data,
+        error_call = rlang::caller_env()
+    )
+    invisible(TRUE)
+}

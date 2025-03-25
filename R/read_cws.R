@@ -48,6 +48,7 @@
 #' }
 #' @export
 #' @rdname read_xtabs
+#' @family accessing
 #' @seealso [xtab2df()]
 read_xtabs <- function(path,
                        year = NULL,

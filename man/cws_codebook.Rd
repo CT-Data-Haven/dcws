@@ -7,10 +7,10 @@
 \format{
 A data frame with 779 rows and 4 variables:
 \describe{
-\item{\code{year}}{Numeric, year of survey}
-\item{\code{code}}{Character, question code}
-\item{\code{question}}{Character, full text of survey question}
-\item{\code{responses}}{List of character vectors, of all possible responses for each question}
+\item{year}{Numeric, year of survey}
+\item{code}{Character, question code}
+\item{question}{Character, full text of survey question}
+\item{responses}{List of character vectors, of all possible responses for each question}
 }
 }
 \source{
