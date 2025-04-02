@@ -3,8 +3,8 @@
 #' This is just a quick wrapper for a common, tedious task of
 #' collapsing several demographic groups, such as income brackets, into
 #' larger groups and taking a weighted mean based on a set of survey weights.
-#' @param data A data frame, such as returned by [cwi::xtab2df()] joined with
-#' survey weights as returned by [cwi::read_weights()]. The default
+#' @param data A data frame, such as returned by [xtab2df()] joined with
+#' survey weights as returned by [read_weights()]. The default
 #' column names here match those returned by `xtab2df` (`group`, `value`) and
 #' `read_weights` (`weight`).
 #' @param ... Bare column names to use for grouping, including the `.group` column,

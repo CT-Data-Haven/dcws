@@ -7,7 +7,7 @@ Authors@R:
             role = c("aut", "cre"),
             comment = c(ORCID = "0000-0002-5102-995X"))
 Description: This is a collection of data from all past years of the DCWS, plus a bit of metadata and a few functions for extracting subsets of data.
-License: CC BY 4.0
+License: file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
@@ -25,23 +25,18 @@ Imports:
     tidyr,
     tidyselect
 Suggests: 
-    cwi (>= 0.4.2),
     testthat (>= 3.0.0),
     fuzzyjoin,
     roxygen2,
-    xfun,
     knitr,
-    rmarkdown,
     officer (>= 0.6.7),
     openxlsx2,
     covr,
-    snakecase,
     gh,
     duckdb,
     readr,
     quarto
 Remotes: 
-    ct-data-haven/cwi,
     davidgohel/officer
 Depends: 
     R (>= 4.2.0)
@@ -53,5 +48,4 @@ Config/Needs/website:
     knitr,
     quarto
 VignetteBuilder: 
-    knitr,
     quarto

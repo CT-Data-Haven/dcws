@@ -16,8 +16,8 @@ collapse_n_wt(
 )
 }
 \arguments{
-\item{data}{A data frame, such as returned by \code{\link[cwi:xtab2df]{cwi::xtab2df()}} joined with
-survey weights as returned by \code{\link[cwi:read_xtabs]{cwi::read_weights()}}. The default
+\item{data}{A data frame, such as returned by \code{\link[=xtab2df]{xtab2df()}} joined with
+survey weights as returned by \code{\link[=read_weights]{read_weights()}}. The default
 column names here match those returned by \code{xtab2df} (\code{group}, \code{value}) and
 \code{read_weights} (\code{weight}).}
 

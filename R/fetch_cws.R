@@ -34,7 +34,7 @@
 #' fetch_cws(code == "Q1", .year = 2021, .category = c("Income", "Gender"), .unnest = TRUE) |>
 #'     dplyr::group_by(name, category, group) |>
 #'     # might want to remove refused, don't know responses
-#'     # cwi::sub_nonanswers() |>
+#'     sub_nonanswers() |>
 #'     dplyr::filter(response == "Yes") |>
 #'     tidyr::pivot_wider(id_cols = name, names_from = group, values_from = value)
 #'

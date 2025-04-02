@@ -21,7 +21,7 @@ This package has a dataset of all the data extracted from all (or at least most)
 
 When it's all combined and unnested, there are a few million rows of data, and no one needs all of that. Instead, use the function `fetch_cws` to pull out just the data you need, whether that's just one location across multiple years, multiple locations, a single question, or whatever.
 
-Here are some pretty common examples of how we might work with DCWS data using this package, `cwi`, and some tidyverse. I'll mostly use some of the more straightforward questions that we ask every year, with Greater New Haven as an example because I know most of our demographic groups are available.
+Here are some pretty common examples of how we might work with DCWS data using this package and some tidyverse. I'll mostly use some of the more straightforward questions that we ask every year, with Greater New Haven as an example because I know most of our demographic groups are available.
 
 ```{r}
 #| label: libs
@@ -40,7 +40,7 @@ calc_food <- function(data) {
     data |>
         # get order that makes sense for this subset
         # mutate(group = fct_inorder(fct_drop(group))) |>
-        cwi::sub_nonanswers() |> # remove don't know/refused & rescale values
+        sub_nonanswers() |> # remove don't know/refused & rescale values
         filter(
             group != "Other race",
             response == "Yes"
@@ -88,12 +88,13 @@ I want just the location-wide values for towns in Greater New Haven, or by race 
 
 ```{r }
 #| label: food3
+gnh_towns <- c("New Haven", "Hamden", "West Haven", "Milford")
 food_towns <- fetch_cws(grepl("^Have there been times .+ food", question),
-    .name = c("Greater New Haven", cwi::regions$`Greater New Haven`),
+    .name = c("Greater New Haven", gnh_towns),
     .year = 2021, .unnest = TRUE
 ) |>
     filter((name == "Greater New Haven" & category %in% c("Total", "Race/Ethnicity")) |
-        (group %in% cwi::regions$`Greater New Haven`)) |>
+        (group %in% gnh_towns)) |>
     calc_food() |>
     mutate(category = as_factor(ifelse(name == "Greater New Haven",
         as.character(category),
@@ -134,7 +135,7 @@ trust_insts <- fetch_cws(grepl("^TRUST[A-Z]$", code),
     ) |>
     group_by(category, group, question, response) |>
     summarise(value = sum(value)) |>
-    cwi::sub_nonanswers() |>
+    sub_nonanswers() |>
     filter(response == "trust") |>
     mutate(value = round(value, digits = 2)) |>
     ungroup()
@@ -183,7 +184,7 @@ There's a function for getting weights on their own, with most of the same argum
 head(fetch_wts(.year = 2021, .name = "Greater New Haven", .unnest = TRUE))
 ```
 
-...or you can just use the `.add_wts` argument in `fetch_cws` to do this for you. You can also use `cwi::collapse_n_wt` to help with the calculation, but basically you're collapsing several levels, then getting weighted means.
+...or you can just use the `.add_wts` argument in `fetch_cws` to do this for you. You can also use `collapse_n_wt` to help with the calculation, but basically you're collapsing several levels, then getting weighted means.
 
 One reason for doing this is that locations might have different income brackets depending on sample size, and we've moved toward using larger income brackets in the latest wave of the survey. So in addition to sample size, you might also collapse groups so you can compare across locations or years.
 
@@ -221,14 +222,14 @@ asthma18 <- fetch_cws(question == "Asthma",
     .year = 2018, .name = "Greater New Haven",
     .category = c("Total", "Income", "Race/Ethnicity"), .add_wts = TRUE, .unnest = TRUE
 ) |>
-    cwi::collapse_n_wt(year:response,
+    collapse_n_wt(year:response,
         .lvls = list(
             "<$30K" = c("<$15K", "$15K-$30K"),
             "$30K-$100K" = c("$30K-$50K", "$50K-$75K", "$75K-$100K"),
             "$100K+" = c("$100K-$200K", "$200K+")
         )
     ) |>
-    cwi::sub_nonanswers() |>
+    sub_nonanswers() |>
     mutate(value = round(value, digits = 2)) |>
     filter(response == "Yes")
 

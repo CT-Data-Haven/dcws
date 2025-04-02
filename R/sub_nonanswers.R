@@ -17,7 +17,7 @@
 #' fewer rows
 #' @examples
 #' if (interactive()) {
-#'     xt <- system.file("extdata/test_xtab2018.xlsx", package = "cwi")
+#'     xt <- system.file("extdata/test_xtab2018.xlsx", package = "dcws")
 #'     df <- read_xtabs(xt, process = TRUE) |>
 #'         dplyr::filter(code == "Q1") |>
 #'         sub_nonanswers()
