@@ -71,7 +71,7 @@
 
     <p>This package has a dataset of all the data extracted from all (or at least most) the crosstabs for every DataHaven Community Wellbeing Survey wave, a total of files. It’s all been cleaned up so that names, categories, and groups should be standardized to match across every location and year, and should be the same in the weights as in the data tables themselves. Every data point has its corresponding question text and code.</p>
 <p>When it’s all combined and unnested, there are a few million rows of data, and no one needs all of that. Instead, use the function <code>fetch_cws</code> to pull out just the data you need, whether that’s just one location across multiple years, multiple locations, a single question, or whatever.</p>
-<p>Here are some pretty common examples of how we might work with DCWS data using this package, <code>cwi</code>, and some tidyverse. I’ll mostly use some of the more straightforward questions that we ask every year, with Greater New Haven as an example because I know most of our demographic groups are available.</p>
+<p>Here are some pretty common examples of how we might work with DCWS data using this package and some tidyverse. I’ll mostly use some of the more straightforward questions that we ask every year, with Greater New Haven as an example because I know most of our demographic groups are available.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
@@ -85,7 +85,7 @@
 <span>    <span class="va">data</span> <span class="op">|&gt;</span></span>
 <span>        <span class="co"># get order that makes sense for this subset</span></span>
 <span>        <span class="co"># mutate(group = fct_inorder(fct_drop(group))) |&gt;</span></span>
-<span>        <span class="fu">cwi</span><span class="fu">::</span><span class="fu"><a href="https://CT-Data-Haven.github.io/cwi/reference/sub_nonanswers.html" class="external-link">sub_nonanswers</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># remove don't know/refused &amp; rescale values</span></span>
+<span>        <span class="fu"><a href="../reference/sub_nonanswers.html">sub_nonanswers</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># remove don't know/refused &amp; rescale values</span></span>
 <span>        <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span></span>
 <span>            <span class="va">group</span> <span class="op">!=</span> <span class="st">"Other race"</span>,</span>
 <span>            <span class="va">response</span> <span class="op">==</span> <span class="st">"Yes"</span></span>
@@ -410,12 +410,13 @@
 <p>I want just the location-wide values for towns in Greater New Haven, or by race for Greater New Haven. I could do this filtering inside <code>fetch_cws</code> if I wanted to dig into the nested data with <code>purrr</code>, but I don’t, so I’ll just be a little redundant.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">food_towns</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_cws.html">fetch_cws</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^Have there been times .+ food"</span>, <span class="va">question</span><span class="op">)</span>,</span>
-<span>    .name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Greater New Haven"</span>, <span class="fu">cwi</span><span class="fu">::</span><span class="va"><a href="https://CT-Data-Haven.github.io/cwi/reference/regions.html" class="external-link">regions</a></span><span class="op">$</span><span class="va">`Greater New Haven`</span><span class="op">)</span>,</span>
+<code class="sourceCode R"><span><span class="va">gnh_towns</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"New Haven"</span>, <span class="st">"Hamden"</span>, <span class="st">"West Haven"</span>, <span class="st">"Milford"</span><span class="op">)</span></span>
+<span><span class="va">food_towns</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_cws.html">fetch_cws</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^Have there been times .+ food"</span>, <span class="va">question</span><span class="op">)</span>,</span>
+<span>    .name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Greater New Haven"</span>, <span class="va">gnh_towns</span><span class="op">)</span>,</span>
 <span>    .year <span class="op">=</span> <span class="fl">2021</span>, .unnest <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">(</span><span class="va">name</span> <span class="op">==</span> <span class="st">"Greater New Haven"</span> <span class="op">&amp;</span> <span class="va">category</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Total"</span>, <span class="st">"Race/Ethnicity"</span><span class="op">)</span><span class="op">)</span> <span class="op">|</span></span>
-<span>        <span class="op">(</span><span class="va">group</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu">cwi</span><span class="fu">::</span><span class="va"><a href="https://CT-Data-Haven.github.io/cwi/reference/regions.html" class="external-link">regions</a></span><span class="op">$</span><span class="va">`Greater New Haven`</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>        <span class="op">(</span><span class="va">group</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">gnh_towns</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">calc_food</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>category <span class="op">=</span> <span class="fu"><a href="https://forcats.tidyverse.org/reference/as_factor.html" class="external-link">as_factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">name</span> <span class="op">==</span> <span class="st">"Greater New Haven"</span>,</span>
 <span>        <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">category</span><span class="op">)</span>,</span>
@@ -463,20 +464,6 @@
 </tr>
 <tr class="odd">
 <td style="text-align: left;">2021</td>
-<td style="text-align: left;">Hamden</td>
-<td style="text-align: left;">By town</td>
-<td style="text-align: left;">Hamden</td>
-<td style="text-align: right;">0.14</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">2021</td>
-<td style="text-align: left;">Milford</td>
-<td style="text-align: left;">By town</td>
-<td style="text-align: left;">Milford</td>
-<td style="text-align: right;">0.11</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">2021</td>
 <td style="text-align: left;">New Haven</td>
 <td style="text-align: left;">By town</td>
 <td style="text-align: left;">New Haven</td>
@@ -484,10 +471,24 @@
 </tr>
 <tr class="even">
 <td style="text-align: left;">2021</td>
+<td style="text-align: left;">Hamden</td>
+<td style="text-align: left;">By town</td>
+<td style="text-align: left;">Hamden</td>
+<td style="text-align: right;">0.14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2021</td>
 <td style="text-align: left;">West Haven</td>
 <td style="text-align: left;">By town</td>
 <td style="text-align: left;">West Haven</td>
 <td style="text-align: right;">0.18</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2021</td>
+<td style="text-align: left;">Milford</td>
+<td style="text-align: left;">By town</td>
+<td style="text-align: left;">Milford</td>
+<td style="text-align: right;">0.11</td>
 </tr>
 </tbody>
 </table>
@@ -528,7 +529,7 @@
 <span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">category</span>, <span class="va">group</span>, <span class="va">question</span>, <span class="va">response</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">cwi</span><span class="fu">::</span><span class="fu"><a href="https://CT-Data-Haven.github.io/cwi/reference/sub_nonanswers.html" class="external-link">sub_nonanswers</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/sub_nonanswers.html">sub_nonanswers</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">response</span> <span class="op">==</span> <span class="st">"trust"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">value</span>, digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -651,7 +652,7 @@
 <span><span class="co">#&gt; 5  2021 2021  Greater New Haven Ages 18-34         0.313</span></span>
 <span><span class="co">#&gt; 6  2021 2021  Greater New Haven Ages 35-49         0.238</span></span></code></pre></div>
 </div>
-<p>…or you can just use the <code>.add_wts</code> argument in <code>fetch_cws</code> to do this for you. You can also use <code><a href="https://CT-Data-Haven.github.io/cwi/reference/collapse_n_wt.html" class="external-link">cwi::collapse_n_wt</a></code> to help with the calculation, but basically you’re collapsing several levels, then getting weighted means.</p>
+<p>…or you can just use the <code>.add_wts</code> argument in <code>fetch_cws</code> to do this for you. You can also use <code>collapse_n_wt</code> to help with the calculation, but basically you’re collapsing several levels, then getting weighted means.</p>
 <p>One reason for doing this is that locations might have different income brackets depending on sample size, and we’ve moved toward using larger income brackets in the latest wave of the survey. So in addition to sample size, you might also collapse groups so you can compare across locations or years.</p>
 <p>For example, check out how obnoxious this is:</p>
 <div class="cell">
@@ -927,14 +928,14 @@
 <span>    .year <span class="op">=</span> <span class="fl">2018</span>, .name <span class="op">=</span> <span class="st">"Greater New Haven"</span>,</span>
 <span>    .category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Total"</span>, <span class="st">"Income"</span>, <span class="st">"Race/Ethnicity"</span><span class="op">)</span>, .add_wts <span class="op">=</span> <span class="cn">TRUE</span>, .unnest <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">cwi</span><span class="fu">::</span><span class="fu"><a href="https://CT-Data-Haven.github.io/cwi/reference/collapse_n_wt.html" class="external-link">collapse_n_wt</a></span><span class="op">(</span><span class="va">year</span><span class="op">:</span><span class="va">response</span>,</span>
+<span>    <span class="fu"><a href="../reference/collapse_n_wt.html">collapse_n_wt</a></span><span class="op">(</span><span class="va">year</span><span class="op">:</span><span class="va">response</span>,</span>
 <span>        .lvls <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>            <span class="st">"&lt;$30K"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"&lt;$15K"</span>, <span class="st">"$15K-$30K"</span><span class="op">)</span>,</span>
 <span>            <span class="st">"$30K-$100K"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"$30K-$50K"</span>, <span class="st">"$50K-$75K"</span>, <span class="st">"$75K-$100K"</span><span class="op">)</span>,</span>
 <span>            <span class="st">"$100K+"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"$100K-$200K"</span>, <span class="st">"$200K+"</span><span class="op">)</span></span>
 <span>        <span class="op">)</span></span>
 <span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">cwi</span><span class="fu">::</span><span class="fu"><a href="https://CT-Data-Haven.github.io/cwi/reference/sub_nonanswers.html" class="external-link">sub_nonanswers</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/sub_nonanswers.html">sub_nonanswers</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">value</span>, digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">response</span> <span class="op">==</span> <span class="st">"Yes"</span><span class="op">)</span></span>
 <span></span>

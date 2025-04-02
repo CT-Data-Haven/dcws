@@ -57,20 +57,29 @@
 <div class="page-header"><h1 id="dcws">dcws<a class="anchor" aria-label="anchor" href="#dcws"></a>
 </h1></div>
 <!-- badges: start -->
-
+<p><img src="https://img.shields.io/github/actions/workflow/status/CT-Data-Haven/dcws/check-release.yaml?style=flat-square&amp;label=check-release" alt="GitHub Actions Workflow Status: check-release"><img src="https://img.shields.io/github/actions/workflow/status/CT-Data-Haven/dcws/pkgdown.yaml?style=flat-square&amp;label=pkgdown" alt="GitHub Actions Workflow Status: pkgdown"><img src="https://img.shields.io/codecov/c/github/CT-Data-Haven/dcws?style=flat-square.png" alt="Codecov"><!-- badges: end --></p>
 <p>This is a small data-focused package to make easier use of the DataHaven Community Wellbeing Survey. It contains the data extracted from crosstabs from the survey waves. 2020 and 2022 are statewide only.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of dcws from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<p>You can install the development version of dcws from <a href="https://github.com/CT-Data-Haven/dcws" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"CT-Data-Haven/dcws"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="about-the-survey">About the survey<a class="anchor" aria-label="anchor" href="#about-the-survey"></a>
+</h2>
+<p>The data in these crosstabs represent question-by-question weighted estimates, disaggregated by selected demographic and socioeconomic characteristics. Each estimate represents how a group of respondents—weighted to be representative of the population within the specified geographic area—answered the question shown. Please use caution in interpreting the information in this repo. We recommend contacting DataHaven with any questions, at info AT ctdatahaven.org. DataHaven staff can help confirm whether the information in this repo is being interpreted in a correct way, and we can recommend further analysis that might be useful to your work.</p>
+<p>In particular, when reading the data, be aware of “skip patterns” in the survey, such as Q49, “During this time, has your job been full time or part time?” Only the subset of adults who indicated in the previous question that they had a paid job would have been eligible to receive this question. Therefore, the estimates in that section of the crosstab show the percentages of adults with paid jobs who have full time jobs, not the percentages of all adults who have full time jobs.</p>
+<p>Generally, columns with demographic breakdowns are included only when the number of respondents completing that specific survey item was sufficiently large for reporting. Additionally, please note that some questions were not asked to all respondents, due to branching. For example, respondents were randomly-assigned to one of three statewide “ballots” at the outset of the survey. This approach allows for a larger number of questions to be included in the survey.</p>
+<p>The demographic categories shown in the crosstab are determined based on responses to detailed survey questions on age, sex, race/ethnicity, place of birth, presence of children in the household, sexual orientation, gender identity, income, education, town of residence, and other characteristics or experiences. Where available, a disability categorization is based on respondents who answered yes to any of the standard 6-item screener question for having a disability. The incarceration experience questions are only asked to men who are ages 18 to 64. Sexual orientation and gender identity are broken down in several ways: as an umbrella term, LGBTQ denotes any adults who identify themselves as lesbian, gay, bisexual, some other orientation besides straight, or transgender, while “straight and cisgender” refers to adults who identify as none of these. Where possible, we disaggregate these groups further by sexual orientation alone (lesbian, gay, or bisexual vs straight) or gender identity alone (transgender vs cisgender). As sample sizes permit, results for smaller demographic groups may be shown in the Connecticut statewide data, but not in the data for smaller geographic regions. Not all of the demographic questions are included in every year of the survey.</p>
+<p>Please contact DataHaven or visit the DataHaven website’s <a href="https://ctdatahaven.org/reports/datahaven-community-wellbeing-survey" class="external-link">DataHaven Community Wellbeing Survey page</a> for additional information about these data.</p>
+</div>
+<div class="section level2">
 <h2 id="included-data">Included data<a class="anchor" aria-label="anchor" href="#included-data"></a>
 </h2>
-<p>As of 2025-03-24, the data included here are:</p>
+<p>As of 2025-04-02, the data included here are:</p>
 <table class="table">
 <colgroup>
 <col width="12%">
@@ -734,7 +743,7 @@
 <td align="center">x</td>
 </tr>
 <tr class="odd">
-<td align="left">Hospital of Central Connecticut</td>
+<td align="left">Hospital Of Central Connecticut</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -1104,7 +1113,7 @@
 <td align="center"></td>
 </tr>
 <tr class="even">
-<td align="left">Northeast District Department of Health</td>
+<td align="left">Northeast District Department Of Health</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -1414,7 +1423,7 @@
 <td align="center">x</td>
 </tr>
 <tr class="odd">
-<td align="left">Trinity Health of New England</td>
+<td align="left">Trinity Health Of New England</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -1454,7 +1463,7 @@
 <td align="center">x</td>
 </tr>
 <tr class="odd">
-<td align="left">United Way of Central and Northeastern Connecticut</td>
+<td align="left">United Way Of Central And Northeastern Connecticut</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -1464,7 +1473,7 @@
 <td align="center">x</td>
 </tr>
 <tr class="even">
-<td align="left">United Way of Coastal and Western Connecticut</td>
+<td align="left">United Way Of Coastal And Western Connecticut</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -1474,7 +1483,7 @@
 <td align="center">x</td>
 </tr>
 <tr class="odd">
-<td align="left">United Way of Greater New Haven</td>
+<td align="left">United Way Of Greater New Haven</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -1484,7 +1493,7 @@
 <td align="center">x</td>
 </tr>
 <tr class="even">
-<td align="left">United Way of Greater Waterbury</td>
+<td align="left">United Way Of Greater Waterbury</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -1494,7 +1503,7 @@
 <td align="center">x</td>
 </tr>
 <tr class="odd">
-<td align="left">United Way of Greenwich</td>
+<td align="left">United Way Of Greenwich</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -1504,7 +1513,7 @@
 <td align="center">x</td>
 </tr>
 <tr class="even">
-<td align="left">United Way of Meriden Wallingford</td>
+<td align="left">United Way Of Meriden Wallingford</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -1514,7 +1523,7 @@
 <td align="center">x</td>
 </tr>
 <tr class="odd">
-<td align="left">United Way of Milford</td>
+<td align="left">United Way Of Milford</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -1524,7 +1533,7 @@
 <td align="center">x</td>
 </tr>
 <tr class="even">
-<td align="left">United Way of Naugatuck Beacon Falls</td>
+<td align="left">United Way Of Naugatuck Beacon Falls</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -1534,7 +1543,7 @@
 <td align="center">x</td>
 </tr>
 <tr class="odd">
-<td align="left">United Way of Northwest Connecticut</td>
+<td align="left">United Way Of Northwest Connecticut</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -1544,7 +1553,7 @@
 <td align="center">x</td>
 </tr>
 <tr class="even">
-<td align="left">United Way of Southeastern Connecticut</td>
+<td align="left">United Way Of Southeastern Connecticut</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -1554,7 +1563,7 @@
 <td align="center">x</td>
 </tr>
 <tr class="odd">
-<td align="left">United Way of Southington</td>
+<td align="left">United Way Of Southington</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -1564,7 +1573,7 @@
 <td align="center">x</td>
 </tr>
 <tr class="even">
-<td align="left">United Way of West Central Connecticut</td>
+<td align="left">United Way Of West Central Connecticut</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -1780,13 +1789,7 @@
 </ul>
 </div>
 
-<div class="dev-status">
-<h2 data-toc-skip>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://github.com/CT-Data-Haven/dcws/actions/workflows/check-release.yaml" class="external-link"><img src="https://github.com/CT-Data-Haven/dcws/actions/workflows/check-release.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://github.com/CT-Data-Haven/dcws/actions/workflows/pkgdown.yaml" class="external-link"><img src="https://github.com/CT-Data-Haven/dcws/actions/workflows/pkgdown.yaml/badge.svg" alt="pkgdown"></a></li>
-</ul>
-</div>
+
 
   </aside>
 </div>
