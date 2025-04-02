@@ -16,5 +16,6 @@
 .cz.toml
 ^Snakefile$
 ^report$
+^coverage.html$
 ^.flags$
 ^vignettes/.quarto

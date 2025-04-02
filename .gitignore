@@ -19,3 +19,7 @@ TODO.md
 CHANGELOG.md.j2
 vignettes/*_files
 vignettes/*.html
+.Renviron
+
+lib/*
+coverage.html

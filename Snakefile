@@ -254,11 +254,13 @@ rule dag:
 
 ## coverage: Generate test coverage report with codecov
 rule coverage:
+    output:
+        report="coverage.html",
     shell:
         """
         Rscript -e "covr::report(
             covr::package_coverage(quiet = FALSE),
-            file = \"coverage.html\",
+            file = \'coverage.html\',
             browse = FALSE
         )"
         """
@@ -278,6 +280,7 @@ rule clean:
     shell:
         """
         rm -f .flags/* \
+            *.html \
             man/*.Rd \
             data/*.rda \
             R/sysdata.rda \
