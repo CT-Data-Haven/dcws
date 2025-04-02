@@ -154,10 +154,9 @@ add_wt1 <- function(data, name) {
 # filter to keep just locations & years that have data
 # tack on 1.0 weights to top
 cws_full_wts <- paths |>
-    dplyr::mutate(weights = path |>
-        purrr::map(safe_wts, verbose = FALSE) |>
-        purrr::map(dplyr::mutate, group = clean_cws_lvls(group)) |>
-        purrr::map2(name, add_wt1)) |>
+    dplyr::mutate(weights = purrr::map(path, safe_wts, verbose = FALSE)) |>
+    dplyr::mutate(weights = purrr::map_if(weights, \(x) nrow(x) > 0, dplyr::mutate, group = clean_cws_lvls(group))) |>
+    dplyr::mutate(weights = purrr::map2(weights, name, add_wt1)) |>
     dplyr::mutate(id = paste(year, span, name, sep = ".")) |>
     dplyr::filter(id %in% names(cws_full_data)) |>
     dplyr::select(year, span, name, weights)

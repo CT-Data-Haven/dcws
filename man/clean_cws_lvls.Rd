@@ -4,12 +4,14 @@
 \alias{clean_cws_lvls}
 \title{Clean up categories and groups from crosstabs}
 \usage{
-clean_cws_lvls(x, is_category = FALSE)
+clean_cws_lvls(x, is_category = FALSE, order = FALSE)
 }
 \arguments{
 \item{x}{A vector. If not a factor already, will be coerced to one.}
 
 \item{is_category}{Boolean: if \code{FALSE}, assume these are groups (e.g. "High school or less", "Some college or Associate's") rather than categories (e.g. "Education").}
+
+\item{order}{Boolean: if \code{TRUE}, groups will be put into logical order (e.g. <$30K, $30K-$100K). This only applies to groups (i.e. \code{is_category = FALSE}), and only really affects ages and income groups. If \code{FALSE} (default), levels will be kept in the same order as they were received.}
 }
 \value{
 A factor of the same length as \code{x}

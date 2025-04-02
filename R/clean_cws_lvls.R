@@ -14,6 +14,9 @@ cws_lvl_patts_ <- function(is_category) {
         " (\\-|to) " = "-",
         "Less than (?=\\$)" = "<",
         "(?<=,000) or more" = "+",
+        "(?<=0K) or more" = "+",
+        "(?<=\\d) or more" = "+",
+        # "Under age " = "Ages 18-",
         "^\\b(\\d{2,})" = "Ages \\1",
         "hich school" = "high school",
         ",000" = "K",
@@ -84,10 +87,18 @@ cws_lvl_patts_ <- function(is_category) {
     )
 }
 
+under_endpt <- function(x) {
+    bound <- as.numeric(stringr::str_extract(x, "\\d+"))
+    max <- bound - 1
+    repl <- paste("Ages 18", max, sep = "-")
+    stringr::str_replace(x, "(?:Under age )(\\d+)", repl)
+}
+
 #' @title Clean up categories and groups from crosstabs
 #' @description This is a bunch of string cleaning to standardize the categories (Gender, Age, etc) and groups (Male, Ages 65+, etc) across all available crosstabs. This does the same operation on both categories and groups because there is some overlap. The lists of regex and other replacements aren't exported, but they aren't hidden either: access them at `dcws:::to_replace`, `dcws:::to_remove`, `dcws:::to_recode`, or `dcws:::to_collapse` if you need them.
 #' @param x A vector. If not a factor already, will be coerced to one.
 #' @param is_category Boolean: if `FALSE`, assume these are groups (e.g. "High school or less", "Some college or Associate's") rather than categories (e.g. "Education").
+#' @param order Boolean: if `TRUE`, groups will be put into logical order (e.g. <$30K, $30K-$100K). This only applies to groups (i.e. `is_category = FALSE`), and only really affects ages and income groups. If `FALSE` (default), levels will be kept in the same order as they were received.
 #' @examples
 #' # vector of strings as read in from crosstabs
 #' categories <- c(
@@ -105,9 +116,9 @@ cws_lvl_patts_ <- function(is_category) {
 #' @return A factor of the same length as `x`
 #' @family cleaning
 #' @export
-clean_cws_lvls <- function(x, is_category = FALSE) {
-    if (!class(x) %in% c("factor", "character")) {
-        cli::cli_abort("{.var x} should be a character vector or a factor")
+clean_cws_lvls <- function(x, is_category = FALSE, order = FALSE) {
+    if (!class(x) %in% c("factor", "character") | all(is.na(x))) {
+        cli::cli_abort("{.var x} should be a non-empty character vector or a factor")
     }
     if (!is.factor(x)) x <- forcats::as_factor(x)
     patts <- cws_lvl_patts_(is_category = is_category)
@@ -117,9 +128,13 @@ clean_cws_lvls <- function(x, is_category = FALSE) {
         x <- forcats::fct_relabel(x, stringr::str_replace_all, patts[["to_replace"]])
         x <- forcats::fct_recode(x, !!!patts[["to_recode"]])
         x <- forcats::fct_collapse(x, !!!patts[["to_collapse"]])
+        x <- forcats::fct_relabel(x, \(s) ifelse(grepl("Under age ", s), under_endpt(s), s))
         x <- forcats::fct_relabel(x, stringr::str_squish)
-        x
     })
+    if (order && !is_category) {
+        x <- order_lvls(x)
+    }
+    x
 }
 
 add_cats <- function(x, return_table) {
@@ -161,6 +176,10 @@ order_lvls <- function(x) {
     df$under <- +!stringr::str_detect(df$x, "^(Under |Less |\\<)") # 0 if detected
     df$over <- +stringr::str_detect(df$x, "(\\+| more| higher)") # 1 if detected
     df <- tidyr::unnest_wider(df, nums, names_sep = "")
+    # handle if all groups only give a single number, e.g. 65+
+    if (!"nums2" %in% names(df)) {
+        df$nums2 <- NA_character_
+    }
     df <- dplyr::arrange(df, nums1, under, over, nums2)
     df$x <- forcats::fct_inorder(df$x)
     df$x
