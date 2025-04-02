@@ -6,8 +6,11 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/CT-Data-Haven/dcws/actions/workflows/check-release.yaml/badge.svg)](https://github.com/CT-Data-Haven/dcws/actions/workflows/check-release.yaml)
-[![pkgdown](https://github.com/CT-Data-Haven/dcws/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/CT-Data-Haven/dcws/actions/workflows/pkgdown.yaml)
+![GitHub Actions Workflow Status:
+check-release](https://img.shields.io/github/actions/workflow/status/CT-Data-Haven/dcws/check-release.yaml?style=flat-square&label=check-release)
+![GitHub Actions Workflow Status:
+pkgdown](https://img.shields.io/github/actions/workflow/status/CT-Data-Haven/dcws/pkgdown.yaml?style=flat-square&label=pkgdown)
+![Codecov](https://img.shields.io/codecov/c/github/CT-Data-Haven/dcws?style=flat-square.png)
 <!-- badges: end -->
 
 This is a small data-focused package to make easier use of the DataHaven
@@ -17,12 +20,66 @@ crosstabs from the survey waves. 2020 and 2022 are statewide only.
 ## Installation
 
 You can install the development version of dcws from
-[GitHub](https://github.com/) with:
+[GitHub](https://github.com/CT-Data-Haven/dcws) with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("CT-Data-Haven/dcws")
 ```
+
+## About the survey
+
+The data in these crosstabs represent question-by-question weighted
+estimates, disaggregated by selected demographic and socioeconomic
+characteristics. Each estimate represents how a group of
+respondents—weighted to be representative of the population within the
+specified geographic area—answered the question shown. Please use
+caution in interpreting the information in this repo. We recommend
+contacting DataHaven with any questions, at info AT ctdatahaven.org.
+DataHaven staff can help confirm whether the information in this repo is
+being interpreted in a correct way, and we can recommend further
+analysis that might be useful to your work.
+
+In particular, when reading the data, be aware of “skip patterns” in the
+survey, such as Q49, “During this time, has your job been full time or
+part time?” Only the subset of adults who indicated in the previous
+question that they had a paid job would have been eligible to receive
+this question. Therefore, the estimates in that section of the crosstab
+show the percentages of adults with paid jobs who have full time jobs,
+not the percentages of all adults who have full time jobs.
+
+Generally, columns with demographic breakdowns are included only when
+the number of respondents completing that specific survey item was
+sufficiently large for reporting. Additionally, please note that some
+questions were not asked to all respondents, due to branching. For
+example, respondents were randomly-assigned to one of three statewide
+“ballots” at the outset of the survey. This approach allows for a larger
+number of questions to be included in the survey.
+
+The demographic categories shown in the crosstab are determined based on
+responses to detailed survey questions on age, sex, race/ethnicity,
+place of birth, presence of children in the household, sexual
+orientation, gender identity, income, education, town of residence, and
+other characteristics or experiences. Where available, a disability
+categorization is based on respondents who answered yes to any of the
+standard 6-item screener question for having a disability. The
+incarceration experience questions are only asked to men who are ages 18
+to 64. Sexual orientation and gender identity are broken down in several
+ways: as an umbrella term, LGBTQ denotes any adults who identify
+themselves as lesbian, gay, bisexual, some other orientation besides
+straight, or transgender, while “straight and cisgender” refers to
+adults who identify as none of these. Where possible, we disaggregate
+these groups further by sexual orientation alone (lesbian, gay, or
+bisexual vs straight) or gender identity alone (transgender vs
+cisgender). As sample sizes permit, results for smaller demographic
+groups may be shown in the Connecticut statewide data, but not in the
+data for smaller geographic regions. Not all of the demographic
+questions are included in every year of the survey.
+
+Please contact DataHaven or visit the DataHaven website’s [DataHaven
+Community Wellbeing Survey
+page](https://ctdatahaven.org/reports/datahaven-community-wellbeing-survey)
+for additional information about these data.
 
 ## Included data
 
@@ -94,7 +151,7 @@ As of 2025-04-02, the data included here are:
 | Hartford Hospital |  |  |  |  |  | x | x |
 | Hartford Inner Ring |  | x |  |  |  | x | x |
 | Hartford Outer Ring |  | x |  |  |  | x | x |
-| Hospital of Central Connecticut |  |  |  |  |  | x | x |
+| Hospital Of Central Connecticut |  |  |  |  |  | x | x |
 | Housatonic Valley Health District |  |  |  |  |  | x | x |
 | Johnson Memorial Hospital |  |  |  |  |  | x | x |
 | Lawrence + Memorial Hospital |  |  |  |  |  | x | x |
@@ -131,7 +188,7 @@ As of 2025-04-02, the data included here are:
 | Newtown Health District |  |  |  |  |  | x | x |
 | North Central District Health Department |  |  |  |  |  | x | x |
 | North Haven |  |  |  |  |  | x |  |
-| Northeast District Department of Health |  |  |  |  |  | x | x |
+| Northeast District Department Of Health |  |  |  |  |  | x | x |
 | Northeastern Connecticut COG |  |  |  |  |  | x | x |
 | Northwest Hills COG |  |  |  |  |  | x | x |
 | Norwalk | x | x |  | x |  | x | x |
@@ -162,22 +219,22 @@ As of 2025-04-02, the data included here are:
 | Tolland County |  |  |  |  |  | x | x |
 | Torrington |  |  |  | x |  | x | x |
 | Torrington Area Health District |  |  |  |  |  | x | x |
-| Trinity Health of New England |  |  |  |  |  | x | x |
+| Trinity Health Of New England |  |  |  |  |  | x | x |
 | Trumbull |  | x |  | x |  | x | x |
 | UConn John Dempsey Hospital |  |  |  |  |  | x | x |
 | Uncas Health District |  |  |  |  |  | x | x |
-| United Way of Central and Northeastern Connecticut |  |  |  |  |  | x | x |
-| United Way of Coastal and Western Connecticut |  |  |  |  |  | x | x |
-| United Way of Greater New Haven |  |  |  |  |  | x | x |
-| United Way of Greater Waterbury |  |  |  |  |  | x | x |
-| United Way of Greenwich |  |  |  |  |  | x | x |
-| United Way of Meriden Wallingford |  |  |  |  |  | x | x |
-| United Way of Milford |  |  |  |  |  | x | x |
-| United Way of Naugatuck Beacon Falls |  |  |  |  |  | x | x |
-| United Way of Northwest Connecticut |  |  |  |  |  | x | x |
-| United Way of Southeastern Connecticut |  |  |  |  |  | x | x |
-| United Way of Southington |  |  |  |  |  | x | x |
-| United Way of West Central Connecticut |  |  |  |  |  | x | x |
+| United Way Of Central And Northeastern Connecticut |  |  |  |  |  | x | x |
+| United Way Of Coastal And Western Connecticut |  |  |  |  |  | x | x |
+| United Way Of Greater New Haven |  |  |  |  |  | x | x |
+| United Way Of Greater Waterbury |  |  |  |  |  | x | x |
+| United Way Of Greenwich |  |  |  |  |  | x | x |
+| United Way Of Meriden Wallingford |  |  |  |  |  | x | x |
+| United Way Of Milford |  |  |  |  |  | x | x |
+| United Way Of Naugatuck Beacon Falls |  |  |  |  |  | x | x |
+| United Way Of Northwest Connecticut |  |  |  |  |  | x | x |
+| United Way Of Southeastern Connecticut |  |  |  |  |  | x | x |
+| United Way Of Southington |  |  |  |  |  | x | x |
+| United Way Of West Central Connecticut |  |  |  |  |  | x | x |
 | Valley United Way |  |  |  |  |  | x | x |
 | Wallingford |  | x |  |  |  | x |  |
 | Waterbury | x | x |  | x |  | x | x |

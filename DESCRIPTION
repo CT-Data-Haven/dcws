@@ -25,23 +25,18 @@ Imports:
     tidyr,
     tidyselect
 Suggests: 
-    cwi (>= 0.4.2),
     testthat (>= 3.0.0),
     fuzzyjoin,
     roxygen2,
-    xfun,
     knitr,
-    rmarkdown,
     officer (>= 0.6.7),
     openxlsx2,
     covr,
-    snakecase,
     gh,
     duckdb,
     readr,
     quarto
 Remotes: 
-    ct-data-haven/cwi,
     davidgohel/officer
 Depends: 
     R (>= 4.2.0)
@@ -53,5 +48,4 @@ Config/Needs/website:
     knitr,
     quarto
 VignetteBuilder: 
-    knitr,
     quarto

@@ -8,7 +8,7 @@
 #' @return Data frame
 #' @noRd
 parse_cws_paths <- function(paths, incl_year = TRUE, incl_tag = TRUE) {
-    name <- xfun::sans_ext(basename(paths))
+    name <- stringr::str_remove(basename(paths), "\\.\\w+$")
     # decide which function to use based on 2024 flags
     name <- ifelse(grepl("^dcws_.+\\-v", name),
         extract_name_r_(name),
@@ -78,8 +78,8 @@ extract_name_r_ <- function(x) {
     x <- stringr::str_remove(x, "^dcws_")
     x <- stringr::str_remove(x, "\\-.+$")
     x <- stringr::str_remove(x, "(_\\d{4})+$")
-    # x <- stringr::str_replace_all(x, "_", " ")
-    # x <- stringr::str_to_title(x)
-    x <- snakecase::to_title_case(x)
+    x <- stringr::str_replace_all(x, "_", " ")
+    x <- stringr::str_to_title(x)
+    # x <- snakecase::to_title_case(x)
     x
 }

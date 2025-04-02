@@ -18,6 +18,20 @@ test_that("parse_cws_paths returns same name with multiple formats", {
     expect_all_value(gwb_clean$name, "Greater Waterbury")
 })
 
+test_that("parse_cws_paths capitalizes acronyms", {
+    abbrs <- c(
+        "dcws_dmhas_region_2_2024-v0.3.2.xlsx",
+        "dcws_5ct_2024-v0.1.0.xlsx",
+        "DataHaven2015 5CT Crosstabs Pub.xlsx",
+        "dcws_capitol_cog_2015_2024-v0.1.0.xlsx"
+    )
+    abbrs_clean <- parse_cws_paths(abbrs)
+    expect_equal(
+        abbrs_clean$name,
+        c("DMHAS Region 2", "5CT", "5CT", "Capitol COG")
+    )
+})
+
 test_that("parse_cws_paths returns correct set of columns", {
     # 4 columns with years, 2 without
     hamden <- c(
