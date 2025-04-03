@@ -1,3 +1,9 @@
+# dcws v1.3.0 (2025-04-03)
+
+## Feat
+
+- clean up dependencies, rebuild in preparation for public release
+
 # dcws v1.2.0 (2025-04-02)
 
 ## Feat
