@@ -1,3 +1,13 @@
+# dcws v1.2.0 (2025-04-02)
+
+## Feat
+
+- clean up dependencies, rebuild in preparation for public release
+
+## Fix
+
+- **clean_cws_lvls**: add argument to make sure group levels are in semantic order
+
 # dcws v1.1.0 (2025-03-24)
 
 ## Feat
