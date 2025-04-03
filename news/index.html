@@ -39,11 +39,7 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.3.0" id="dcws-v130-2025-04-03">dcws v1.3.0 (2025-04-03)<a class="anchor" aria-label="anchor" href="#dcws-v130-2025-04-03"></a></h2>
-<p>This is the first release of {dcws} that is intended to go public. A few changes in recent versions toward that goal:</p>
-<ul><li>Separation of concerns: Many of the functions that were previously in the <a href="https://www.github.com/ct-data-haven/cwi" class="external-link">cwi package</a> were more geared toward working with our survey data. Those have now been moved here. For the next few months, use of those functions under the <code>cwi</code> namespace will throw deprecation warnings; they’ll be removed once we start work on the next Community Wellbeing Index (its namesake) later this year.</li>
-<li>License: {dcws} is now released under the <a href="https://firstdonoharm.dev/" class="external-link">Hippocratic License</a>, which takes an explicit stance on how open source software can and should be used for the public good. This includes restrictions on the use of this software and the data it contains by government and law enforcement actors.</li>
-<li>More robust testing and better test coverage: I’ve tried to preempt edge cases that might occur, especially for users outside of DataHaven, but please file issues for any bugs.</li>
-</ul><div class="section level3">
+<div class="section level3">
 <h3 id="feat-1-3-0">Feat<a class="anchor" aria-label="anchor" href="#feat-1-3-0"></a></h3>
 <ul><li>clean up dependencies, rebuild in preparation for public release</li>
 </ul></div>
@@ -87,7 +83,7 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.0" id="dcws-v100-2025-03-14">dcws v1.0.0 (2025-03-14)<a class="anchor" aria-label="anchor" href="#dcws-v100-2025-03-14"></a></h2>
 <ul><li>
-<strong>BREAKING CHANGE</strong> (potentially): in order to handle the number and complexity of the crosstab tables with all the 2024 additions, I switched the object <code>cws_full_data</code> that <code>fetch_cws</code> relies on from a data frame with deeply nested list-columns of more data frames, to a list of individual data frames. Each crosstab now has an ID that can be used to directly subset, such as “2021.2021.New Haven” for New Haven’s 2021 data, or “2024.2015<em>2024.Capitol Region COG” for the Capitol Region COG’s 2015-2024 pooled data. For the most part, this is a behind-the-scenes change handled by <code>fetch_cws</code>, but this method is _much</em> faster.</li>
+<strong>BREAKING CHANGE</strong> (potentially): in order to handle the number and complexity of the crosstab tables with all the 2024 additions, I switched the object <code>cws_full_data</code> that <code>fetch_cws</code> relies on from a data frame with deeply nested list-columns of more data frames, to a list of individual data frames. Each crosstab now has an ID that can be used to directly subset, such as “2021.2021.New Haven” for New Haven’s 2021 data, or “2024.2015_2024.Capitol Region COG” for the Capitol Region COG’s 2015-2024 pooled data. For the most part, this is a behind-the-scenes change handled by <code>fetch_cws</code>, but this method is <em>much</em> faster.</li>
 <li>Formatting fixes should all be done, with respect to category &amp; group labels, region names, etc.</li>
 <li>First round of crosstab-related functions from {cwi} have been moved here, and are documented and tested. Those are in the process of being deprecated from {cwi}.</li>
 </ul><div class="section level3">
