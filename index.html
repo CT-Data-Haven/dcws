@@ -63,7 +63,7 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of dcws from <a href="https://github.com/CT-Data-Haven/dcws" class="external-link">GitHub</a> with: <a href="https://github.com/CT-Data-Haven/dcws" class="external-link">GitHub</a> with:</p>
+<p>You can install the development version of dcws from <a href="https://github.com/CT-Data-Haven/dcws" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"CT-Data-Haven/dcws"</span><span class="op">)</span></span></code></pre></div>
@@ -78,18 +78,14 @@
 <p>Please contact DataHaven or visit the DataHaven website’s <a href="https://ctdatahaven.org/reports/datahaven-community-wellbeing-survey" class="external-link">DataHaven Community Wellbeing Survey page</a> for additional information about these data.</p>
 </div>
 <div class="section level2">
-<h2 id="about-the-survey-1">About the survey<a class="anchor" aria-label="anchor" href="#about-the-survey-1"></a>
+<h2 id="why-use-this-package">Why use this package?<a class="anchor" aria-label="anchor" href="#why-use-this-package"></a>
 </h2>
-<p>The data in these crosstabs represent question-by-question weighted estimates, disaggregated by selected demographic and socioeconomic characteristics. Each estimate represents how a group of respondents—weighted to be representative of the population within the specified geographic area—answered the question shown. Please use caution in interpreting the information in this repo. We recommend contacting DataHaven with any questions, at info AT ctdatahaven.org. DataHaven staff can help confirm whether the information in this repo is being interpreted in a correct way, and we can recommend further analysis that might be useful to your work.</p>
-<p>In particular, when reading the data, be aware of “skip patterns” in the survey, such as Q49, “During this time, has your job been full time or part time?” Only the subset of adults who indicated in the previous question that they had a paid job would have been eligible to receive this question. Therefore, the estimates in that section of the crosstab show the percentages of adults with paid jobs who have full time jobs, not the percentages of all adults who have full time jobs.</p>
-<p>Generally, columns with demographic breakdowns are included only when the number of respondents completing that specific survey item was sufficiently large for reporting. Additionally, please note that some questions were not asked to all respondents, due to branching. For example, respondents were randomly-assigned to one of three statewide “ballots” at the outset of the survey. This approach allows for a larger number of questions to be included in the survey.</p>
-<p>The demographic categories shown in the crosstab are determined based on responses to detailed survey questions on age, sex, race/ethnicity, place of birth, presence of children in the household, sexual orientation, gender identity, income, education, town of residence, and other characteristics or experiences. Where available, a disability categorization is based on respondents who answered yes to any of the standard 6-item screener question for having a disability. The incarceration experience questions are only asked to men who are ages 18 to 64. Sexual orientation and gender identity are broken down in several ways: as an umbrella term, LGBTQ denotes any adults who identify themselves as lesbian, gay, bisexual, some other orientation besides straight, or transgender, while “straight and cisgender” refers to adults who identify as none of these. Where possible, we disaggregate these groups further by sexual orientation alone (lesbian, gay, or bisexual vs straight) or gender identity alone (transgender vs cisgender). As sample sizes permit, results for smaller demographic groups may be shown in the Connecticut statewide data, but not in the data for smaller geographic regions. Not all of the demographic questions are included in every year of the survey.</p>
-<p>Please contact DataHaven or visit the DataHaven website’s <a href="https://ctdatahaven.org/reports/datahaven-community-wellbeing-survey" class="external-link">DataHaven Community Wellbeing Survey page</a> for additional information about these data.</p>
+<p>We’ve always put the results of the DCWS out publicly as crosstabs, either as Excel files or Excel files exported to PDFs (ooof). These are fine for many users, who just need a bunch of tables to refer to, or something they can use as the appendix for a grant or needs assessment, but they’re not great for doing further analysis. We’ve built up tools to make that work easier internally at DataHaven, and now feel they’re ready to share with others who may also want to do more fine-grained work with the data.</p>
 </div>
 <div class="section level2">
 <h2 id="included-data">Included data<a class="anchor" aria-label="anchor" href="#included-data"></a>
 </h2>
-<p>As of 2025-04-02, the data included here are:</p>
+<p>As of 2025-04-03, the data included here are:</p>
 <table class="table">
 <colgroup>
 <col width="12%">
