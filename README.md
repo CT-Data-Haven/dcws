@@ -24,7 +24,6 @@ crosstabs from the survey waves. 2020 and 2022 are statewide only.
 
 You can install the development version of dcws from
 [GitHub](https://github.com/CT-Data-Haven/dcws) with:
-[GitHub](https://github.com/CT-Data-Haven/dcws) with:
 
 ``` r
 # install.packages("devtools")
@@ -85,63 +84,20 @@ Community Wellbeing Survey
 page](https://ctdatahaven.org/reports/datahaven-community-wellbeing-survey)
 for additional information about these data.
 
-## About the survey
+## Why use this package?
 
-The data in these crosstabs represent question-by-question weighted
-estimates, disaggregated by selected demographic and socioeconomic
-characteristics. Each estimate represents how a group of
-respondents—weighted to be representative of the population within the
-specified geographic area—answered the question shown. Please use
-caution in interpreting the information in this repo. We recommend
-contacting DataHaven with any questions, at info AT ctdatahaven.org.
-DataHaven staff can help confirm whether the information in this repo is
-being interpreted in a correct way, and we can recommend further
-analysis that might be useful to your work.
-
-In particular, when reading the data, be aware of “skip patterns” in the
-survey, such as Q49, “During this time, has your job been full time or
-part time?” Only the subset of adults who indicated in the previous
-question that they had a paid job would have been eligible to receive
-this question. Therefore, the estimates in that section of the crosstab
-show the percentages of adults with paid jobs who have full time jobs,
-not the percentages of all adults who have full time jobs.
-
-Generally, columns with demographic breakdowns are included only when
-the number of respondents completing that specific survey item was
-sufficiently large for reporting. Additionally, please note that some
-questions were not asked to all respondents, due to branching. For
-example, respondents were randomly-assigned to one of three statewide
-“ballots” at the outset of the survey. This approach allows for a larger
-number of questions to be included in the survey.
-
-The demographic categories shown in the crosstab are determined based on
-responses to detailed survey questions on age, sex, race/ethnicity,
-place of birth, presence of children in the household, sexual
-orientation, gender identity, income, education, town of residence, and
-other characteristics or experiences. Where available, a disability
-categorization is based on respondents who answered yes to any of the
-standard 6-item screener question for having a disability. The
-incarceration experience questions are only asked to men who are ages 18
-to 64. Sexual orientation and gender identity are broken down in several
-ways: as an umbrella term, LGBTQ denotes any adults who identify
-themselves as lesbian, gay, bisexual, some other orientation besides
-straight, or transgender, while “straight and cisgender” refers to
-adults who identify as none of these. Where possible, we disaggregate
-these groups further by sexual orientation alone (lesbian, gay, or
-bisexual vs straight) or gender identity alone (transgender vs
-cisgender). As sample sizes permit, results for smaller demographic
-groups may be shown in the Connecticut statewide data, but not in the
-data for smaller geographic regions. Not all of the demographic
-questions are included in every year of the survey.
-
-Please contact DataHaven or visit the DataHaven website’s [DataHaven
-Community Wellbeing Survey
-page](https://ctdatahaven.org/reports/datahaven-community-wellbeing-survey)
-for additional information about these data.
+We’ve always put the results of the DCWS out publicly as crosstabs,
+either as Excel files or Excel files exported to PDFs (ooof). These are
+fine for many users, who just need a bunch of tables to refer to, or
+something they can use as the appendix for a grant or needs assessment,
+but they’re not great for doing further analysis. We’ve built up tools
+to make that work easier internally at DataHaven, and now feel they’re
+ready to share with others who may also want to do more fine-grained
+work with the data.
 
 ## Included data
 
-As of 2025-04-02, the data included here are:
+As of 2025-04-03, the data included here are:
 
 | name | 2015 | 2018 | 2020 | 2021 | 2022 | 2015_2024 | 2024 |
 |:---|:--:|:--:|:--:|:--:|:--:|:--:|:--:|

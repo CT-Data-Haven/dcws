@@ -48,6 +48,10 @@ The demographic categories shown in the crosstab are determined based on respons
 
 Please contact DataHaven or visit the DataHaven website's [DataHaven Community Wellbeing Survey page](https://ctdatahaven.org/reports/datahaven-community-wellbeing-survey) for additional information about these data. 
 
+## Why use this package?
+
+We've always put the results of the DCWS out publicly as crosstabs, either as Excel files or Excel files exported to PDFs (ooof). These are fine for many users, who just need a bunch of tables to refer to, or something they can use as the appendix for a grant or needs assessment, but they're not great for doing further analysis. We've built up tools to make that work easier internally at DataHaven, and now feel they're ready to share with others who may also want to do more fine-grained work with the data. 
+
 ## Included data
 
 As of `r Sys.Date()`, the data included here are:
