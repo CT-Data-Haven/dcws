@@ -103,29 +103,56 @@ func_rds = flatten([get_rd(f"R/{func}.R") for func in doc_funcs])
 
 # rule comments idea from https://lachlandeer.github.io/snakemake-econ-r-tutorial/self-documenting-help.html
 ## download_2024: Download 2024 crosstabs from its repo and release
-rule download_2024:
-    output:
-        f"data-raw/crosstabs/downloads/dcws15_24-{tag24}.zip",
-        f"data-raw/crosstabs/downloads/dcws24-{tag24}.zip",
-    shell:
-        """
-        # clean old downloads
-        rm -f data-raw/crosstabs/dcws_*-v*.xlsx
+# rule download_2024:
+#     output:
+#         f"data-raw/crosstabs/downloads/dcws15_24-{tag24}.zip",
+#         f"data-raw/crosstabs/downloads/dcws24-{tag24}.zip",
+#     shell:
+#         """
+#         # clean old downloads
+#         rm -f data-raw/crosstabs/dcws_*-v*.xlsx
 
-        mkdir -p data-raw/crosstabs/downloads && touch data-raw/crosstabs/downloads/.dummy
-        gh release download {tag24} --repo ct-data-haven/{repo24} \
-            --pattern 'dcws*.zip' \
-            --dir data-raw/crosstabs/downloads
-        # unzip -j {output} -d data-raw/crosstabs
-        for f in {output}; do unzip -j -o "$f" *.xlsx -d data-raw/crosstabs; done
-        """
+#         mkdir -p data-raw/crosstabs/downloads && touch data-raw/crosstabs/downloads/.dummy
+#         gh release download {tag24} --repo ct-data-haven/{repo24} \
+#             --pattern 'dcws*.zip' \
+#             --dir data-raw/crosstabs/downloads
+#         # unzip -j {output} -d data-raw/crosstabs
+#         for f in {output}; do unzip -j -o "$f" *.xlsx -d data-raw/crosstabs; done
+#         """
+repos = {
+    "x2024": "dcws24_crosstabs",
+    "x2025": "dcws25_crosstabs",
+}
+tags = { k: get_latest_tag(v) for k, v in repos.items() }
+rule download_2024:
+    params:
+        repo=repos['x2024'],
+        tag=tags['x2024'],
+        patt="dcws*.zip",
+    output:
+        f'data-raw/crosstabs/downloads/dcws15_24-{tags["x2024"]}.zip',
+        f'data-raw/crosstabs/downloads/dcws24-{tags["x2024"]}.zip',
+    script:
+        "data-raw/download_dcws.sh"
+
+rule download_2025:
+    params:
+        repo=repos['x2025'],
+        tag=tags['x2025'],
+        patt="dcws_*.xlsx",
+    output:
+        'data-raw/crosstabs/downloads/dcws_connecticut_2025.xlsx',
+    script:
+        "data-raw/download_dcws.sh"
+
 
 ## main_data: Main internal/external datasets built from crosstab files
 rule main_data:
     input:
         xlsx=Path("data-raw/crosstabs").glob("*.xlsx"),
         scripts=["R/parse_cws_paths.R", "R/read_cws.R", "R/clean_cws_lvls.R"],
-        download=rules.download_2024.output,
+        download24=rules.download_2024.output,
+        download25=rules.download_2025.output,
     output:
         # protected(datasets['path'].unique()),
         datasets["path"].unique(),

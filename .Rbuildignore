@@ -19,3 +19,5 @@
 ^coverage.html$
 ^.flags$
 ^vignettes/.quarto
+^\.vscode$
+^[.]?air[.]toml$

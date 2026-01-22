@@ -9,7 +9,12 @@ codes <- officer::read_docx("data-raw/misc_input/DataHaven0720_Prn2.docx") |>
     dplyr::filter(style_name %in% c("Alias", "Long Label", "Short Label")) |>
     dplyr::mutate(
         id = cumsum(style_name == "Alias"),
-        style_name = gsub("(?:^[\\w\\s]*?)(\\b\\w+\\b$)", "\\L\\1", style_name, perl = TRUE)
+        style_name = gsub(
+            "(?:^[\\w\\s]*?)(\\b\\w+\\b$)",
+            "\\L\\1",
+            style_name,
+            perl = TRUE
+        )
     ) |>
     dplyr::group_by(id, style_name) |>
     dplyr::summarise(text = paste(text, collapse = " ")) |>
@@ -44,7 +49,9 @@ cws20 <- read_xtabs(
         label = question |>
             stringr::str_remove("\\[.+$") |>
             stringr::str_remove_all("\\(.+\\)") |>
-            stringr::str_replace_all(c("\\<4 if female/5 if male\\>" = "4 or 5")) |>
+            stringr::str_replace_all(c(
+                "\\<4 if female/5 if male\\>" = "4 or 5"
+            )) |>
             stringr::str_remove_all("[:punct:]") |>
             tolower() |>
             stringr::str_squish()
@@ -53,7 +60,8 @@ cws20 <- read_xtabs(
 cws20_lookup <- cws20 |>
     dplyr::select(-question) |>
     fuzzyjoin::stringdist_left_join(codes, by = "label", method = "qgram") |>
-    dplyr::select(q_number, code = alias)
+    dplyr::select(q_number, code = alias) |>
+    dplyr::mutate(code = stringr::str_remove(code, "\\:\\\t\\s?$"))
 
 # making this internal
 # usethis::use_data(cws20_lookup, overwrite = TRUE)

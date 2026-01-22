@@ -5,7 +5,7 @@
 \alias{cws_full_data}
 \title{Contents of DataHaven Community Wellbeing Crosstabs}
 \format{
-A list of 385 data frames, each with 8 columns and varying numbers of rows:
+A list of 386 data frames, each with 8 columns and varying numbers of rows:
 \describe{
 \item{year}{Numeric, endyear of survey (e.g. 2024)}
 \item{span}{Character, span of years of the survey (e.g. "2015_2024")}

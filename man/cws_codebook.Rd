@@ -5,7 +5,7 @@
 \alias{cws_codebook}
 \title{DCWS codebook}
 \format{
-A data frame with 779 rows and 4 variables:
+A data frame with 905 rows and 4 variables:
 \describe{
 \item{year}{Numeric, year of survey}
 \item{code}{Character, question code}

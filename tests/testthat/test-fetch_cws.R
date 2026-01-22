@@ -1,10 +1,22 @@
 ## FETCH_CWS ----
 test_that("make_cws_id gets correct combinations", {
-    expect_equal(make_cws_id(span = "2015_2024", name = "New Haven"), "2024.2015_2024.New Haven")
-    expect_equal(make_cws_id(span = "2024", name = "New Haven"), "2024.2024.New Haven")
+    expect_equal(
+        make_cws_id(span = "2015_2024", name = "New Haven"),
+        "2024.2015_2024.New Haven"
+    )
+    expect_equal(
+        make_cws_id(span = "2024", name = "New Haven"),
+        "2024.2024.New Haven"
+    )
     yrs2_loc1 <- make_cws_id(span = c(2021, 2024), name = "New Haven")
-    yrs2_loc3 <- make_cws_id(span = c(2021, 2024), name = c("Bridgeport", "New Haven", "Hartford"))
-    yrs1_loc3 <- make_cws_id(span = 2021, name = c("Bridgeport", "New Haven", "Hartford"))
+    yrs2_loc3 <- make_cws_id(
+        span = c(2021, 2024),
+        name = c("Bridgeport", "New Haven", "Hartford")
+    )
+    yrs1_loc3 <- make_cws_id(
+        span = 2021,
+        name = c("Bridgeport", "New Haven", "Hartford")
+    )
     expect_length(yrs2_loc1, 2 * 1)
     expect_length(yrs2_loc3, 2 * 3)
     expect_length(yrs1_loc3, 1 * 3)
@@ -17,20 +29,37 @@ test_that("fetch_cws returns correct dimensions", {
     cws_vec <- fetch_cws(.year = yrs)
     cws_no_q <- fetch_cws(.year = yrs, .incl_questions = FALSE)
 
-    expect_setequal(unique(cws_full$year), c(2015, 2018, 2020, 2021, 2022, 2024)) # 2015, 2018, 2020, 2021, 2022
+    expect_setequal(
+        unique(cws_full$year),
+        c(2015, 2018, 2020, 2021, 2022, 2024, 2025)
+    ) # 2015, 2018, 2020, 2021, 2022
     expect_setequal(unique(cws_vec$year), yrs)
 
     # number of columns, nested vs unnested
     univ_cols <- c("year", "span", "name", "code", "question")
     expect_named(cws_full, c(univ_cols, "data"))
-    expect_named(cws_unnest, c(univ_cols, "category", "group", "response", "value"))
+    expect_named(
+        cws_unnest,
+        c(univ_cols, "category", "group", "response", "value")
+    )
     expect_named(cws_no_q, c(univ_cols[1:4], "data"))
 })
 
 test_that("fetch_cws drops CT totals", {
-    cws_no_ct <- fetch_cws(.name = "Fairfield County", .drop_ct = TRUE, .unnest = TRUE)
-    cws_w_ct <- fetch_cws(.name = "Fairfield County", .drop_ct = FALSE, .unnest = TRUE)
-    expect_equal(dplyr::n_distinct(cws_w_ct$group) - 1, dplyr::n_distinct(cws_no_ct$group))
+    cws_no_ct <- fetch_cws(
+        .name = "Fairfield County",
+        .drop_ct = TRUE,
+        .unnest = TRUE
+    )
+    cws_w_ct <- fetch_cws(
+        .name = "Fairfield County",
+        .drop_ct = FALSE,
+        .unnest = TRUE
+    )
+    expect_equal(
+        dplyr::n_distinct(cws_w_ct$group) - 1,
+        dplyr::n_distinct(cws_no_ct$group)
+    )
 
     cws_ct1 <- fetch_cws(.name = "Connecticut", .year = 2021, .drop_ct = TRUE)
     cws_ct2 <- fetch_cws(.name = "Connecticut", .year = 2021, .drop_ct = FALSE)
@@ -39,8 +68,16 @@ test_that("fetch_cws drops CT totals", {
 
 test_that("fetch_cws drops excess factor levels", {
     # use gnh to compare--2018 had more income groups
-    cws_gnh18 <- fetch_cws(.name = "Greater New Haven", .year = 2018, .unnest = TRUE)
-    cws_gnh21 <- fetch_cws(.name = "Greater New Haven", .year = 2021, .unnest = TRUE)
+    cws_gnh18 <- fetch_cws(
+        .name = "Greater New Haven",
+        .year = 2018,
+        .unnest = TRUE
+    )
+    cws_gnh21 <- fetch_cws(
+        .name = "Greater New Haven",
+        .year = 2021,
+        .unnest = TRUE
+    )
     cws_mfd <- fetch_cws(.name = "Milford", .year = 2021, .unnest = TRUE)
 
     expect_true("<$15K" %in% levels(cws_gnh18$group))
@@ -51,11 +88,26 @@ test_that("fetch_cws drops excess factor levels", {
 })
 
 test_that("fetch_cws handles ellipses", {
-    tbls <- purrr::map_dbl(list(
-        by_code = fetch_cws(code == "Q1", .year = 2020, .name = "Connecticut"),
-        by_grep = fetch_cws(grepl("access to a car", question), .year = 2020, .name = "Connecticut"),
-        by_ineq = fetch_cws(grepl("access to a car", question), year < 2021, .name = "Connecticut")
-    ), nrow)
+    tbls <- purrr::map_dbl(
+        list(
+            by_code = fetch_cws(
+                code == "Q1",
+                .year = 2020,
+                .name = "Connecticut"
+            ),
+            by_grep = fetch_cws(
+                grepl("access to a car", question),
+                .year = 2020,
+                .name = "Connecticut"
+            ),
+            by_ineq = fetch_cws(
+                grepl("access to a car", question),
+                year < 2021,
+                .name = "Connecticut"
+            )
+        ),
+        nrow
+    )
 
     rows <- c(by_code = 1, by_grep = 1, by_ineq = 3) # last should be 2015, 2018, 2020
 
@@ -81,8 +133,18 @@ test_that("fetch_cws warns on multi-year code filters", {
 })
 
 test_that("fetch_cws filters nested data", {
-    cws_cat_nest <- fetch_cws(.year = 2021, .name = "New Haven", .category = "Gender", .unnest = FALSE)
-    cws_cat_unnest <- fetch_cws(.year = 2021, .name = "New Haven", .category = "Gender", .unnest = TRUE)
+    cws_cat_nest <- fetch_cws(
+        .year = 2021,
+        .name = "New Haven",
+        .category = "Gender",
+        .unnest = FALSE
+    )
+    cws_cat_unnest <- fetch_cws(
+        .year = 2021,
+        .name = "New Haven",
+        .category = "Gender",
+        .unnest = TRUE
+    )
 
     expect_length(unique(cws_cat_unnest$category), 1)
     expect_length(unique(cws_cat_unnest$group), 2)
@@ -96,8 +158,14 @@ test_that("fetch_cws adds weights properly", {
     unnest_wt <- fetch_cws(.year = 2024, .unnest = TRUE, .add_wts = TRUE)
     pool_wt <- fetch_cws(.year = "2015_2024", .add_wts = TRUE)
     expect_named(nest_wt, c(univ_cols, "data"))
-    expect_named(nest_wt$data[[1]], c("category", "group", "response", "value", "weight"))
-    expect_named(unnest_wt, c(univ_cols, "category", "group", "response", "value", "weight"))
+    expect_named(
+        nest_wt$data[[1]],
+        c("category", "group", "response", "value", "weight")
+    )
+    expect_named(
+        unnest_wt,
+        c(univ_cols, "category", "group", "response", "value", "weight")
+    )
     expect_true(all(pool_wt$span == "2015_2024"))
 })
 
@@ -123,10 +191,13 @@ test_that("fetch_wts adds total weights = 1", {
 })
 
 test_that("fetch_wts has proper number of columns", {
-    tbls <- purrr::map_dbl(list(
-        wts_nest = fetch_wts(.unnest = FALSE),
-        wts_unnest = fetch_wts(.unnest = TRUE)
-    ), ncol)
+    tbls <- purrr::map_dbl(
+        list(
+            wts_nest = fetch_wts(.unnest = FALSE),
+            wts_unnest = fetch_wts(.unnest = TRUE)
+        ),
+        ncol
+    )
     wts_nest <- fetch_wts(.unnest = FALSE)
     wts_unnest <- fetch_wts(.unnest = TRUE)
     expect_named(wts_nest, c("year", "span", "name", "weights"))

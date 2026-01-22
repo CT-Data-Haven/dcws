@@ -50,13 +50,15 @@
 #' @rdname read_xtabs
 #' @family accessing
 #' @seealso [xtab2df()]
-read_xtabs <- function(path,
-                       year = NULL,
-                       name_prefix = "x",
-                       marker = "Nature of the [Ss]ample",
-                       process = FALSE,
-                       verbose = TRUE,
-                       ...) {
+read_xtabs <- function(
+    path,
+    year = NULL,
+    name_prefix = "x",
+    marker = "Nature of the [Ss]ample",
+    process = FALSE,
+    verbose = TRUE,
+    ...
+) {
     # return columns code, question, category, group, response, value
     year <- cws_check_yr(path, year, verbose)
 
@@ -68,7 +70,11 @@ read_xtabs <- function(path,
         if (year == 2015) {
             data <- filter_after(data, grepl("Samp[le]+ Size", {{ first_col }}))
         }
-        data <- dplyr::filter(data, !stringr::str_detect({{ first_col }}, total_patt()) | is.na({{ first_col }}))
+        data <- dplyr::filter(
+            data,
+            !stringr::str_detect({{ first_col }}, total_patt()) |
+                is.na({{ first_col }})
+        )
         if (!is.null(marker)) {
             data <- filter_until(data, grepl(marker, {{ first_col }}))
         }
@@ -86,7 +92,12 @@ read_xtabs <- function(path,
 
 #' @export
 #' @rdname read_xtabs
-read_weights <- function(path, year = NULL, marker = "Nature of the [Ss]ample", verbose = TRUE) {
+read_weights <- function(
+    path,
+    year = NULL,
+    marker = "Nature of the [Ss]ample",
+    verbose = TRUE
+) {
     # return columns group & weight
     year <- cws_check_yr(path, year, verbose)
 
@@ -123,7 +134,12 @@ read_xtabs_ <- function(path, year, name_prefix) {
         sheet <- 2
         drop_title <- TRUE
     }
-    out <- readxl::read_excel(path, sheet = sheet, col_names = FALSE, .name_repair = make.names)
+    out <- readxl::read_excel(
+        path,
+        sheet = sheet,
+        col_names = FALSE,
+        .name_repair = make.names
+    )
     out <- prefix_names(out, name_prefix)
     out <- janitor::remove_empty(out, which = "rows")
     if (drop_title) {
@@ -176,7 +192,12 @@ read_wt_hdr <- function(data, scale) {
     out$weight <- as.numeric(out$weight)
     out <- dplyr::group_by(out, category)
 
-    if (scale) out <- dplyr::mutate(out, weight = round(weight / sum(weight), digits = 3))
+    if (scale) {
+        out <- dplyr::mutate(
+            out,
+            weight = round(weight / sum(weight), digits = 3)
+        )
+    }
 
     out <- dplyr::ungroup(out)
     out <- dplyr::select(out, -category)
@@ -197,6 +218,8 @@ xt_params <- function(args) {
     }
     param_str <- paste(names(params), params, sep = " = ")
     # param_str <- stats::setNames(param_str, rep_len("*", length(param_str)))
-    cli::cli_alert_info("xtab2df is being called on the data with the following parameters:")
+    cli::cli_alert_info(
+        "xtab2df is being called on the data with the following parameters:"
+    )
     purrr::walk(param_str, cli::cli_alert)
 }

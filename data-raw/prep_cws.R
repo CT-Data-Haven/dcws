@@ -9,7 +9,11 @@ source("R/xtab2df.R")
 source("data-raw/cws20_lookup.R")
 # METADATA ----
 # spss-based xtabs come from excel sheets but r-based can come from single csv + codebook
-paths <- list.files("data-raw/crosstabs", pattern = "\\.xlsx?", full.names = TRUE) |>
+paths <- list.files(
+    "data-raw/crosstabs",
+    pattern = "\\.xlsx?",
+    full.names = TRUE
+) |>
     parse_cws_paths(incl_year = TRUE, incl_tag = TRUE) |>
     dplyr::mutate(name = dplyr::recode(name, Valley = "Lower Naugatuck Valley"))
 # for tagged releases, check that only using most recent tag
@@ -24,69 +28,157 @@ if (nrow(dupe_paths) > 0) {
 ct5 <- c("Urban Core", "Urban Periphery", "Suburban", "Rural", "Wealthy")
 safe_read_xtabs <- purrr::possibly(read_xtabs, otherwise = NULL)
 full_meta <- paths |>
-    dplyr::mutate(data = purrr::pmap(list(name, span, year, path), function(name, span, year, path) {
-        safe_read_xtabs(path, year = year, process = TRUE, verbose = FALSE)
-    }))
+    dplyr::mutate(
+        data = purrr::pmap(
+            list(name, span, year, path),
+            function(name, span, year, path) {
+                safe_read_xtabs(
+                    path,
+                    year = year,
+                    process = TRUE,
+                    verbose = FALSE
+                )
+            }
+        )
+    )
 
-full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate, group = clean_cws_lvls(group, is_category = FALSE)))
-full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate, category = clean_cws_lvls(category, is_category = TRUE)))
-full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate, category = dplyr::case_when(
-    group %in% ct5 ~ "Five Connecticuts",
-    category %in% c("Connecticut", "HIC", name) ~ "Total",
-    TRUE ~ as.character(category)
-)))
-full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate,
-    category = forcats::as_factor(category)
-))
-full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate,
-    group = suppressWarnings(forcats::fct_recode(group, Connecticut = "Total"))
-))
+full_meta <- dplyr::mutate(
+    full_meta,
+    data = purrr::map(
+        data,
+        dplyr::mutate,
+        group = clean_cws_lvls(group, is_category = FALSE)
+    )
+)
+full_meta <- dplyr::mutate(
+    full_meta,
+    data = purrr::map(
+        data,
+        dplyr::mutate,
+        category = clean_cws_lvls(category, is_category = TRUE)
+    )
+)
+full_meta <- dplyr::mutate(
+    full_meta,
+    data = purrr::map(
+        data,
+        dplyr::mutate,
+        category = dplyr::case_when(
+            group %in% ct5 ~ "Five Connecticuts",
+            category %in% c("Connecticut", "HIC", name) ~ "Total",
+            TRUE ~ as.character(category)
+        )
+    )
+)
+full_meta <- dplyr::mutate(
+    full_meta,
+    data = purrr::map(
+        data,
+        dplyr::mutate,
+        category = forcats::as_factor(category)
+    )
+)
+full_meta <- dplyr::mutate(
+    full_meta,
+    data = purrr::map(
+        data,
+        dplyr::mutate,
+        group = suppressWarnings(forcats::fct_recode(
+            group,
+            Connecticut = "Total"
+        ))
+    )
+)
 # clean up stray unicode characters from excel files
-full_meta <- dplyr::mutate(full_meta, data = purrr::map(data, dplyr::mutate,
-    question = question |>
-        stringr::str_replace_all("\\´", "'") |>
-        stringr::str_replace_all("…", "...") |>
-        stringr::str_replace_all("Â", "-") |>
-        stringr::str_conv("ISO-8859-1")
-))
+full_meta <- dplyr::mutate(
+    full_meta,
+    data = purrr::map(
+        data,
+        dplyr::mutate,
+        question = question |>
+            stringr::str_replace_all("\\´", "'") |>
+            stringr::str_replace_all("…", "...") |>
+            stringr::str_replace_all("Â", "-") |>
+            stringr::str_conv("ISO-8859-1")
+    )
+)
 full_meta <- dplyr::arrange(full_meta, year, name)
 # full_meta <- dplyr::select(full_meta, -code_patt)
 full_meta <- split(full_meta, full_meta$year)
-full_meta[["2020"]] <- dplyr::mutate(full_meta[["2020"]],
-    data = purrr::map(data, \(x) dplyr::left_join(x, cws20_lookup, by = "q_number", relationship = "many-to-many"))
+full_meta[["2020"]] <- dplyr::mutate(
+    full_meta[["2020"]],
+    data = purrr::map(data, \(x) {
+        dplyr::left_join(
+            x,
+            cws20_lookup,
+            by = "q_number",
+            relationship = "many-to-many"
+        )
+    })
 )
-full_meta[["2020"]] <- dplyr::mutate(full_meta[["2020"]],
+full_meta[["2020"]] <- dplyr::mutate(
+    full_meta[["2020"]],
     data = purrr::map(data, dplyr::select, code, dplyr::everything(), -q_number)
 )
+
+## CHECKPOINT
 full_meta <- dplyr::bind_rows(full_meta)
 
 # order group levels within categories
 lvls <- full_meta |>
     tidyr::unnest(data) |>
     dplyr::filter(category != "Total") |>
+    dplyr::filter(tolower(name) != tolower(category)) |>
     dplyr::distinct(category, group) |>
     split(~category, drop = TRUE) |>
     purrr::map(\(x) forcats::fct_drop(x$group))
 
 lvls[["Age"]] <- order_lvls(lvls[["Age"]])
-lvls[["Race/Ethnicity"]] <- forcats::fct_relevel(lvls[["Race/Ethnicity"]], "Not white", "Other race", after = Inf)
+lvls[["Race/Ethnicity"]] <- forcats::fct_relevel(
+    lvls[["Race/Ethnicity"]],
+    "Not white",
+    "Other race",
+    after = Inf
+)
 lvls[["Income"]] <- order_lvls(lvls[["Income"]])
-lvls[["Education"]] <- forcats::fct_relevel(lvls[["Education"]], "Less than high school", "High school or less", "High school", "Some college or less", "Some college or Associate's", "Some college or higher", "Less than Bachelor's", "Bachelor's or higher")
+lvls[["Education"]] <- forcats::fct_relevel(
+    lvls[["Education"]],
+    "Less than high school",
+    "High school or less",
+    "High school",
+    "Some college or less",
+    "Some college or Associate's",
+    "Some college or higher",
+    "Less than Bachelor's",
+    "Bachelor's or higher"
+)
 
 # assign levels back into full_meta to carry over to other datasets
 # fix weird set of responses--2024 exercise question has "one to two" for single year, "two or less" for pooled
 # one to two is correct since none is also a response
 full_meta <- full_meta |>
     tidyr::unnest(data) |>
-    dplyr::mutate(group = forcats::fct_relevel(group, levels(purrr::reduce(lvls, c)))) |>
+    dplyr::mutate(
+        group = forcats::fct_relevel(group, levels(purrr::reduce(lvls, c)))
+    ) |>
     dplyr::mutate(group = forcats::fct_relevel(group, "Connecticut")) |>
-    dplyr::mutate(category = forcats::fct_relevel(category, "Total", "Five Connecticuts")) |>
-    dplyr::mutate(response = ifelse(grepl("exercise", question) & response == "Two or less", "One to two", response)) |>
+    dplyr::mutate(
+        category = forcats::fct_relevel(category, "Total", "Five Connecticuts")
+    ) |>
+    dplyr::mutate(
+        response = ifelse(
+            grepl("exercise", question) & response == "Two or less",
+            "One to two",
+            response
+        )
+    ) |>
     tidyr::nest(data = code:value)
 
 
 cws_group_meta <- full_meta |>
-    dplyr::mutate(groups = purrr::map(data, dplyr::distinct, category, group)) |>
+    dplyr::mutate(
+        groups = purrr::map(data, dplyr::distinct, category, group)
+    ) |>
     dplyr::select(year, span, name, groups)
 
 cws_codebook <- full_meta |>
@@ -104,8 +196,6 @@ cws_codebook <- full_meta |>
 
 response_meta <- cws_codebook |>
     dplyr::select(-question)
-
-
 
 
 # SURVEY DATA ----
@@ -126,15 +216,30 @@ cws_full_data <- full_meta |>
         by_code <- split(svy_df, ~code) |>
             purrr::imap(function(q_df, code) {
                 year <- unique(q_df$year)
-                resp_lvls <- unlist(response_meta$responses[response_meta$year == year & response_meta$code == code])
-                q_df$response <- forcats::as_factor(q_df$response) |> forcats::fct_expand(resp_lvls)
-                tidyr::complete(q_df, tidyr::nesting(year, span, name, code, category, group), response)
+                resp_lvls <- unlist(response_meta$responses[
+                    response_meta$year == year & response_meta$code == code
+                ])
+                q_df$response <- forcats::as_factor(q_df$response) |>
+                    forcats::fct_expand(resp_lvls)
+                tidyr::complete(
+                    q_df,
+                    tidyr::nesting(year, span, name, code, category, group),
+                    response
+                )
             })
         dplyr::bind_rows(by_code) |>
             # not sure why they go out of order
-            dplyr::select(year, span, name, code, category, group, response, value)
+            dplyr::select(
+                year,
+                span,
+                name,
+                code,
+                category,
+                group,
+                response,
+                value
+            )
     })
-
 
 
 # WEIGHTS -----
@@ -147,7 +252,11 @@ safe_wts <- purrr::possibly(
 
 add_wt1 <- function(data, name) {
     data |>
-        tibble::add_row(group = unique(c("Connecticut", name)), weight = 1, .before = 1) |>
+        tibble::add_row(
+            group = unique(c("Connecticut", name)),
+            weight = 1,
+            .before = 1
+        ) |>
         dplyr::mutate(group = forcats::as_factor(group))
 }
 
@@ -155,12 +264,18 @@ add_wt1 <- function(data, name) {
 # tack on 1.0 weights to top
 cws_full_wts <- paths |>
     dplyr::mutate(weights = purrr::map(path, safe_wts, verbose = FALSE)) |>
-    dplyr::mutate(weights = purrr::map_if(weights, \(x) nrow(x) > 0, dplyr::mutate, group = clean_cws_lvls(group))) |>
+    dplyr::mutate(
+        weights = purrr::map_if(
+            weights,
+            \(x) nrow(x) > 0,
+            dplyr::mutate,
+            group = clean_cws_lvls(group)
+        )
+    ) |>
     dplyr::mutate(weights = purrr::map2(weights, name, add_wt1)) |>
     dplyr::mutate(id = paste(year, span, name, sep = ".")) |>
     dplyr::filter(id %in% names(cws_full_data)) |>
     dplyr::select(year, span, name, weights)
-
 
 
 # MAXIMUM MARGIN OF ERROR ----
@@ -169,7 +284,11 @@ cws_full_wts <- paths |>
 # 2015 in top row--extract for location
 # for 2024-onward they're in sample size sheet (3)
 read_moe_row_ <- function(path) {
-    df <- suppressMessages(readxl::read_excel(path, col_names = FALSE, .name_repair = "universal"))
+    df <- suppressMessages(readxl::read_excel(
+        path,
+        col_names = FALSE,
+        .name_repair = "universal"
+    ))
     # first row = name of location but stylized inconsistently
     # second row = moe
     # get moe from column that fuzzy matches name and doesn't have category header?
@@ -178,7 +297,9 @@ read_moe_row_ <- function(path) {
     df <- df[1:10, 1:3]
     moe <- dplyr::filter(df, grepl("margin of error", tolower(x1)) | is.na(x1))
     # drop secondary headers
-    moe <- moe[, purrr::map_lgl(moe, \(x) !any(grepl("(Gender|Five Connecticuts)", x)))]
+    moe <- moe[, purrr::map_lgl(moe, \(x) {
+        !any(grepl("(Gender|Five Connecticuts)", x))
+    })]
     moe <- janitor::remove_empty(moe, "rows")
     moe <- janitor::remove_empty(moe, "cols")
     # moe$hdr <- c("moe", "name")
@@ -220,15 +341,17 @@ read_moe_r_ <- function(path) {
 }
 
 cws_max_moe <- paths |>
-    dplyr::mutate(moe = purrr::map2_dbl(path, year, function(p, y) {
-        if (y == 2015) {
-            read_moe_row_(p)
-        } else if (y == 2024) {
-            read_moe_r_(p)
-        } else {
-            read_moe_hdr_(p)
-        }
-    })) |>
+    dplyr::mutate(
+        moe = purrr::map2_dbl(path, year, function(p, y) {
+            if (y == 2015) {
+                read_moe_row_(p)
+            } else if (y >= 2024) {
+                read_moe_r_(p)
+            } else {
+                read_moe_hdr_(p)
+            }
+        })
+    ) |>
     dplyr::select(year, span, name, moe)
 
 # latest tags--internal

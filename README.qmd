@@ -25,7 +25,7 @@ library(dcws)
 [![Hippocratic License HL3-LAW-SV](https://img.shields.io/static/v1?label=Hippocratic%20License&message=HL3-LAW-SV&labelColor=5e2751&color=bc8c3d)](https://firstdonoharm.dev/version/3/0/law-sv.html)
 <!-- badges: end -->
 
-This is a small data-focused package to make easier use of the DataHaven Community Wellbeing Survey. It contains the data extracted from crosstabs from the `r knitr::combine_words(unique(cws_full_data$year))` survey waves. 2020 and 2022 are statewide only.
+This is a small data-focused package to make easier use of the DataHaven Community Wellbeing Survey. It contains the data extracted from crosstabs from the `r knitr::combine_words(unique(cws_full_data$year))` survey waves. 2020, 2022, and 2025 are statewide only.
 
 ## Installation
 
@@ -70,7 +70,11 @@ xt_total <- xt_tbl |>
 n_yrs <- length(unique(xt_tbl$span))
 align <- paste0("l", paste0(rep_len("c", n_yrs), collapse = ""))
 rbind(xt_tbl, xt_total) |>
-    tidyr::pivot_wider(id_cols = name, names_from = span, values_fill = list(value = "")) |>
+    tidyr::pivot_wider(
+        id_cols = name,
+        names_from = span,
+        values_fill = list(value = "")
+    ) |>
     dplyr::arrange(name) |>
     knitr::kable(align = align)
 ```

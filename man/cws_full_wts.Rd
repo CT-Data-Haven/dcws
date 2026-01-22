@@ -5,7 +5,7 @@
 \alias{cws_full_wts}
 \title{DCWS weights}
 \format{
-A data frame with 385 rows and 4 variables:
+A data frame with 386 rows and 4 variables:
 \describe{
 \item{year}{Numeric, year of survey}
 \item{span}{Character, span of years of the survey (e.g. "2015_2024")}

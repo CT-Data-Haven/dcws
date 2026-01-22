@@ -65,7 +65,9 @@ xtab2df <- function(data, year, col = x1, code_pattern = NULL, verbose = TRUE) {
 
 default_code_patt <- function(year) {
     if (!is.numeric(year)) {
-        cli::cli_abort("{.var year} should be a number for the year or end year of the survey.")
+        cli::cli_abort(
+            "{.var year} should be a number for the year or end year of the survey."
+        )
     }
     if (year == 2020) {
         "^$"
@@ -80,15 +82,35 @@ xtab2df_spss_ <- function(data, col, code_pattern) {
     # generally only includes first 2 hierarchy levels
     hier <- c("category", "group", "subgroup")
 
-    marked <- mark_questions_spss_(data, col = {{ col }}, pattern = code_pattern)
+    marked <- mark_questions_spss_(
+        data,
+        col = {{ col }},
+        pattern = code_pattern
+    )
     headings <- make_headings(marked, {{ col }})
 
     # get just data rows, attach headings (gender, age, etc)
     out <- dplyr::filter(marked, !is.na({{ col }}))
-    out <- tidyr::pivot_longer(out, cols = -c(code, q_number, question, {{ col }}), names_to = "column")
+    out <- tidyr::pivot_longer(
+        out,
+        cols = -c(code, q_number, question, {{ col }}),
+        names_to = "column"
+    )
     out <- dplyr::left_join(out, headings, by = "column")
-    out <- dplyr::select(out, code, q_number, question, dplyr::matches("^h\\d+"), response = {{ col }}, value)
-    out <- dplyr::rename_with(out, \(x) hier[seq_along(x)], dplyr::matches("^h\\d+"))
+    out <- dplyr::select(
+        out,
+        code,
+        q_number,
+        question,
+        dplyr::matches("^h\\d+"),
+        response = {{ col }},
+        value
+    )
+    out <- dplyr::rename_with(
+        out,
+        \(x) hier[seq_along(x)],
+        dplyr::matches("^h\\d+")
+    )
     if (rlang::is_installed("readr")) {
         out <- dplyr::mutate(out, value = readr::parse_number(value))
     } else {
@@ -109,6 +131,8 @@ xtab2df_r_ <- function(data, col, code_pattern) {
     marked <- dplyr::mutate(marked, code = forcats::as_factor(code))
     # in case questions have different groups, split by question and pivot separately
     mark_split <- split(marked, marked[["code"]])
+    # drop entries that are just key, no data
+    mark_split <- purrr::keep(mark_split, function(df) nrow(df) > 1)
     mark_split <- lapply(mark_split, reshape_single_xt_)
     out <- dplyr::bind_rows(mark_split)
     out[["value"]] <- readr::parse_number(out[["value"]])
@@ -118,12 +142,22 @@ xtab2df_r_ <- function(data, col, code_pattern) {
     # out <- dplyr::left_join(out, cws_cats24, by = "group")
     # out <- dplyr::mutate(out, category = dplyr::if_else(grepl(" total$", group) & is.na(category), "Total", category))
     #
-    out <- dplyr::select(out, code, question, category, group, response = Response, value)
+    out <- dplyr::select(
+        out,
+        code,
+        question,
+        category,
+        group,
+        response = Response,
+        value
+    )
     out
 }
 
 #################### HELPERS ##########################################
-short_patt <- function(pattern) paste0(stringr::str_remove(pattern, "\\$"), "\\b")
+short_patt <- function(pattern) {
+    paste0(stringr::str_remove(pattern, "\\$"), "\\b")
+}
 
 count_valid_cols <- function(data) {
     # count number of non-NAs per row
@@ -134,8 +168,17 @@ reshape_single_xt_ <- function(data) {
     # top row minus first 2 columns
     hdr <- unlist(unname(as.data.frame(data)[1, -1:-2, drop = TRUE]))
     names(data)[-1:-2] <- hdr
-    out <- dplyr::filter(data, !stringr::str_detect(Response, "Response") & !stringr::str_detect(Response, "^Weight"))
-    out <- tidyr::pivot_longer(out, cols = c(-code, -question, -Response), names_to = "group", values_to = "value")
+    out <- dplyr::filter(
+        data,
+        !stringr::str_detect(Response, "Response") &
+            !stringr::str_detect(Response, "^Weight")
+    )
+    out <- tidyr::pivot_longer(
+        out,
+        cols = c(-code, -question, -Response),
+        names_to = "group",
+        values_to = "value"
+    )
     out
 }
 
@@ -144,18 +187,41 @@ mark_questions_spss_ <- function(data, col, pattern) {
     # if x1 is a question & lead(x1) is also a question, extract code & collapse--deals with lead-in lines that have code attached
     # this is so ugly
     marked <- count_valid_cols(data)
-    marked <- dplyr::mutate(marked, is_question = !is.na({{ col }}) & !stringr::str_detect({{ col }}, pattern) & count_valid == 1)
-    marked <- dplyr::mutate(marked, is_code = !is.na({{ col }}) & stringr::str_detect({{ col }}, pattern) & count_valid == 1)
-    marked <- dplyr::mutate(marked, is_leadin = is_question & dplyr::lead(is_question, default = FALSE))
-    marked <- dplyr::mutate(marked, q = dplyr::case_when(
-        is_leadin ~ stringr::str_extract({{ col }}, short_patt(pattern)),
-        is_question ~ {{ col }},
-        TRUE ~ NA_character_
-    ))
+    marked <- dplyr::mutate(
+        marked,
+        is_question = !is.na({{ col }}) &
+            !stringr::str_detect({{ col }}, pattern) &
+            count_valid == 1
+    )
+    marked <- dplyr::mutate(
+        marked,
+        is_code = !is.na({{ col }}) &
+            stringr::str_detect({{ col }}, pattern) &
+            count_valid == 1
+    )
+    marked <- dplyr::mutate(
+        marked,
+        is_leadin = is_question & dplyr::lead(is_question, default = FALSE)
+    )
+    marked <- dplyr::mutate(
+        marked,
+        q = dplyr::case_when(
+            is_leadin ~ stringr::str_extract({{ col }}, short_patt(pattern)),
+            is_question ~ {{ col }},
+            TRUE ~ NA_character_
+        )
+    )
     marked <- dplyr::mutate(marked, rl = streak(is_question))
 
     marked <- dplyr::group_by(marked, rl)
-    marked <- dplyr::mutate(marked, q = dplyr::if_else(is_question, paste(stats::na.omit(q), collapse = ". "), q))
+    marked <- dplyr::mutate(
+        marked,
+        q = dplyr::if_else(
+            is_question,
+            paste(stats::na.omit(q), collapse = ". "),
+            q
+        )
+    )
     marked <- dplyr::filter(marked, !is_leadin)
     marked <- dplyr::ungroup(marked)
     marked <- tidyr::fill(marked, q, .direction = "down")
@@ -165,7 +231,18 @@ mark_questions_spss_ <- function(data, col, pattern) {
     marked <- dplyr::filter(marked, !is_question & !is_code)
     marked <- dplyr::select(marked, -q)
     marked <- dplyr::left_join(marked, codes, by = "q_number")
-    marked <- dplyr::select(marked, code, q_number, question = q, tidyselect::everything(), -count_valid, -is_question, -is_code, -is_leadin, -rl)
+    marked <- dplyr::select(
+        marked,
+        code,
+        q_number,
+        question = q,
+        tidyselect::everything(),
+        -count_valid,
+        -is_question,
+        -is_code,
+        -is_leadin,
+        -rl
+    )
     marked
 }
 
@@ -173,9 +250,18 @@ mark_questions_r_ <- function(data, col, pattern) {
     marked <- count_valid_cols(data)
     # fill questions downward, then drop question-only rows
     marked <- tidyr::fill(marked, {{ col }}, .direction = "down")
-    marked <- dplyr::filter(marked, !(stringr::str_detect({{ col }}, pattern) & count_valid == 1))
+    marked <- dplyr::filter(
+        marked,
+        !(stringr::str_detect({{ col }}, pattern) & count_valid == 1)
+    )
     # separate by period & space
-    marked <- tidyr::separate_wider_delim(marked, {{ col }}, delim = ". ", names = c("code", "question"), too_many = "merge")
+    marked <- tidyr::separate_wider_delim(
+        marked,
+        {{ col }},
+        delim = ". ",
+        names = c("code", "question"),
+        too_many = "merge"
+    )
     marked <- dplyr::select(marked, -count_valid)
     marked
 }
@@ -190,8 +276,16 @@ question_codes <- function(.data, col, pattern) {
         # no separate codes --> split codes & questions by pattern
         split_patt <- short_patt(pattern)
         codes <- dplyr::mutate(.data, q = stringr::str_remove_all(q, "\\."))
-        codes <- tidyr::extract(codes, q, into = c("code", "q"), regex = sprintf("(%s)?(.+$)", split_patt))
-        codes <- dplyr::mutate(codes, dplyr::across(c(code, q), stringr::str_squish))
+        codes <- tidyr::extract(
+            codes,
+            q,
+            into = c("code", "q"),
+            regex = sprintf("(%s)?(.+$)", split_patt)
+        )
+        codes <- dplyr::mutate(
+            codes,
+            dplyr::across(c(code, q), stringr::str_squish)
+        )
         codes <- dplyr::filter(codes, !is.na(code))
         codes <- dplyr::select(codes, q_number, code, q)
         codes <- dplyr::distinct(codes)
@@ -200,7 +294,11 @@ question_codes <- function(.data, col, pattern) {
         codes <- dplyr::filter(.data, is_question | is_code)
         codes <- tidyr::pivot_longer(codes, cols = c(is_question, is_code))
         codes <- dplyr::filter(codes, value)
-        codes <- tidyr::pivot_wider(codes, id_cols = q_number, values_from = {{ col }})
+        codes <- tidyr::pivot_wider(
+            codes,
+            id_cols = q_number,
+            values_from = {{ col }}
+        )
         codes <- dplyr::filter(codes, !is.na(is_code))
         codes <- dplyr::select(codes, q_number, code = is_code, q = is_question)
     }
@@ -217,5 +315,8 @@ make_headings <- function(.data, col) {
     hdrs <- tidyr::pivot_longer(hdrs, cols = -h, names_to = "column")
     hdrs <- tidyr::pivot_wider(hdrs, names_from = h)
     hdrs <- tidyr::fill(hdrs, dplyr::matches("^h\\d+"), .direction = "down")
-    hdrs <- dplyr::mutate(hdrs, h1 = dplyr::coalesce(!!!dplyr::select(hdrs, dplyr::matches("^h\\d+"))))
+    hdrs <- dplyr::mutate(
+        hdrs,
+        h1 = dplyr::coalesce(!!!dplyr::select(hdrs, dplyr::matches("^h\\d+")))
+    )
 }
