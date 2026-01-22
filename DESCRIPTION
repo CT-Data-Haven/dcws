@@ -26,7 +26,6 @@ Imports:
     tidyselect
 Suggests: 
     testthat (>= 3.0.0),
-    fuzzyjoin,
     roxygen2,
     knitr,
     officer (>= 0.6.7),
@@ -35,9 +34,11 @@ Suggests:
     gh,
     duckdb,
     readr,
-    quarto
-Remotes: 
-    davidgohel/officer
+    quarto,
+    fuzzyjoin (>= 0.1.7)
+Remotes:  
+    davidgohel/officer,
+    dgrtwo/fuzzyjoin
 Depends: 
     R (>= 4.2.0)
 LazyData: true
