@@ -1,3 +1,9 @@
+# dcws v1.4.0 (2026-01-21)
+
+## Feat
+
+- **data**: add 2025 statewide data
+
 # dcws v1.3.0 (2025-04-03)
 
 This is the first release of {dcws} that is intended to go public. A few changes in recent versions toward that goal:
