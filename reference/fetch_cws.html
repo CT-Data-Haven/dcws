@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">dcws</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,16 +105,16 @@ Note that the <code>span</code> column, a new addition, is a string giving the s
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="fetch_wts.html">fetch_wts()</a></code> <a href="cws_full_data.html">cws_full_data</a></p>
 <p>Other accessing:
-<code><a href="fetch_wts.html">fetch_wts</a>()</code>,
-<code><a href="read_xtabs.html">read_xtabs</a>()</code>,
-<code><a href="xtab2df.html">xtab2df</a>()</code></p></div>
+<code><a href="fetch_wts.html">fetch_wts()</a></code>,
+<code><a href="read_xtabs.html">read_xtabs()</a></code>,
+<code><a href="xtab2df.html">xtab2df()</a></code></p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># no filtering</span></span></span>
 <span class="r-in"><span><span class="fu">fetch_cws</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 38,320 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 38,446 × 6</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     year span  name  code  question                                     data    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                        <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">2</span>015 2015  5CT   Q1    Are you satisfied with the city or area whe… <span style="color: #949494;">&lt;tibble&gt;</span></span>
@@ -127,7 +127,7 @@ Note that the <code>span</code> column, a new addition, is a string giving the s
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">2</span>015 2015  5CT   Q3F   The condition of public parks and other pub… <span style="color: #949494;">&lt;tibble&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">2</span>015 2015  5CT   Q4    Over the past 12 months, have you volunteer… <span style="color: #949494;">&lt;tibble&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">2</span>015 2015  5CT   Q5    How would you describe your ability to infl… <span style="color: #949494;">&lt;tibble&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 38,310 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 38,436 more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># filter by year, name, and/or category</span></span></span>
 <span class="r-in"><span><span class="fu">fetch_cws</span><span class="op">(</span>.name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Greater New Haven"</span>, <span class="st">"New Haven"</span><span class="op">)</span><span class="op">)</span> <span class="co"># all years</span></span></span>
@@ -309,7 +309,7 @@ Note that the <code>span</code> column, a new addition, is a string giving the s
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">dcws</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +49,7 @@
 
     <div class="section level2">
     <h2 id="format">Format<a class="anchor" aria-label="anchor" href="#format"></a></h2>
-    <p>A data frame with 779 rows and 4 variables:</p><dl><dt>year</dt>
+    <p>A data frame with 905 rows and 4 variables:</p><dl><dt>year</dt>
 <dd><p>Numeric, year of survey</p></dd>
 
 <dt>code</dt>
@@ -72,7 +72,7 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">cws_codebook</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"adequate shelter"</span>, <span class="va">question</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 7 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    year code  question                                                 responses</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                    <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">2</span>015 Q66   In the last 12 months, have you not had enough money to… <span style="color: #949494;">&lt;chr [4]&gt;</span></span>
@@ -81,6 +81,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>  <span style="text-decoration: underline;">2</span>021 Q64   In the last 12 months, have you not had enough money to… <span style="color: #949494;">&lt;chr [4]&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>  <span style="text-decoration: underline;">2</span>022 Q132  In the last 12 months, have you not had enough money to… <span style="color: #949494;">&lt;chr [4]&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span>  <span style="text-decoration: underline;">2</span>024 Q64   In the last 12 months, have you not had enough money to… <span style="color: #949494;">&lt;chr [4]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">7</span>  <span style="text-decoration: underline;">2</span>025 Q64   In the last 12 months, have you not had enough money to… <span style="color: #949494;">&lt;chr [4]&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">cws_codebook</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"adequate shelter"</span>, <span class="va">question</span><span class="op">)</span>, <span class="va">year</span> <span class="op">==</span> <span class="fl">2024</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
@@ -104,7 +105,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>
