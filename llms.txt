@@ -90,7 +90,7 @@ work with the data.
 
 ## Included data
 
-As of 2026-01-21, the data included here are:
+As of 2026-04-10, the data included here are:
 
 | name                                               |  2015  |  2018  | 2020  |  2021  | 2022  | 2015_2024 |  2024   | 2025  |
 |:---------------------------------------------------|:------:|:------:|:-----:|:------:|:-----:|:---------:|:-------:|:-----:|
@@ -282,6 +282,8 @@ As of 2026-01-21, the data included here are:
 
 - [`collapse_n_wt()`](https://ct-data-haven.github.io/dcws/reference/collapse_n_wt.md)
   : Collapse survey groups and get weighted means
+- [`combine_response()`](https://ct-data-haven.github.io/dcws/reference/combine_response.md)
+  : Combine multiple response categories into one indicator-style one
 - [`sub_nonanswers()`](https://ct-data-haven.github.io/dcws/reference/sub_nonanswers.md)
   : Remove non-answers and rescale percentage values
 

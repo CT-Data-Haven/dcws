@@ -74,7 +74,7 @@ A data frame with the following columns:
 
 [`read_xtabs()`](https://ct-data-haven.github.io/dcws/reference/read_xtabs.md)
 
-Other accessing:
+Other data accessing functions:
 [`fetch_cws()`](https://ct-data-haven.github.io/dcws/reference/fetch_cws.md),
 [`fetch_wts()`](https://ct-data-haven.github.io/dcws/reference/fetch_wts.md),
 [`read_xtabs()`](https://ct-data-haven.github.io/dcws/reference/read_xtabs.md)

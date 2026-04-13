@@ -83,7 +83,8 @@ will have average values.
 [`read_weights()`](https://ct-data-haven.github.io/dcws/reference/read_xtabs.md),
 [`forcats::fct_collapse()`](https://forcats.tidyverse.org/reference/fct_collapse.html)
 
-Other manipulating:
+Other data manipulation functions:
+[`combine_response()`](https://ct-data-haven.github.io/dcws/reference/combine_response.md),
 [`sub_nonanswers()`](https://ct-data-haven.github.io/dcws/reference/sub_nonanswers.md)
 
 ## Examples

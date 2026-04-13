@@ -90,7 +90,7 @@ for their associated weights.
 
 [`xtab2df()`](https://ct-data-haven.github.io/dcws/reference/xtab2df.md)
 
-Other accessing:
+Other data accessing functions:
 [`fetch_cws()`](https://ct-data-haven.github.io/dcws/reference/fetch_cws.md),
 [`fetch_wts()`](https://ct-data-haven.github.io/dcws/reference/fetch_wts.md),
 [`xtab2df()`](https://ct-data-haven.github.io/dcws/reference/xtab2df.md)

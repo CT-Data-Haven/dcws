@@ -104,7 +104,7 @@ A data frame, with between 5 and 10 columns, depending on arguments:
 [`fetch_wts()`](https://ct-data-haven.github.io/dcws/reference/fetch_wts.md)
 [cws_full_data](https://ct-data-haven.github.io/dcws/reference/cws_full_data.md)
 
-Other accessing:
+Other data accessing functions:
 [`fetch_wts()`](https://ct-data-haven.github.io/dcws/reference/fetch_wts.md),
 [`read_xtabs()`](https://ct-data-haven.github.io/dcws/reference/read_xtabs.md),
 [`xtab2df()`](https://ct-data-haven.github.io/dcws/reference/xtab2df.md)

@@ -58,16 +58,14 @@ rows
 
 ## See also
 
-Other manipulating:
-[`collapse_n_wt()`](https://ct-data-haven.github.io/dcws/reference/collapse_n_wt.md)
+Other data manipulation functions:
+[`collapse_n_wt()`](https://ct-data-haven.github.io/dcws/reference/collapse_n_wt.md),
+[`combine_response()`](https://ct-data-haven.github.io/dcws/reference/combine_response.md)
 
 ## Examples
 
 ``` r
 if (interactive()) {
-    xt <- system.file("extdata/test_xtab2018.xlsx", package = "dcws")
-    df <- read_xtabs(xt, process = TRUE) |>
-        dplyr::filter(code == "Q1") |>
-        sub_nonanswers()
+  sub_nonanswers(cws_demo)
 }
 ```

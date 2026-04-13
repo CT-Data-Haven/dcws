@@ -52,7 +52,7 @@ A data frame, with either 3 columns (if `.unnest = FALSE`) or 4 columns
 [`fetch_cws()`](https://ct-data-haven.github.io/dcws/reference/fetch_cws.md)
 [cws_full_wts](https://ct-data-haven.github.io/dcws/reference/cws_full_wts.md)
 
-Other accessing:
+Other data accessing functions:
 [`fetch_cws()`](https://ct-data-haven.github.io/dcws/reference/fetch_cws.md),
 [`read_xtabs()`](https://ct-data-haven.github.io/dcws/reference/read_xtabs.md),
 [`xtab2df()`](https://ct-data-haven.github.io/dcws/reference/xtab2df.md)

@@ -1,5 +1,6 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://ct-data-haven.github.io/dcws/404.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/CHANGELOG.html</loc></url>
 <url><loc>https://ct-data-haven.github.io/dcws/LICENSE-text.html</loc></url>
 <url><loc>https://ct-data-haven.github.io/dcws/articles/definitions.html</loc></url>
 <url><loc>https://ct-data-haven.github.io/dcws/articles/fetching-dcws-data.html</loc></url>
@@ -10,6 +11,7 @@
 <url><loc>https://ct-data-haven.github.io/dcws/news/index.html</loc></url>
 <url><loc>https://ct-data-haven.github.io/dcws/reference/clean_cws_lvls.html</loc></url>
 <url><loc>https://ct-data-haven.github.io/dcws/reference/collapse_n_wt.html</loc></url>
+<url><loc>https://ct-data-haven.github.io/dcws/reference/combine_response.html</loc></url>
 <url><loc>https://ct-data-haven.github.io/dcws/reference/cws_codebook.html</loc></url>
 <url><loc>https://ct-data-haven.github.io/dcws/reference/cws_defs.html</loc></url>
 <url><loc>https://ct-data-haven.github.io/dcws/reference/cws_demo.html</loc></url>

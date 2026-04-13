@@ -19,6 +19,8 @@
 
 - [`collapse_n_wt()`](https://ct-data-haven.github.io/dcws/reference/collapse_n_wt.md)
   : Collapse survey groups and get weighted means
+- [`combine_response()`](https://ct-data-haven.github.io/dcws/reference/combine_response.md)
+  : Combine multiple response categories into one indicator-style one
 - [`sub_nonanswers()`](https://ct-data-haven.github.io/dcws/reference/sub_nonanswers.md)
   : Remove non-answers and rescale percentage values
 
