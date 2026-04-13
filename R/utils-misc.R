@@ -1,15 +1,21 @@
 streak <- function(x) {
-    if (is.factor(x)) x <- as.character(x)
+    if (is.factor(x)) {
+        x <- as.character(x)
+    }
     durations <- rle(x)$lengths
     rep(seq_along(durations), times = durations)
 }
 
 cws_check_yr <- function(path, year, verbose) {
     if (length(path) > 1) {
-        cli::cli_abort("Because of how it handles parsing years, `cws_check_yr` only takes 1 path at a time.")
+        cli::cli_abort(
+            "Because of how it handles parsing years, `cws_check_yr` only takes 1 path at a time."
+        )
     }
     if (is.null(year) & is.null(path)) {
-        cli::cli_abort("Guessing the year is only available for functions that take a path argument. Please supply the year explicitly.")
+        cli::cli_abort(
+            "Guessing the year is only available for functions that take a path argument. Please supply the year explicitly."
+        )
     }
     # if not numeric, try:
     # * to coerce
@@ -35,7 +41,8 @@ cws_check_yr <- function(path, year, verbose) {
         year <- year[length(year)]
         year <- as.numeric(year)
         if (verbose) {
-            cli::cli_inform(c("Guessing year from the path",
+            cli::cli_inform(c(
+                "Guessing year from the path",
                 "i" = "Based on the path {path}, assuming {.var year} = {year}."
             ))
         }
@@ -43,7 +50,9 @@ cws_check_yr <- function(path, year, verbose) {
         guessing <- FALSE
     }
     if (year < 2015) {
-        cli::cli_warn("This function was designed for DCWS crosstabs starting with 2015. Other years might have unexpected results.")
+        cli::cli_warn(
+            "This function was designed for DCWS crosstabs starting with 2015. Other years might have unexpected results."
+        )
     }
     year
 }

@@ -68,13 +68,19 @@ repo <- "dictionary-build"
 file <- "gloss.duckdb"
 path <- file.path("data-raw", file)
 
-latest <- gh::gh("/repos/{owner}/{repo}/releases/latest",
-    owner = owner, repo = repo
+latest <- gh::gh(
+    "/repos/{owner}/{repo}/releases/latest",
+    owner = owner,
+    repo = repo
 )
 release_id <- latest[["id"]]
 
-assets <- gh::gh("/repos/{owner}/{repo}/releases/{release_id}/assets",
-    owner = owner, repo = repo, release_id = release_id, .per_page = 100
+assets <- gh::gh(
+    "/repos/{owner}/{repo}/releases/{release_id}/assets",
+    owner = owner,
+    repo = repo,
+    release_id = release_id,
+    .per_page = 100
 ) |>
     purrr::map(\(x) x[c("name", "id")]) |>
     purrr::map(tibble::as_tibble) |>
@@ -82,24 +88,40 @@ assets <- gh::gh("/repos/{owner}/{repo}/releases/{release_id}/assets",
 asset_id <- assets$id[assets$name == file]
 
 # download, give mime type
-db <- gh::gh("/repos/{owner}/{repo}/releases/assets/{asset_id}",
-    owner = owner, repo = repo, asset_id = asset_id,
+db <- gh::gh(
+    "/repos/{owner}/{repo}/releases/assets/{asset_id}",
+    owner = owner,
+    repo = repo,
+    asset_id = asset_id,
     .accept = "application/octet-stream",
     .destfile = path,
     .overwrite = TRUE
 )
 
 con <- DBI::dbConnect(duckdb::duckdb(path))
-cws_defs <- DBI::dbGetQuery(con, "
+cws_defs <- DBI::dbGetQuery(
+    con,
+    "
                 SELECT variable as indicator, question
                 FROM variables
                 WHERE dataset = 'cws';
-                ")
-cws_defs$collapsed_responses <- stringr::str_extract(cws_defs$question, "(?<=\\()(.+)(?=\\))")
+                "
+)
+cws_defs$collapsed_responses <- stringr::str_extract(
+    cws_defs$question,
+    "(?<=\\()(.+)(?=\\))"
+)
 cws_defs$question <- stringr::str_remove(cws_defs$question, "\\((.+)\\)$")
-cws_defs <- dplyr::mutate(cws_defs, dplyr::across(c(question, collapsed_responses), stringr::str_squish))
+cws_defs <- dplyr::mutate(
+    cws_defs,
+    dplyr::across(c(question, collapsed_responses), stringr::str_squish)
+)
 # if NA, responses are yes/no
-cws_defs$collapsed_responses <- ifelse(is.na(cws_defs$collapsed_responses), "yes / no", cws_defs$collapsed_responses)
+cws_defs$collapsed_responses <- ifelse(
+    is.na(cws_defs$collapsed_responses),
+    "yes / no",
+    cws_defs$collapsed_responses
+)
 cws_defs <- dplyr::as_tibble(cws_defs)
 
 DBI::dbDisconnect(con)

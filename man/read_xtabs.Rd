@@ -84,9 +84,9 @@ if (interactive()) {
 \seealso{
 \code{\link[=xtab2df]{xtab2df()}}
 
-Other accessing: 
+Other data accessing functions: 
 \code{\link{fetch_cws}()},
 \code{\link{fetch_wts}()},
 \code{\link{xtab2df}()}
 }
-\concept{accessing}
+\concept{data accessing functions}

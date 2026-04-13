@@ -45,20 +45,24 @@
 #'     .add_wts = TRUE, .unnest = TRUE
 #' )
 #' @seealso [fetch_wts()] [cws_full_data]
-#' @family accessing
+#' @family data accessing functions
 #' @export
-fetch_cws <- function(...,
-                      .year = NULL,
-                      .name = NULL,
-                      .category = NULL,
-                      .unnest = FALSE,
-                      .add_wts = FALSE,
-                      .drop_ct = TRUE,
-                      .incl_questions = TRUE) {
+fetch_cws <- function(
+    ...,
+    .year = NULL,
+    .name = NULL,
+    .category = NULL,
+    .unnest = FALSE,
+    .add_wts = FALSE,
+    .drop_ct = TRUE,
+    .incl_questions = TRUE
+) {
     # warn if code is used anywhere--not stable year to year
     q <- purrr::map_chr(rlang::enquos(...), rlang::as_label)
     if (any(grepl("\\bcode\\b", q)) && (is.null(.year) || length(.year) > 1)) {
-        cli::cli_alert_warning("Keep in mind that codes might change between years--double check before using {.var code} as a filter.")
+        cli::cli_alert_warning(
+            "Keep in mind that codes might change between years--double check before using {.var code} as a filter."
+        )
     }
 
     # will this have manual filtering?
@@ -72,7 +76,10 @@ fetch_cws <- function(...,
     # get extract as single df
     out <- extract_cws(.year, .name, .category, bind = TRUE)
     if (.drop_ct) {
-        out <- dplyr::filter(out, !(name != "Connecticut" & group == "Connecticut"))
+        out <- dplyr::filter(
+            out,
+            !(name != "Connecticut" & group == "Connecticut")
+        )
     }
 
     if (need_questions) {
@@ -86,7 +93,9 @@ fetch_cws <- function(...,
 
     if (nrow(out) == 0) {
         # used to be a warning, but that creates errors further down.
-        cli::cli_abort("No data were found for this combination of years, locations, and/or categories.")
+        cli::cli_abort(
+            "No data were found for this combination of years, locations, and/or categories."
+        )
     }
 
     # drop questions if there now but not keeping in final output
@@ -97,25 +106,39 @@ fetch_cws <- function(...,
     # add weights if using
     if (.add_wts) {
         wts <- tidyr::unnest(dcws::cws_full_wts, weights)
-        out <- dplyr::left_join(out, wts, by = c("year", "span", "name", "group"))
+        out <- dplyr::left_join(
+            out,
+            wts,
+            by = c("year", "span", "name", "group")
+        )
     }
 
     if (.incl_questions) {
         out <- dplyr::relocate(out, question, .after = code)
     }
 
-    out <- dplyr::mutate(out, dplyr::across(tidyselect::where(is.factor), forcats::fct_drop))
+    out <- dplyr::mutate(
+        out,
+        dplyr::across(tidyselect::where(is.factor), forcats::fct_drop)
+    )
 
     # if .unnest, return with year, span, name, code, question, category, group, response, value, weight if asked
     # otherwise return with year, span, name, code, question, data list-col
     if (!.unnest) {
-        out <- tidyr::nest(out, data = tidyselect::any_of(c("category", "group", "response", "value", "weight")))
+        out <- tidyr::nest(
+            out,
+            data = tidyselect::any_of(c(
+                "category",
+                "group",
+                "response",
+                "value",
+                "weight"
+            ))
+        )
     }
 
     out
 }
-
-
 
 
 #' @title Fetch and subset weights for DCWS data
@@ -143,7 +166,7 @@ fetch_cws <- function(...,
 #'     .add_wts = TRUE
 #' )
 #' @export
-#' @family accessing
+#' @family data accessing functions
 #' @seealso [fetch_cws()] [cws_full_wts]
 fetch_wts <- function(..., .year = NULL, .name = NULL, .unnest = FALSE) {
     out <- dplyr::filter(dcws::cws_full_wts, !!!rlang::quos(...))
@@ -157,7 +180,9 @@ fetch_wts <- function(..., .year = NULL, .name = NULL, .unnest = FALSE) {
     }
 
     if (nrow(out) == 0) {
-        cli::cli_abort("No weights were found for this combination of years and locations.")
+        cli::cli_abort(
+            "No weights were found for this combination of years and locations."
+        )
     }
 
     if (.unnest) {
@@ -190,7 +215,12 @@ make_cws_id <- function(span = NULL, name = NULL) {
 #' @return Either a list of data frames, or a single data frame, of all combinations of span, name, and category.
 #' @keywords internal
 #' @noRd
-extract_cws <- function(span = NULL, name = NULL, category = NULL, bind = FALSE) {
+extract_cws <- function(
+    span = NULL,
+    name = NULL,
+    category = NULL,
+    bind = FALSE
+) {
     id <- make_cws_id(span, name)
     out <- dcws::cws_full_data[id]
     out <- purrr::compact(out)

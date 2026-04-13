@@ -69,7 +69,8 @@ cws_demo |>
 \seealso{
 \code{\link[=xtab2df]{xtab2df()}}, \code{\link[=read_weights]{read_weights()}}, \code{\link[forcats:fct_collapse]{forcats::fct_collapse()}}
 
-Other manipulating: 
+Other data manipulation functions: 
+\code{\link{combine_response}()},
 \code{\link{sub_nonanswers}()}
 }
-\concept{manipulating}
+\concept{data manipulation functions}

@@ -11,20 +11,37 @@ xt_read <- test_cases |>
 xtabs <- xt_read |>
     dplyr::mutate(data = purrr::map(data, dplyr::select, -1)) |>
     dplyr::mutate(data = purrr::map(data, janitor::remove_empty, "rows")) |>
-    dplyr::mutate(data = purrr::map2(data, year, function(df, yr) {
-        if (yr >= 2024) {
-            out <- df[1, ]
-            out <- dplyr::add_row(out, .before = 1)
-        } else {
-            out <- df[1:2, ]
-        }
-        out$h <- c("category", "group")
-        out
-    })) |>
+    dplyr::mutate(
+        data = purrr::map2(data, year, function(df, yr) {
+            if (yr >= 2024) {
+                out <- df[1, ]
+                out <- dplyr::add_row(out, .before = 1)
+            } else {
+                out <- df[1:2, ]
+            }
+            out$h <- c("category", "group")
+            out
+        })
+    ) |>
     dplyr::mutate(data = purrr::map(data, tidyr::pivot_longer, -h)) |>
-    dplyr::mutate(data = purrr::map(data, tidyr::pivot_wider, names_from = h, values_from = value)) |>
-    dplyr::mutate(data = purrr::map(data, tidyr::fill, category, .direction = "down")) |>
-    dplyr::mutate(data = purrr::map(data, dplyr::mutate, category = tidyr::replace_na(category, "Total"))) |>
+    dplyr::mutate(
+        data = purrr::map(
+            data,
+            tidyr::pivot_wider,
+            names_from = h,
+            values_from = value
+        )
+    ) |>
+    dplyr::mutate(
+        data = purrr::map(data, tidyr::fill, category, .direction = "down")
+    ) |>
+    dplyr::mutate(
+        data = purrr::map(
+            data,
+            dplyr::mutate,
+            category = tidyr::replace_na(category, "Total")
+        )
+    ) |>
     dplyr::mutate(data = purrr::map(data, dplyr::select, -name)) |>
     tidyr::unnest(data) |>
     dplyr::filter(!grepl("0\\.", group)) |>

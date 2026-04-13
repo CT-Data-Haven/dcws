@@ -41,7 +41,7 @@
 #'     xtab2df(xtab, year = 2018)
 #' }
 #' @export
-#' @family accessing
+#' @family data accessing functions
 #' @seealso [read_xtabs()]
 xtab2df <- function(data, year, col = x1, code_pattern = NULL, verbose = TRUE) {
     year <- cws_check_yr(path = NULL, year = year, verbose = verbose)

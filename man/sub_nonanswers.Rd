@@ -41,14 +41,12 @@ remaining values to add to 1.0.
 }
 \examples{
 if (interactive()) {
-    xt <- system.file("extdata/test_xtab2018.xlsx", package = "dcws")
-    df <- read_xtabs(xt, process = TRUE) |>
-        dplyr::filter(code == "Q1") |>
-        sub_nonanswers()
+  sub_nonanswers(cws_demo)
 }
 }
 \seealso{
-Other manipulating: 
-\code{\link{collapse_n_wt}()}
+Other data manipulation functions: 
+\code{\link{collapse_n_wt}()},
+\code{\link{combine_response}()}
 }
-\concept{manipulating}
+\concept{data manipulation functions}

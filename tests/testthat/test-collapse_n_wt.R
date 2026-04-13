@@ -17,10 +17,31 @@ test_that("collapse_n_wt handles filling in missing weights", {
         "$100K+" = c("$100K-$200K", "$200K+")
     )
     cws_missing <- cws_demo |>
-        dplyr::mutate(weight = ifelse(category %in% c("Connecticut", "Greater New Haven"), NA_real_, weight))
-    expect_message(collapse_n_wt(cws_missing, code:response, .lvls = income_lvls, .fill_wts = TRUE))
+        dplyr::mutate(
+            weight = ifelse(
+                category %in% c("Connecticut", "Greater New Haven"),
+                NA_real_,
+                weight
+            )
+        )
+    expect_message(collapse_n_wt(
+        cws_missing,
+        code:response,
+        .lvls = income_lvls,
+        .fill_wts = TRUE
+    ))
     expect_equal(
-        collapse_n_wt(cws_missing, code:response, .lvls = income_lvls, .fill_wts = TRUE),
-        collapse_n_wt(cws_demo, code:response, .lvls = income_lvls, .fill_wts = FALSE)
+        collapse_n_wt(
+            cws_missing,
+            code:response,
+            .lvls = income_lvls,
+            .fill_wts = TRUE
+        ),
+        collapse_n_wt(
+            cws_demo,
+            code:response,
+            .lvls = income_lvls,
+            .fill_wts = FALSE
+        )
     )
 })

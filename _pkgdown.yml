@@ -10,12 +10,12 @@ template:
 reference:
   - title: Functions - accessing & cleaning survey data
     contents:
-      - has_concept("accessing")
-      - has_concept("cleaning")
+      - has_concept("data accessing functions")
+      - has_concept("data cleaning functions")
 
   - title: Functions - manipulating data
     contents:
-      - has_concept("manipulating")
+      - has_concept("data manipulation functions")
       
   - title: Datasets
     contents:

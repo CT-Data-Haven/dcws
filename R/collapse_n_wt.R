@@ -38,32 +38,48 @@
 #'     dplyr::filter(category %in% c("Greater New Haven", "Income")) |>
 #'     collapse_n_wt(code:response, .lvls = income_lvls, .digits = 2)
 #' @export
-#' @family manipulating
+#' @family data manipulation functions
 #' @seealso [xtab2df()], [read_weights()], [forcats::fct_collapse()]
-collapse_n_wt <- function(data,
-                          ...,
-                          .lvls,
-                          .group = group,
-                          .value = value,
-                          .weight = weight,
-                          .fill_wts = FALSE,
-                          .digits = NULL) {
+collapse_n_wt <- function(
+    data,
+    ...,
+    .lvls,
+    .group = group,
+    .value = value,
+    .weight = weight,
+    .fill_wts = FALSE,
+    .digits = NULL
+) {
     group_cols <- rlang::quos(...)
     # check dots + column args
     check_cols(data, c(..., {{ .group }}, {{ .value }}, {{ .weight }}))
 
     to_wt <- dplyr::ungroup(data)
-    to_wt <- dplyr::mutate(to_wt, dplyr::across({{ .group }}, \(x) forcats::fct_collapse(x, !!!.lvls)))
+    to_wt <- dplyr::mutate(
+        to_wt,
+        dplyr::across({{ .group }}, \(x) forcats::fct_collapse(x, !!!.lvls))
+    )
     to_wt <- dplyr::group_by(to_wt, dplyr::across(!!!group_cols))
 
     if (.fill_wts) {
-        cli::cli_alert_info("Missing values in your weights column are being filled in. Make sure this is intentional!")
-        to_wt <- dplyr::mutate(to_wt, dplyr::across({{ .weight }}, \(x) tidyr::replace_na(x, 1)))
+        cli::cli_alert_info(
+            "Missing values in your weights column are being filled in. Make sure this is intentional!"
+        )
+        to_wt <- dplyr::mutate(
+            to_wt,
+            dplyr::across({{ .weight }}, \(x) tidyr::replace_na(x, 1))
+        )
     }
-    out <- dplyr::summarise(to_wt, {{ .value }} := stats::weighted.mean({{ .value }}, w = {{ .weight }}))
+    out <- dplyr::summarise(
+        to_wt,
+        {{ .value }} := stats::weighted.mean({{ .value }}, w = {{ .weight }})
+    )
 
     if (is.numeric(.digits)) {
-        out <- dplyr::mutate(out, {{ .value }} := round({{ .value }}, digits = .digits))
+        out <- dplyr::mutate(
+            out,
+            {{ .value }} := round({{ .value }}, digits = .digits)
+        )
     }
     dplyr::ungroup(out)
 }

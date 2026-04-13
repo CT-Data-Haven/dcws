@@ -29,7 +29,13 @@ test_that("parse_cws_paths capitalizes acronyms", {
     abbrs_clean <- parse_cws_paths(abbrs)
     expect_equal(
         abbrs_clean$name,
-        c("DMHAS Region 2", "5CT", "5CT", "Capitol COG", "United Way of Greater New Haven")
+        c(
+            "DMHAS Region 2",
+            "5CT",
+            "5CT",
+            "Capitol COG",
+            "United Way of Greater New Haven"
+        )
     )
 })
 

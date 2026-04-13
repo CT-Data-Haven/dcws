@@ -21,3 +21,5 @@
 ^vignettes/.quarto
 ^\.vscode$
 ^[.]?air[.]toml$
+.pixi
+.pre-commit-config.yaml 

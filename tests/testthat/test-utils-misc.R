@@ -29,23 +29,45 @@ test_that("cws_check_yr returns number", {
     expect_type(cws_check_yr(demo_xt(2015), NULL, FALSE), "double")
     expect_type(cws_check_yr(demo_xt("2015"), NULL, FALSE), "double")
     expect_type(cws_check_yr(demo_xt("2015_2024"), NULL, FALSE), "double")
-    hyphen <- stringr::str_replace(demo_xt("2015_2024"), "2015_2024", "2015-2024")
+    hyphen <- stringr::str_replace(
+        demo_xt("2015_2024"),
+        "2015_2024",
+        "2015-2024"
+    )
     expect_type(cws_check_yr(hyphen, NULL, FALSE), "double")
 })
 
 test_that("cws_check_yr correctly guesses years", {
-    expect_equal(cws_check_yr(demo_xt(2024), year = NULL, verbose = FALSE), 2024)
-    expect_equal(cws_check_yr(demo_xt("2015_2024"), year = NULL, verbose = FALSE), 2024)
-    expect_equal(cws_check_yr(demo_xt(2020), year = NULL, verbose = FALSE), 2020)
+    expect_equal(
+        cws_check_yr(demo_xt(2024), year = NULL, verbose = FALSE),
+        2024
+    )
+    expect_equal(
+        cws_check_yr(demo_xt("2015_2024"), year = NULL, verbose = FALSE),
+        2024
+    )
+    expect_equal(
+        cws_check_yr(demo_xt(2020), year = NULL, verbose = FALSE),
+        2020
+    )
 })
 
 test_that("cws_check_yr converts year from valid character", {
-    expect_equal(cws_check_yr("fake_path.txt", year = "2024", verbose = FALSE), 2024)
+    expect_equal(
+        cws_check_yr("fake_path.txt", year = "2024", verbose = FALSE),
+        2024
+    )
 })
 
 test_that("cws_check_yr tries to guess non-numeric year", {
-    expect_equal(cws_check_yr(demo_xt(2024), year = 2024, verbose = FALSE), 2024)
-    expect_equal(cws_check_yr(demo_xt("2015_2024"), year = "2015_2024", verbose = FALSE), 2024)
+    expect_equal(
+        cws_check_yr(demo_xt(2024), year = 2024, verbose = FALSE),
+        2024
+    )
+    expect_equal(
+        cws_check_yr(demo_xt("2015_2024"), year = "2015_2024", verbose = FALSE),
+        2024
+    )
 })
 
 test_that("cws_check_yr doesn't accidentally match zip codes", {
@@ -62,7 +84,10 @@ test_that("cws_check_yr only takes single path", {
 
 test_that("cws_check_yr respects verbose argument", {
     expect_silent(dummy <- cws_check_yr(demo_xt(2024), NULL, verbose = FALSE))
-    expect_message(dummy <- cws_check_yr(demo_xt(2024), NULL, verbose = TRUE), "2024")
+    expect_message(
+        dummy <- cws_check_yr(demo_xt(2024), NULL, verbose = TRUE),
+        "2024"
+    )
 })
 
 test_that("cws_check_yr fails for arguments outside reasonable bounds", {
@@ -81,13 +106,13 @@ test_that("cws_check_yr requires path and/or year", {
 ## filter_before/_after ----
 test_that("filter_down properly excludes rows", {
     messy_summary <- tibble::tribble(
-        ~x1,        ~x2,
-        "A",        1,
-        "B",        5,
-        "C",        9,
-        "Weights",  NA,
-        "A",        0.2,
-        "B",        0.5
+        ~x1       , ~x2 ,
+        "A"       , 1   ,
+        "B"       , 5   ,
+        "C"       , 9   ,
+        "Weights" , NA  ,
+        "A"       , 0.2 ,
+        "B"       , 0.5
     )
     u1 <- filter_until(messy_summary, x1 == "Weights")
     a1 <- filter_after(messy_summary, x1 == "Weights")
@@ -97,11 +122,11 @@ test_that("filter_down properly excludes rows", {
 
 test_that("filter_down handles multiple conditions", {
     messy_notes <- tibble::tribble(
-        ~x1,       ~x2,        ~x3,
-        "A",       "dog",      0,
-        "B",       "cat",      1,
-        "Source:", "xyz.com",  NA,
-        "Date:",   "Jan",      2021
+        ~x1       , ~x2       , ~x3  ,
+        "A"       , "dog"     ,    0 ,
+        "B"       , "cat"     ,    1 ,
+        "Source:" , "xyz.com" , NA   ,
+        "Date:"   , "Jan"     , 2021
     )
     u1 <- filter_until(messy_notes, grepl("\\:", x1) & is.na(x3))
     a1 <- filter_after(messy_notes, grepl("\\:", x1) & is.na(x3))
@@ -112,11 +137,11 @@ test_that("filter_down handles multiple conditions", {
 test_that("filter_down handles commas", {
     # used to be an error but now I guess commas are okay in this type of quosure?
     messy_notes <- tibble::tribble(
-        ~x1,       ~x2,        ~x3,
-        "A",       "dog",      0,
-        "B",       "cat",      1,
-        "Source:", "xyz.com",  NA,
-        "Date:",   "Jan",      2021
+        ~x1       , ~x2       , ~x3  ,
+        "A"       , "dog"     ,    0 ,
+        "B"       , "cat"     ,    1 ,
+        "Source:" , "xyz.com" , NA   ,
+        "Date:"   , "Jan"     , 2021
     )
     a1 <- filter_after(messy_notes, grepl("\\:", x1) & is.na(x3))
     a2 <- filter_after(messy_notes, grepl("\\:", x1), is.na(x3))
@@ -126,15 +151,15 @@ test_that("filter_down handles commas", {
 
 test_that("filter_after handles streaks", {
     messy_summary <- tibble::tribble(
-        ~x1, ~x2,
-        "A", 1,
-        "B", 5,
-        "C", 9,
-        "Weights", NA,
-        "Weighted norm", 0,
-        "A", 0.2,
-        "B", 0.5,
-        "Weights", 1
+        ~x1             , ~x2 ,
+        "A"             , 1   ,
+        "B"             , 5   ,
+        "C"             , 9   ,
+        "Weights"       , NA  ,
+        "Weighted norm" , 0   ,
+        "A"             , 0.2 ,
+        "B"             , 0.5 ,
+        "Weights"       , 1
     )
     a1 <- filter_after(messy_summary, grepl("Weight", x1), .streak = TRUE)
     a2 <- filter_after(messy_summary, grepl("Weight", x1), .streak = FALSE)
@@ -152,7 +177,10 @@ test_that("check_cols asserts correct columns", {
         "$30K-$100K" = c("$30K-$50K", "$50K-$75K", "$75K-$100K"),
         "$100K+" = c("$100K-$200K", "$200K+")
     )
-    expect_error(dummy <- collapse_n_wt(demo_no_wt, code:response, .lvls = lvls), "Can't select columns that don't exist")
+    expect_error(
+        dummy <- collapse_n_wt(demo_no_wt, code:response, .lvls = lvls),
+        "Can't select columns that don't exist"
+    )
 
     # check when args given incorrectly
     expect_error(dummy <- collapse_n_wt(cws_demo, code:response, .group = grrr))

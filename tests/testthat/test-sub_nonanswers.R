@@ -2,10 +2,16 @@ test_that("sub_nonanswers handles factors", {
     xt1 <- cws_demo
     xt2 <- dplyr::mutate(xt1, response = as.factor(response))
     expect_type(sub_nonanswers(xt1, factor_response = TRUE)$response, "integer")
-    expect_type(sub_nonanswers(xt1, factor_response = FALSE)$response, "character")
+    expect_type(
+        sub_nonanswers(xt1, factor_response = FALSE)$response,
+        "character"
+    )
 
     expect_type(sub_nonanswers(xt2, factor_response = TRUE)$response, "integer")
-    expect_type(sub_nonanswers(xt2, factor_response = FALSE)$response, "character")
+    expect_type(
+        sub_nonanswers(xt2, factor_response = FALSE)$response,
+        "character"
+    )
 
     xt_sub <- sub_nonanswers(xt1)
     expect_equal(levels(xt_sub$response), c("Yes", "No"))
@@ -14,7 +20,10 @@ test_that("sub_nonanswers handles factors", {
 test_that("sub_nonanswers warns for mismatched nons", {
     xt <- read_xtabs(demo_xt(2018), year = 2018, process = TRUE)
     xt <- dplyr::filter(xt, code == "Q4A")
-    expect_silent(sub_nonanswers(xt, nons = c("Don't know enough about it in order to say", "Refused")))
+    expect_silent(sub_nonanswers(
+        xt,
+        nons = c("Don't know enough about it in order to say", "Refused")
+    ))
     expect_warning(sub_nonanswers(xt), "not found")
     expect_warning(sub_nonanswers(xt, nons = c("X", "Y")))
 })

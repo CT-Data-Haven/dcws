@@ -10,7 +10,8 @@
 parse_cws_paths <- function(paths, incl_year = TRUE, incl_tag = TRUE) {
     name <- stringr::str_remove(basename(paths), "\\.\\w+$")
     # decide which function to use based on 2024 flags
-    name <- ifelse(grepl("^dcws_.+\\-v", name),
+    name <- ifelse(
+        grepl("^dcws_.+\\-v", name),
         extract_name_r_(name),
         extract_name_spss_(name)
     )
@@ -37,8 +38,17 @@ collapse_patt_ <- function(patt) {
 }
 
 path_regex_ <- function(x) {
-    abbrevs <- collapse_patt_(c("\\bCog\\b", "Echn", "\\bZip\\b", "5ct", "Dmhas"))
-    apost <- sprintf("\\b%s(s)\\b", collapse_patt_(c("Children", "Vincent", "Mary")))
+    abbrevs <- collapse_patt_(c(
+        "\\bCog\\b",
+        "Echn",
+        "\\bZip\\b",
+        "5ct",
+        "Dmhas"
+    ))
+    apost <- sprintf(
+        "\\b%s(s)\\b",
+        collapse_patt_(c("Children", "Vincent", "Mary"))
+    )
     replace <- c("Uconn" = "UConn", "Lawrence Memorial" = "Lawrence + Memorial")
 
     x <- gsub(abbrevs, "\\U\\1", x, perl = TRUE)
@@ -57,20 +67,34 @@ extract_tag_ <- function(x, patt = "\\-v(\\d\\.){3,4}") {
 extract_name_spss_ <- function(x) {
     x <- stringr::str_remove(x, "^DataHaven\\d{4}[\\s_]")
     x <- stringr::str_remove_all(x, "[\\s_](Crosstabs|Pub)")
-    x <- stringr::str_replace_all(x, c(
-        "^CCF$" = "Greater Waterbury",
-        "^CRCOG$" = "Greater Hartford",
-        "Cty" = "County"
-    ))
+    x <- stringr::str_replace_all(
+        x,
+        c(
+            "^CCF$" = "Greater Waterbury",
+            "^CRCOG$" = "Greater Hartford",
+            "Cty" = "County"
+        )
+    )
     x <- stringr::str_replace_all(x, "(?<=[a-z])\\B(?=[A-Z])", " ")
     x <- stringr::str_remove_all(x, "\\s{2,}")
-    x <- stringr::str_replace(x, "(Inner Ring|Outer Ring)([\\w\\s]+$)", "\\2 \\1")
+    x <- stringr::str_replace(
+        x,
+        "(Inner Ring|Outer Ring)([\\w\\s]+$)",
+        "\\2 \\1"
+    )
     x <- stringr::str_remove(x, "Greater (?=[\\w\\s]+Ring)")
-    x <- stringr::str_remove_all(x, "((?<!Border )Towns|Statewide|Region|Central CT Health District|CCF|CRCOG)")
+    x <- stringr::str_remove_all(
+        x,
+        "((?<!Border )Towns|Statewide|Region|Central CT Health District|CCF|CRCOG)"
+    )
     x <- stringr::str_replace(x, "(?<=NY)([A-Z])", " \\1")
     x <- stringr::str_replace_all(x, "([A-Z]{2,})([A-Z])(?=[a-z])", "\\1 \\2")
     x <- stringr::str_trim(x)
-    x <- dplyr::recode(x, Valley = "Lower Naugatuck Valley", "Port Chester" = "Port Chester NY")
+    x <- dplyr::recode(
+        x,
+        Valley = "Lower Naugatuck Valley",
+        "Port Chester" = "Port Chester NY"
+    )
     x
 }
 

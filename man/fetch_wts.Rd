@@ -47,9 +47,9 @@ fetch_cws(code == "Q4E",
 \seealso{
 \code{\link[=fetch_cws]{fetch_cws()}} \link{cws_full_wts}
 
-Other accessing: 
+Other data accessing functions: 
 \code{\link{fetch_cws}()},
 \code{\link{read_xtabs}()},
 \code{\link{xtab2df}()}
 }
-\concept{accessing}
+\concept{data accessing functions}

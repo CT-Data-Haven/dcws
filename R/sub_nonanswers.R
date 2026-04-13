@@ -17,26 +17,27 @@
 #' fewer rows
 #' @examples
 #' if (interactive()) {
-#'     xt <- system.file("extdata/test_xtab2018.xlsx", package = "dcws")
-#'     df <- read_xtabs(xt, process = TRUE) |>
-#'         dplyr::filter(code == "Q1") |>
-#'         sub_nonanswers()
+#'   sub_nonanswers(cws_demo)
 #' }
 #' @export
-#' @family manipulating
-sub_nonanswers <- function(data,
-                           response = response,
-                           value = value,
-                           nons = c("Don't know", "Refused"),
-                           factor_response = TRUE,
-                           rescale = FALSE) {
+#' @family data manipulation functions
+sub_nonanswers <- function(
+    data,
+    response = response,
+    value = value,
+    nons = c("Don't know", "Refused"),
+    factor_response = TRUE,
+    rescale = FALSE
+) {
     check_cols(data, c({{ response }}, {{ value }}))
     # warn if any nons aren't actually in the data
     response_vals <- unique(dplyr::pull(data, {{ response }}))
     xtra_nons <- setdiff(nons, response_vals)
 
     if (length(xtra_nons) > 0) {
-        cli::cli_warn(c("!" = "Your value of {.var nons} contains responses not found in the data: {.val {xtra_nons}} not found."))
+        cli::cli_warn(c(
+            "!" = "Your value of {.var nons} contains responses not found in the data: {.val {xtra_nons}} not found."
+        ))
     }
 
     if (any(dplyr::pull(data, {{ value }}) > 1.0)) {
@@ -52,7 +53,11 @@ sub_nonanswers <- function(data,
     grps <- dplyr::groups(data)
 
     wide <- dplyr::ungroup(data)
-    wide <- tidyr::pivot_wider(wide, names_from = {{ response }}, values_from = {{ value }})
+    wide <- tidyr::pivot_wider(
+        wide,
+        names_from = {{ response }},
+        values_from = {{ value }}
+    )
     # non_sum <- rowSums(dplyr::select(wide, dplyr::any_of(nons)))
     wide$non_sum <- rowSums(dplyr::select(wide, dplyr::any_of(nons)))
 
@@ -62,10 +67,14 @@ sub_nonanswers <- function(data,
         total <- 1
     }
 
-    wide <- dplyr::mutate(wide, dplyr::across(c(!!!responses), ~ .x / (total - non_sum)))
+    wide <- dplyr::mutate(
+        wide,
+        dplyr::across(c(!!!responses), ~ .x / (total - non_sum))
+    )
     wide <- dplyr::select(wide, -non_sum, -dplyr::any_of(nons))
 
-    out <- tidyr::pivot_longer(wide,
+    out <- tidyr::pivot_longer(
+        wide,
         cols = c(!!!responses),
         names_to = rlang::as_label(rlang::enquo(response)),
         values_to = rlang::as_label(rlang::enquo(value))
@@ -73,7 +82,10 @@ sub_nonanswers <- function(data,
     out <- dplyr::group_by(out, !!!grps)
 
     if (factor_response) {
-        out <- dplyr::mutate(out, dplyr::across({{ response }}, forcats::as_factor))
+        out <- dplyr::mutate(
+            out,
+            dplyr::across({{ response }}, forcats::as_factor)
+        )
     }
 
     out

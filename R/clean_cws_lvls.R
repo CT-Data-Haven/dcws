@@ -26,25 +26,29 @@ cws_lvl_patts_ <- function(is_category) {
         "\\bHH" = "home",
         "^\\>(\\$[\\d\\w]+$)" = "\\1+"
     )
-    if (is_category) {
-
-    } else {
-        to_replace <- c(to_replace, c(
-            Children = "Kids",
-            children = "kids"
-        ))
+    if (is_category) {} else {
+        to_replace <- c(
+            to_replace,
+            c(
+                Children = "Kids",
+                children = "kids"
+            )
+        )
     }
 
     # regex
-    to_remove <- paste(c(
-        "\\s((?<!Border )Towns|Statewide|Region)",
-        "(\\s[Tt]otal|[Tt]otal\\s)",
-        "(?<=(/|\\<))\\s",
-        "(?<=Associate's)( degree)",
-        "(?<=Bachelor's)( degree)",
-        "^Income ",
-        "\\*$"
-    ), collapse = "|")
+    to_remove <- paste(
+        c(
+            "\\s((?<!Border )Towns|Statewide|Region)",
+            "(\\s[Tt]otal|[Tt]otal\\s)",
+            "(?<=(/|\\<))\\s",
+            "(?<=Associate's)( degree)",
+            "(?<=Bachelor's)( degree)",
+            "^Income ",
+            "\\*$"
+        ),
+        collapse = "|"
+    )
 
     # full strings
     to_recode <- list(
@@ -75,7 +79,11 @@ cws_lvl_patts_ <- function(is_category) {
     # full strings
     to_collapse <- list(
         "Not white" = c("Not White", "Non-White", "Not-White"),
-        "Black" = c("Black/Afr Amer", "Black/ Afr Amer", "African American/Black"),
+        "Black" = c(
+            "Black/Afr Amer",
+            "Black/ Afr Amer",
+            "African American/Black"
+        ),
         "Indigenous" = c("Native Amer", "American Indian", "Native American")
     )
 
@@ -114,21 +122,35 @@ under_endpt <- function(x) {
 #' )
 #' levels(clean_cws_lvls(groups))
 #' @return A factor of the same length as `x`
-#' @family cleaning
+#' @family data cleaning functions
 #' @export
 clean_cws_lvls <- function(x, is_category = FALSE, order = FALSE) {
     if (!class(x) %in% c("factor", "character") | all(is.na(x))) {
-        cli::cli_abort("{.var x} should be a non-empty character vector or a factor")
+        cli::cli_abort(
+            "{.var x} should be a non-empty character vector or a factor"
+        )
     }
-    if (!is.factor(x)) x <- forcats::as_factor(x)
+    if (!is.factor(x)) {
+        x <- forcats::as_factor(x)
+    }
     patts <- cws_lvl_patts_(is_category = is_category)
     suppressWarnings({
         # weird but might work best to do twice
-        x <- forcats::fct_relabel(x, stringr::str_remove_all, patts[["to_remove"]])
-        x <- forcats::fct_relabel(x, stringr::str_replace_all, patts[["to_replace"]])
+        x <- forcats::fct_relabel(
+            x,
+            stringr::str_remove_all,
+            patts[["to_remove"]]
+        )
+        x <- forcats::fct_relabel(
+            x,
+            stringr::str_replace_all,
+            patts[["to_replace"]]
+        )
         x <- forcats::fct_recode(x, !!!patts[["to_recode"]])
         x <- forcats::fct_collapse(x, !!!patts[["to_collapse"]])
-        x <- forcats::fct_relabel(x, \(s) ifelse(grepl("Under age ", s), under_endpt(s), s))
+        x <- forcats::fct_relabel(x, \(s) {
+            ifelse(grepl("Under age ", s), under_endpt(s), s)
+        })
         x <- forcats::fct_relabel(x, stringr::str_squish)
     })
     if (order && !is_category) {
@@ -140,19 +162,82 @@ clean_cws_lvls <- function(x, is_category = FALSE, order = FALSE) {
 add_cats <- function(x, return_table) {
     # full xwalk
     grp2cat <- list(
-        "Five Connecticuts" = c("Wealthy", "Suburban", "Rural", "Urban Periphery", "Urban Core"),
+        "Five Connecticuts" = c(
+            "Wealthy",
+            "Suburban",
+            "Rural",
+            "Urban Periphery",
+            "Urban Core"
+        ),
         "Gender" = c("Male", "Female", "Nonbinary"),
-        "Age" = c("Ages 18-34", "Ages 18-49", "Ages 35-49", "Ages 35-54", "Ages 50-64", "Ages 50+", "Under age 55", "Ages 55+", "Ages 65+"),
-        "Race/Ethnicity" = c("White", "Black", "Latino", "Asian", "Indigenous", "Not white", "Other race"),
-        "Education" = c("Less than high school", "High school or less", "High school", "Some college or less", "Some college or Associate's", "Some college or higher", "Less than Bachelor's", "Bachelor's or higher"),
-        "Income" = c("<$15K", "$15K-$30K", "<$30K", "$30K-$50K", "$30K-$75K", "$30K-$100K", "$50K-$75K", "<$75K", "$75K-$100K", "$75K+", "<$100K", "$100K-$200K", ">$100K", "$100K+", ">$200K", "$200K+"),
+        "Age" = c(
+            "Ages 18-34",
+            "Ages 18-49",
+            "Ages 35-49",
+            "Ages 35-54",
+            "Ages 50-64",
+            "Ages 50+",
+            "Under age 55",
+            "Ages 55+",
+            "Ages 65+"
+        ),
+        "Race/Ethnicity" = c(
+            "White",
+            "Black",
+            "Latino",
+            "Asian",
+            "Indigenous",
+            "Not white",
+            "Other race"
+        ),
+        "Education" = c(
+            "Less than high school",
+            "High school or less",
+            "High school",
+            "Some college or less",
+            "Some college or Associate's",
+            "Some college or higher",
+            "Less than Bachelor's",
+            "Bachelor's or higher"
+        ),
+        "Income" = c(
+            "<$15K",
+            "$15K-$30K",
+            "<$30K",
+            "$30K-$50K",
+            "$30K-$75K",
+            "$30K-$100K",
+            "$50K-$75K",
+            "<$75K",
+            "$75K-$100K",
+            "$75K+",
+            "<$100K",
+            "$100K-$200K",
+            ">$100K",
+            "$100K+",
+            ">$200K",
+            "$200K+"
+        ),
         "With children" = c("No kids", "Kids in home", "No kids in home"),
-        "Sexual orientation & gender identity" = c("Cisgender and straight", "Identifies as LGBTQ"),
+        "Sexual orientation & gender identity" = c(
+            "Cisgender and straight",
+            "Identifies as LGBTQ"
+        ),
         "Sexual orientation" = c("Lesbian, gay, or bisexual", "Straight"),
         "Place of birth" = c("Born in the US", "Born outside the US"),
-        "Latino origin" = c("Mexican", "Puerto Rican", "Puerto Rican, born in Puerto Rico", "Puerto Rican, mainland born", "Other Latino"),
+        "Latino origin" = c(
+            "Mexican",
+            "Puerto Rican",
+            "Puerto Rican, born in Puerto Rico",
+            "Puerto Rican, mainland born",
+            "Other Latino"
+        ),
         "Disability" = c("Disabled", "Not disabled"),
-        "Incarceration history" = c("Never incarcerated", "Incarcerated once", "Incarcerated two or more times"),
+        "Incarceration history" = c(
+            "Never incarcerated",
+            "Incarcerated once",
+            "Incarcerated two or more times"
+        ),
         "Gender identity" = c("Cisgender", "Transgender")
     )
 
@@ -170,7 +255,9 @@ add_cats <- function(x, return_table) {
 
 
 order_lvls <- function(x) {
-    if (!is.factor(x)) x <- forcats::as_factor(x)
+    if (!is.factor(x)) {
+        x <- forcats::as_factor(x)
+    }
     df <- data.frame(x = x)
     df$nums <- purrr::map(stringr::str_extract_all(df$x, "\\d+"), as.numeric)
     df$under <- +!stringr::str_detect(df$x, "^(Under |Less |\\<)") # 0 if detected

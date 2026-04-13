@@ -6,11 +6,17 @@ sample_paths <- function() {
         span = stringr::str_extract(path, "(?<=\\D)\\d{4}([\\-_]\\d{4})?")
     ) |>
         dplyr::mutate(tag = tags[span]) |>
-        dplyr::mutate(path = purrr::map2_chr(path, tag, function(p, t) stringr::str_glue_data(list(tag = t), p))) |>
+        dplyr::mutate(
+            path = purrr::map2_chr(path, tag, function(p, t) {
+                stringr::str_glue_data(list(tag = t), p)
+            })
+        ) |>
         # dplyr::mutate(path = testthat::test_path("..", "..", "data-raw", "crosstabs", path)) |>
-        dplyr::mutate(year = strsplit(span, "_") |>
-            purrr::map_chr(dplyr::last) |>
-            as.numeric()) |>
+        dplyr::mutate(
+            year = strsplit(span, "_") |>
+                purrr::map_chr(dplyr::last) |>
+                as.numeric()
+        ) |>
         dplyr::select(path, year)
     paths
 }

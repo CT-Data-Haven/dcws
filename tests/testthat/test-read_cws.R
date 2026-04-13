@@ -13,13 +13,17 @@ test_that("read_xtabs removes weighted total rows", {
         purrr::map(dplyr::pull, x1) |>
         purrr::map(stringr::str_detect, "Weighted Total") |>
         purrr::map(any, na.rm = TRUE)
-    purrr::walk(names(has_wt_row), function(yr) expect_false(has_wt_row[[!!yr]]))
+    purrr::walk(names(has_wt_row), function(yr) {
+        expect_false(has_wt_row[[!!yr]])
+    })
 })
 
 test_that("read_weights handles both weight tables and weight headers", {
     wts <- all_xt(read_weights)
     # should each be data frame with 2 cols
-    purrr::walk(names(wts), function(yr) expect_s3_class(wts[[!!yr]], "data.frame"))
+    purrr::walk(names(wts), function(yr) {
+        expect_s3_class(wts[[!!yr]], "data.frame")
+    })
     purrr::walk(names(wts), function(yr) expect_length(wts[[!!yr]], 2))
 })
 
@@ -43,16 +47,49 @@ test_that("read_xtabs successfully passes to xtab2df", {
 })
 
 test_that("read_xtabs print parameters when passing to xtab2df", {
-    expect_message(read_xtabs(demo_xt(2018), year = 2018, process = TRUE), "parameters")
-    expect_message(read_xtabs(demo_xt(2015), year = 2015, process = TRUE), "\\=")
+    expect_message(
+        read_xtabs(demo_xt(2018), year = 2018, process = TRUE),
+        "parameters"
+    )
+    expect_message(
+        read_xtabs(demo_xt(2015), year = 2015, process = TRUE),
+        "\\="
+    )
 
-    expect_silent(dummy <- read_xtabs(demo_xt(2018), year = 2018, process = TRUE, verbose = FALSE))
+    expect_silent(
+        dummy <- read_xtabs(
+            demo_xt(2018),
+            year = 2018,
+            process = TRUE,
+            verbose = FALSE
+        )
+    )
 })
 
 test_that("read_cws passes verbose to cws_check_yr", {
     # message about guessing year; if verbose = TRUE, silent even if guessing
-    expect_message(dummy <- read_xtabs(demo_xt(2024), year = NULL, process = TRUE, verbose = TRUE), "Guessing year")
-    expect_message(dummy <- read_weights(demo_xt(2024), year = NULL, verbose = TRUE), "Guessing year")
-    expect_silent(dummy <- read_xtabs(demo_xt(2024), year = NULL, process = TRUE, verbose = FALSE))
-    expect_silent(dummy <- read_weights(demo_xt(2024), year = NULL, verbose = FALSE))
+    expect_message(
+        dummy <- read_xtabs(
+            demo_xt(2024),
+            year = NULL,
+            process = TRUE,
+            verbose = TRUE
+        ),
+        "Guessing year"
+    )
+    expect_message(
+        dummy <- read_weights(demo_xt(2024), year = NULL, verbose = TRUE),
+        "Guessing year"
+    )
+    expect_silent(
+        dummy <- read_xtabs(
+            demo_xt(2024),
+            year = NULL,
+            process = TRUE,
+            verbose = FALSE
+        )
+    )
+    expect_silent(
+        dummy <- read_weights(demo_xt(2024), year = NULL, verbose = FALSE)
+    )
 })

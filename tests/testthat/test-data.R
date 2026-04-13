@@ -10,10 +10,20 @@ test_that("full dataset has correct categories & groups", {
     # added_cats <- add_cats(levels(all_grps$group), return_table = FALSE)
     # expect_equal(as.character(added_cats), all_grps$category)
     all_cats <- c(
-        "Five Connecticuts", "Gender", "Age", "Race/Ethnicity", "Education",
-        "Income", "With children", "Sexual orientation", "Gender identity",
-        "Sexual orientation & gender identity", "Place of birth",
-        "Latino origin", "Disability", "Incarceration history"
+        "Five Connecticuts",
+        "Gender",
+        "Age",
+        "Race/Ethnicity",
+        "Education",
+        "Income",
+        "With children",
+        "Sexual orientation",
+        "Gender identity",
+        "Sexual orientation & gender identity",
+        "Place of birth",
+        "Latino origin",
+        "Disability",
+        "Incarceration history"
     )
     expect_setequal(levels(all_grps$category), all_cats)
     grp_lvls <- levels(all_grps$group)
