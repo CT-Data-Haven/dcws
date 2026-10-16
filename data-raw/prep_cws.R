@@ -278,11 +278,12 @@ cws_full_wts <- paths |>
     dplyr::select(year, span, name, weights)
 
 
-# MAXIMUM MARGIN OF ERROR ----
+# MAXIMUM MARGIN OF ERROR & SAMPLE SIZE ----
 # maximum moe--probably won't need much except community profiles
 # these are only in the headers of excel files (no idea why)
 # 2015 in top row--extract for location
 # for 2024-onward they're in sample size sheet (3)
+# change to now return a data frame of moe & sample size
 read_moe_row_ <- function(path) {
     df <- suppressMessages(readxl::read_excel(
         path,
@@ -292,10 +293,18 @@ read_moe_row_ <- function(path) {
     # first row = name of location but stylized inconsistently
     # second row = moe
     # get moe from column that fuzzy matches name and doesn't have category header?
+    # same process for sample size
     df <- janitor::clean_names(df)
     sheet_name <- df$x1[1]
     df <- df[1:10, 1:3]
-    moe <- dplyr::filter(df, grepl("margin of error", tolower(x1)) | is.na(x1))
+    moe <- dplyr::filter(
+        df,
+        grepl(
+            "(margin of error|samp[le]{2} size \\(weighted\\))",
+            tolower(x1)
+        ) |
+            is.na(x1)
+    )
     # drop secondary headers
     moe <- moe[, purrr::map_lgl(moe, \(x) {
         !any(grepl("(Gender|Five Connecticuts)", x))
@@ -304,16 +313,26 @@ read_moe_row_ <- function(path) {
     moe <- janitor::remove_empty(moe, "cols")
     # moe$hdr <- c("moe", "name")
     # moe$x1 <- NULL
-    moe$x1 <- ifelse(grepl("margin of error", tolower(moe$x1)), "moe", "name")
+    # moe$x1 <- ifelse(grepl("margin of error", tolower(moe$x1)), "moe", "name")
+    moe$x1 <- dplyr::case_when(
+        grepl("margin of error", tolower(moe$x1)) ~ "moe",
+        grepl("samp[le]{2} size", tolower(moe$x1)) ~ "sample_size",
+        TRUE ~ "name"
+    )
     moe <- tidyr::pivot_longer(moe, -x1, names_to = "col")
     moe <- tidyr::pivot_wider(moe, names_from = x1, values_from = value)
     if (nrow(moe) > 1) {
         moe <- dplyr::filter(moe, name != "Connecticut")
     }
+    moe <- dplyr::mutate(
+        moe,
+        dplyr::across(c(moe, sample_size), readr::parse_number)
+    )
+
     if (nrow(moe) > 1) {
         cli::cli_abort("Too many rows in moe table")
     } else {
-        readr::parse_number(moe$moe)
+        as.list(dplyr::select(moe, moe, sample_size))
     }
 }
 
@@ -321,14 +340,30 @@ read_moe_hdr_ <- function(path) {
     df <- openxlsx2::wb_load(path)
     hdr <- df[["worksheets"]][[1]][["headerFooter"]]
     if (!"oddHeader" %in% names(hdr)) {
-        NA_real_
+        list(moe = NA_real_, sample_size = NA_real_)
     } else {
         hdr <- hdr[["oddHeader"]]
         hdr <- unlist(hdr[nchar(hdr) > 0])
-        hdr <- stringr::str_extract(hdr, "MOE.+\\%")
-        hdr <- stringr::str_extract(hdr, "[\\d\\.]+")
-        hdr <- readr::parse_number(hdr)
-        hdr / 100
+        hdr <- stringr::str_split(hdr, "\n")[[1]]
+        # 2018 like "3,062 randomly-selected adults in Greater Hartford/CRCOG - MOE +/-2.2%"
+        # 2021 like "1,766 Greater Hartford-CRCOG Region, CT Residents", "Maximum MOE +/- 3.1%"
+        moe <- stringr::str_subset(hdr, "MOE")
+        moe <- stringr::str_extract(
+            moe,
+            "(?<=MOE)(?:\\D+)(?<moe>[\\d.]+)(?=\\s?%)",
+            group = 1
+        )
+        moe <- readr::parse_number(moe) / 100
+        sample <- stringr::str_subset(hdr, "(randomly|[Rr]esidents)")
+        sample <- stringr::str_extract(sample, "^([\\d,]+)")
+        sample <- readr::parse_number(sample)
+        # moe <- stringr::str_match_all(hdr, "(?<sample>[\\d,]+)(?: randomly.+)(?:MOE\\D+)(?<moe>[\\d.]+)(?=%)")[[1]]
+        # moe <- as.data.frame(moe)
+        # moe <- dplyr::mutate(moe, dplyr::across(c(moe, sample), readr::parse_number))
+        # moe <- dplyr::select(moe, moe, sample_size = sample)
+        # moe$moe <- moe$moe / 100
+        # as.list(moe)
+        list(moe = moe, sample_size = sample)
     }
 }
 
@@ -336,13 +371,18 @@ read_moe_r_ <- function(path) {
     # for r-based xtabs, moe in 3rd sheet
     df <- readxl::read_excel(path, sheet = 3, skip = 1)
     df <- janitor::clean_names(df)
-    moe <- df$max_margin_of_error[1]
-    moe
+    df <- dplyr::filter(df, category == "Total")
+    df <- dplyr::select(
+        df,
+        moe = max_margin_of_error,
+        sample_size = weighted_count
+    )
+    as.list(df)
 }
 
 cws_max_moe <- paths |>
     dplyr::mutate(
-        moe = purrr::map2_dbl(path, year, function(p, y) {
+        moe = purrr::map2(path, year, function(p, y) {
             if (y == 2015) {
                 read_moe_row_(p)
             } else if (y >= 2024) {
@@ -352,7 +392,8 @@ cws_max_moe <- paths |>
             }
         })
     ) |>
-    dplyr::select(year, span, name, moe)
+    dplyr::select(year, span, name, moe) |>
+    tidyr::unnest_wider(moe)
 
 # latest tags--internal
 tags <- dplyr::select(paths, span, tag) |>

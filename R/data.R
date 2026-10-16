@@ -85,9 +85,9 @@
 #'
 "cws_group_meta"
 
-#' DCWS maximum margins of error
+#' DCWS maximum margins of error and sample sizes
 #'
-#' This is a data frame listing the maximum margin of error for estimates for each location and year. The values are extracted from the headers of the crosstab spreadsheets, but many are missing, especially for 2015. It's unlikely anyone will need this often beyond the community profiles on our website, so they're not filtered for the same subset of locations as the main data and weights datasets.
+#' This is a data frame listing the maximum margin of error for estimates for each location and year, as well as the sample size. The values are stored in different parts of the crosstab spreadsheets depending on year.
 #'
 #' @format A data frame with `r nrow(cws_max_moe)` rows and `r ncol(cws_max_moe)` variables:
 #' \describe{
@@ -95,6 +95,7 @@
 #'   \item{span}{Character, span of years of the survey (e.g. "2015_2024")}
 #'   \item{name}{Text of location}
 #'   \item{moe}{Numeric, value of maximum MOE}
+#'   \item{sample_size}{Numeric, weighted sample size of the survey for that location}
 #' }
 #' @source Compiled DCWS crosstabs
 #' @examples
