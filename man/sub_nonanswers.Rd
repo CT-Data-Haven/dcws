@@ -45,8 +45,8 @@ if (interactive()) {
 }
 }
 \seealso{
-Other data manipulation functions: 
-\code{\link{collapse_n_wt}()},
-\code{\link{combine_response}()}
+Other data manipulation functions:
+\code{\link[=collapse_n_wt]{collapse_n_wt()}},
+\code{\link[=combine_response]{combine_response()}}
 }
 \concept{data manipulation functions}

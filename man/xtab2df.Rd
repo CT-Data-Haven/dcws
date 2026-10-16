@@ -62,9 +62,9 @@ if (interactive()) {
 \seealso{
 \code{\link[=read_xtabs]{read_xtabs()}}
 
-Other data accessing functions: 
-\code{\link{fetch_cws}()},
-\code{\link{fetch_wts}()},
-\code{\link{read_xtabs}()}
+Other data accessing functions:
+\code{\link[=fetch_cws]{fetch_cws()}},
+\code{\link[=fetch_wts]{fetch_wts()}},
+\code{\link[=read_xtabs]{read_xtabs()}}
 }
 \concept{data accessing functions}

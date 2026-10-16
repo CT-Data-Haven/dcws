@@ -33,7 +33,7 @@ those considered to be non-answers. Default: response}
 Default: c("Don't know", "Refused")}
 
 \item{...}{
-  Arguments passed on to \code{\link[=sub_nonanswers]{sub_nonanswers}}
+  Arguments passed on to \code{\link{sub_nonanswers}}
   \describe{
     \item{\code{factor_response}}{Logical: if \code{TRUE} (default), returns response variable
 as a factor. This is likely a more useful way to handle response
@@ -112,8 +112,8 @@ area_change |>
 \seealso{
 \code{\link[=sub_nonanswers]{sub_nonanswers()}} \code{\link[forcats:fct_collapse]{forcats::fct_collapse()}}
 
-Other data manipulation functions: 
-\code{\link{collapse_n_wt}()},
-\code{\link{sub_nonanswers}()}
+Other data manipulation functions:
+\code{\link[=collapse_n_wt]{collapse_n_wt()}},
+\code{\link[=sub_nonanswers]{sub_nonanswers()}}
 }
 \concept{data manipulation functions}
