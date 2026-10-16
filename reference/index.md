@@ -39,4 +39,4 @@
 - [`cws_group_meta`](https://ct-data-haven.github.io/dcws/reference/cws_group_meta.md)
   : DCWS group metadata
 - [`cws_max_moe`](https://ct-data-haven.github.io/dcws/reference/cws_max_moe.md)
-  : DCWS maximum margins of error
+  : DCWS maximum margins of error and sample sizes

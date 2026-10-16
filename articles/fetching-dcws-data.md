@@ -21,6 +21,7 @@ as an example because I know most of our demographic groups are
 available.
 
 ``` r
+
 library(dplyr)
 library(dcws)
 library(forcats)
@@ -36,6 +37,7 @@ since it’s a simple yes or no. Since I’m doing this a couple times, I’ll
 write a (pretty crappy) function.
 
 ``` r
+
 calc_food <- function(data) {
     data |>
         # get order that makes sense for this subset
@@ -55,6 +57,7 @@ calc_food <- function(data) {
 ### One question, one year, few categories
 
 ``` r
+
 food_21 <- fetch_cws(grepl("^Have there been times .+ food", question),
     .name = "Greater New Haven", .category = c("Total", "Race/Ethnicity", "Gender"),
     .year = 2021, .unnest = TRUE
@@ -76,6 +79,7 @@ knitr::kable(food_21)
 ### One question, several years, one location
 
 ``` r
+
 food_trend <- fetch_cws(grepl("^Have there been times .+ food", question),
     .name = "Greater New Haven", .category = c("Total", "Race/Ethnicity", "Gender"),
     .unnest = TRUE
@@ -126,6 +130,7 @@ by race for Greater New Haven. I could do this filtering inside
 don’t, so I’ll just be a little redundant.
 
 ``` r
+
 gnh_towns <- c("New Haven", "Hamden", "West Haven", "Milford")
 food_towns <- fetch_cws(grepl("^Have there been times .+ food", question),
     .name = c("Greater New Haven", gnh_towns),
@@ -163,6 +168,7 @@ they all have “trust” in the question text. Using the `cws_codebook`
 dataset, I can look up what those codes were by pattern-matching.
 
 ``` r
+
 cws_codebook |>
     filter(grepl("How much trust", question)) |>
     filter(year == 2024) |>
@@ -185,6 +191,7 @@ amount into one, then present just that. Each question has the same
 beginning text, then at the end names the institution being asked about.
 
 ``` r
+
 trust_insts <- fetch_cws(grepl("^TRUST[A-Z]$", code),
     .name = "Greater New Haven", .year = 2021,
     .category = c("Total", "Age"), .unnest = TRUE
@@ -208,13 +215,13 @@ trust_insts |>
     knitr::kable()
 ```
 
-| group             | The Federal government | State government | Local government | Local health officials and healthcare workers | Local police and law enforcement |
-|:------------------|-----------------------:|-----------------:|-----------------:|----------------------------------------------:|---------------------------------:|
-| Greater New Haven |                   0.54 |             0.69 |             0.78 |                                          0.88 |                             0.82 |
-| Ages 18-34        |                   0.43 |             0.69 |             0.81 |                                          0.85 |                             0.72 |
-| Ages 35-49        |                   0.60 |             0.66 |             0.69 |                                          0.85 |                             0.85 |
-| Ages 50-64        |                   0.47 |             0.66 |             0.75 |                                          0.87 |                             0.89 |
-| Ages 65+          |                   0.64 |             0.70 |             0.79 |                                          0.91 |                             0.91 |
+| group | The Federal government | State government | Local government | Local health officials and healthcare workers | Local police and law enforcement |
+|:---|---:|---:|---:|---:|---:|
+| Greater New Haven | 0.54 | 0.69 | 0.78 | 0.88 | 0.82 |
+| Ages 18-34 | 0.43 | 0.69 | 0.81 | 0.85 | 0.72 |
+| Ages 35-49 | 0.60 | 0.66 | 0.69 | 0.85 | 0.85 |
+| Ages 50-64 | 0.47 | 0.66 | 0.75 | 0.87 | 0.89 |
+| Ages 65+ | 0.64 | 0.70 | 0.79 | 0.91 | 0.91 |
 
 Lots of ways you could chop this data up now that you’ve got several
 groups and several questions together.
@@ -235,6 +242,7 @@ returned.
 With `.drop_ct = TRUE` (the default):
 
 ``` r
+
 fetch_cws(code == "Q1",
     .year = 2021, .name = "Greater New Haven",
     .category = c("Total", "Gender"), .unnest = TRUE
@@ -251,6 +259,7 @@ fetch_cws(code == "Q1",
 With `.drop_ct = FALSE`:
 
 ``` r
+
 fetch_cws(code == "Q1",
     .year = 2021, .name = "Greater New Haven",
     .category = c("Total", "Gender"), .unnest = TRUE, .drop_ct = FALSE
@@ -283,6 +292,7 @@ There’s a function for getting weights on their own, with most of the
 same arguments as for getting data…
 
 ``` r
+
 head(fetch_wts(.year = 2021, .name = "Greater New Haven", .unnest = TRUE))
 #> # A tibble: 6 × 5
 #>    year span  name              group             weight
@@ -309,6 +319,7 @@ locations or years.
 For example, check out how obnoxious this is:
 
 ``` r
+
 satisfied_area <- fetch_cws(grepl("satisfied with the city", question),
     .name = c("Connecticut", "Greater New Haven", "New Haven"),
     .unnest = TRUE, .category = c("Total", "Income")
@@ -329,26 +340,27 @@ satisfied_area |>
     knitr::kable()
 ```
 
-| group         | Connecticut 2015 | Connecticut 2018 | Connecticut 2020 | Connecticut 2021 | Connecticut 2022 | Connecticut 2024 | Connecticut 2025 | Greater New Haven 2015 | Greater New Haven 2018 | Greater New Haven 2021 | Greater New Haven 2024 | New Haven 2015 | New Haven 2018 | New Haven 2021 | New Haven 2024 |
-|:--------------|:-----------------|:-----------------|:-----------------|:-----------------|:-----------------|:-----------------|:-----------------|:-----------------------|:-----------------------|:-----------------------|:-----------------------|:---------------|:---------------|:---------------|:---------------|
-| \<\$15K       | x                | x                | x                |                  | x                |                  |                  | x                      | x                      |                        |                        |                |                |                |                |
-| \$15K-\$30K   | x                | x                | x                |                  | x                |                  |                  | x                      | x                      |                        |                        |                |                |                |                |
-| \<\$30K       |                  |                  |                  | x                |                  | x                | x                |                        |                        | x                      | x                      | x              | x              | x              | x              |
-| \$30K-\$50K   | x                | x                | x                |                  | x                |                  |                  | x                      | x                      |                        |                        |                |                |                |                |
-| \$30K-\$75K   |                  |                  |                  |                  |                  |                  |                  |                        |                        |                        |                        | x              | x              |                |                |
-| \$30K-\$100K  |                  |                  |                  | x                |                  | x                | x                |                        |                        | x                      | x                      |                |                | x              | x              |
-| \$50K-\$75K   | x                | x                | x                |                  | x                |                  |                  | x                      | x                      |                        |                        |                |                |                |                |
-| \$75K-\$100K  | x                | x                | x                |                  | x                |                  |                  | x                      | x                      |                        |                        |                |                |                |                |
-| \$75K+        |                  |                  |                  |                  |                  |                  |                  |                        |                        |                        |                        | x              | x              |                |                |
-| \$100K-\$200K | x                | x                | x                |                  | x                | x                | x                | x                      | x                      |                        |                        |                |                |                |                |
-| \$100K+       |                  |                  |                  | x                |                  |                  |                  |                        |                        | x                      | x                      |                |                | x              | x              |
-| \$200K+       | x                | x                | x                |                  | x                | x                | x                | x                      | x                      |                        |                        |                |                |                |                |
+| group | Connecticut 2015 | Connecticut 2018 | Connecticut 2020 | Connecticut 2021 | Connecticut 2022 | Connecticut 2024 | Connecticut 2025 | Greater New Haven 2015 | Greater New Haven 2018 | Greater New Haven 2021 | Greater New Haven 2024 | New Haven 2015 | New Haven 2018 | New Haven 2021 | New Haven 2024 |
+|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|
+| \<\$15K | x | x | x |  | x |  |  | x | x |  |  |  |  |  |  |
+| \$15K-\$30K | x | x | x |  | x |  |  | x | x |  |  |  |  |  |  |
+| \<\$30K |  |  |  | x |  | x | x |  |  | x | x | x | x | x | x |
+| \$30K-\$50K | x | x | x |  | x |  |  | x | x |  |  |  |  |  |  |
+| \$30K-\$75K |  |  |  |  |  |  |  |  |  |  |  | x | x |  |  |
+| \$30K-\$100K |  |  |  | x |  | x | x |  |  | x | x |  |  | x | x |
+| \$50K-\$75K | x | x | x |  | x |  |  | x | x |  |  |  |  |  |  |
+| \$75K-\$100K | x | x | x |  | x |  |  | x | x |  |  |  |  |  |  |
+| \$75K+ |  |  |  |  |  |  |  |  |  |  |  | x | x |  |  |
+| \$100K-\$200K | x | x | x |  | x | x | x | x | x |  |  |  |  |  |  |
+| \$100K+ |  |  |  | x |  |  |  |  |  | x | x |  |  | x | x |
+| \$200K+ | x | x | x |  | x | x | x | x | x |  |  |  |  |  |  |
 
 Yikes
 
 So you’ll probably want to collapse some of those, like so:
 
 ``` r
+
 asthma18 <- fetch_cws(question == "Asthma",
     .year = 2018, .name = "Greater New Haven",
     .category = c("Total", "Income", "Race/Ethnicity"), .add_wts = TRUE, .unnest = TRUE
@@ -367,15 +379,15 @@ asthma18 <- fetch_cws(question == "Asthma",
 knitr::kable(asthma18)
 ```
 
-| year | span | name              | code | question | category       | group             | response | value |
-|-----:|:-----|:------------------|:-----|:---------|:---------------|:------------------|:---------|------:|
-| 2018 | 2018 | Greater New Haven | Q23E | Asthma   | Total          | Greater New Haven | Yes      |  0.15 |
-| 2018 | 2018 | Greater New Haven | Q23E | Asthma   | Race/Ethnicity | White             | Yes      |  0.13 |
-| 2018 | 2018 | Greater New Haven | Q23E | Asthma   | Race/Ethnicity | Black             | Yes      |  0.19 |
-| 2018 | 2018 | Greater New Haven | Q23E | Asthma   | Race/Ethnicity | Latino            | Yes      |  0.25 |
-| 2018 | 2018 | Greater New Haven | Q23E | Asthma   | Income         | \<\$30K           | Yes      |  0.22 |
-| 2018 | 2018 | Greater New Haven | Q23E | Asthma   | Income         | \$30K-\$100K      | Yes      |  0.13 |
-| 2018 | 2018 | Greater New Haven | Q23E | Asthma   | Income         | \$100K+           | Yes      |  0.14 |
+| year | span | name | code | question | category | group | response | value |
+|---:|:---|:---|:---|:---|:---|:---|:---|---:|
+| 2018 | 2018 | Greater New Haven | Q23E | Asthma | Total | Greater New Haven | Yes | 0.15 |
+| 2018 | 2018 | Greater New Haven | Q23E | Asthma | Race/Ethnicity | White | Yes | 0.13 |
+| 2018 | 2018 | Greater New Haven | Q23E | Asthma | Race/Ethnicity | Black | Yes | 0.19 |
+| 2018 | 2018 | Greater New Haven | Q23E | Asthma | Race/Ethnicity | Latino | Yes | 0.25 |
+| 2018 | 2018 | Greater New Haven | Q23E | Asthma | Income | \<\$30K | Yes | 0.22 |
+| 2018 | 2018 | Greater New Haven | Q23E | Asthma | Income | \$30K-\$100K | Yes | 0.13 |
+| 2018 | 2018 | Greater New Haven | Q23E | Asthma | Income | \$100K+ | Yes | 0.14 |
 
 ## Single year vs pooled years
 
@@ -399,6 +411,7 @@ want pooled data, give the year in this `"{start_year}_{end_year}"`
 format.
 
 ``` r
+
 fetch_cws(
     code == "Q1",
     .year = "2015_2024",
@@ -416,6 +429,7 @@ utilize the filtering done in the `...` argument instead, as they’ll
 both have an endyear of 2024:
 
 ``` r
+
 fetch_cws(
     year == 2024,
     code == "Q1",
@@ -434,6 +448,7 @@ can instead use the filtering to only get surveys where year and span
 match:
 
 ``` r
+
 fetch_cws(
     as.character(year) == span,
     code == "Q1",

@@ -1,3 +1,9 @@
+# dcws v1.6.0 (2026-10-16)
+
+## Feat
+
+- **cws_max_moe**: add sample size as column in cws_max_moe dataset
+
 # dcws v1.5.0 (2026-04-13)
 
 ## Feat
